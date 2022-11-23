@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  psql:
+    hostname: "primary"
+    image: postgres:latest
+    container_name: smart-agenda-psql
+    user: postgres
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    environment:
+      - MAX_CONNECTIONS=10
+      - MAX_WAL_SENDERS=5
+      - POSTGRES_MODE=primary
+      - POSTGRES_PRIMARY_USER=postgres
+      - POSTGRES_PRIMARY_PASSWORD=postgres
+      - POSTGRES_DB=smart-agenda
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_ROOT_PASSWORD=postgres
+      - POSTGRES_PRIMARY_PORT=5432
+    ports:
+      - "5432:5432"
+    volumes:
+      - db:/var/lib/psql/data
+      - ./db/seed:/tmp
+volumes:
+  db:

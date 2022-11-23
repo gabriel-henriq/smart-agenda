@@ -22,6 +22,9 @@ func (server *Server) setupRouter() {
 	router := gin.Default()
 
 	router.POST("/professor", server.createProfessor)
+	router.GET("/professor", server.listProfessor)
+	router.GET("/professor/:id", server.getProfessor)
+	router.DELETE("/professor/:id", server.deleteProfessor)
 
 	server.router = router
 }

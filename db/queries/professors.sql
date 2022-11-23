@@ -2,7 +2,7 @@
 SELECT * FROM professors WHERE id = $1;
 
 -- name: ListProfessors :many
-SELECT * FROM aulas;
+SELECT * FROM professors ORDER BY id LIMIT $1 OFFSET $2;
 
 -- name: UpdateProfessorByID :exec
 UPDATE professors SET name = $2, label_color = $3 WHERE id = $1;
@@ -12,7 +12,6 @@ INSERT INTO professors (name, label_color) VALUES ($1, $2) RETURNING *;
 
 -- name: DeleteProfessorByID :exec
 DELETE FROM professors WHERE id = $1;
-
 
 -- name: ListAvailableProfessorsByTimeRange :many
 SELECT *

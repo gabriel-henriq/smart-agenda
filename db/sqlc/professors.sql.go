@@ -103,27 +103,27 @@ func (q *Queries) ListAvailableProfessorsByTimeRange(ctx context.Context, arg Li
 }
 
 const listProfessors = `-- name: ListProfessors :many
-SELECT id, tablet_id, professor_id, room_id, student_name, meet_start, meet_end, observation, created_at, updated_at FROM aulas
+SELECT id, name, label_color, created_at, updated_at FROM professors ORDER BY id LIMIT $1 OFFSET $2
 `
 
-func (q *Queries) ListProfessors(ctx context.Context) ([]Aula, error) {
-	rows, err := q.db.QueryContext(ctx, listProfessors)
+type ListProfessorsParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) ListProfessors(ctx context.Context, arg ListProfessorsParams) ([]Professor, error) {
+	rows, err := q.db.QueryContext(ctx, listProfessors, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []Aula{}
+	items := []Professor{}
 	for rows.Next() {
-		var i Aula
+		var i Professor
 		if err := rows.Scan(
 			&i.ID,
-			&i.TabletID,
-			&i.ProfessorID,
-			&i.RoomID,
-			&i.StudentName,
-			&i.MeetStart,
-			&i.MeetEnd,
-			&i.Observation,
+			&i.Name,
+			&i.LabelColor,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {

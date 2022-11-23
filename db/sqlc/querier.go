@@ -27,7 +27,7 @@ type Querier interface {
 	ListAvailableProfessorsByTimeRange(ctx context.Context, arg ListAvailableProfessorsByTimeRangeParams) ([]Professor, error)
 	ListAvailableRoomsByTimeRange(ctx context.Context, arg ListAvailableRoomsByTimeRangeParams) ([]Room, error)
 	ListAvailableTabletsByTimeRange(ctx context.Context, arg ListAvailableTabletsByTimeRangeParams) ([]Tablet, error)
-	ListProfessors(ctx context.Context) ([]Aula, error)
+	ListProfessors(ctx context.Context, arg ListProfessorsParams) ([]Professor, error)
 	ListRooms(ctx context.Context) ([]Room, error)
 	ListTablets(ctx context.Context) ([]Tablet, error)
 	UpdateAulaByID(ctx context.Context, arg UpdateAulaByIDParams) (sql.Result, error)

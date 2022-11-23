@@ -10,8 +10,8 @@ import (
 	"database/sql"
 )
 
-const createProfessor = `-- name: CreateProfessor :execresult
-INSERT INTO professors (name, label_color) VALUES ($1, $2)
+const createProfessor = `-- name: CreateProfessor :one
+INSERT INTO professors (name, label_color) VALUES ($1, $2) RETURNING id, name, label_color, created_at, updated_at
 `
 
 type CreateProfessorParams struct {
@@ -19,8 +19,17 @@ type CreateProfessorParams struct {
 	LabelColor sql.NullString `json:"labelColor"`
 }
 
-func (q *Queries) CreateProfessor(ctx context.Context, arg CreateProfessorParams) (sql.Result, error) {
-	return q.db.ExecContext(ctx, createProfessor, arg.Name, arg.LabelColor)
+func (q *Queries) CreateProfessor(ctx context.Context, arg CreateProfessorParams) (Professor, error) {
+	row := q.db.QueryRowContext(ctx, createProfessor, arg.Name, arg.LabelColor)
+	var i Professor
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.LabelColor,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
 const deleteProfessorByID = `-- name: DeleteProfessorByID :exec
@@ -131,7 +140,7 @@ func (q *Queries) ListProfessors(ctx context.Context) ([]Aula, error) {
 	return items, nil
 }
 
-const updateProfessorByID = `-- name: UpdateProfessorByID :execresult
+const updateProfessorByID = `-- name: UpdateProfessorByID :exec
 UPDATE professors SET name = $2, label_color = $3 WHERE id = $1
 `
 
@@ -141,6 +150,7 @@ type UpdateProfessorByIDParams struct {
 	LabelColor sql.NullString `json:"labelColor"`
 }
 
-func (q *Queries) UpdateProfessorByID(ctx context.Context, arg UpdateProfessorByIDParams) (sql.Result, error) {
-	return q.db.ExecContext(ctx, updateProfessorByID, arg.ID, arg.Name, arg.LabelColor)
+func (q *Queries) UpdateProfessorByID(ctx context.Context, arg UpdateProfessorByIDParams) error {
+	_, err := q.db.ExecContext(ctx, updateProfessorByID, arg.ID, arg.Name, arg.LabelColor)
+	return err
 }

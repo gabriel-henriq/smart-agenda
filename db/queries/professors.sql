@@ -4,11 +4,11 @@ SELECT * FROM professors WHERE id = $1;
 -- name: ListProfessors :many
 SELECT * FROM aulas;
 
--- name: UpdateProfessorByID :execresult
+-- name: UpdateProfessorByID :exec
 UPDATE professors SET name = $2, label_color = $3 WHERE id = $1;
 
--- name: CreateProfessor :execresult
-INSERT INTO professors (name, label_color) VALUES ($1, $2);
+-- name: CreateProfessor :one
+INSERT INTO professors (name, label_color) VALUES ($1, $2) RETURNING *;
 
 -- name: DeleteProfessorByID :exec
 DELETE FROM professors WHERE id = $1;

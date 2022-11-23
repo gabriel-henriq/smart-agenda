@@ -3,7 +3,7 @@ package main
 import (
 	"database/sql"
 	"github.com/gabriel-henriq/smart-agenda/api"
-	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
+	"github.com/gabriel-henriq/smart-agenda/db"
 	_ "github.com/lib/pq"
 )
 

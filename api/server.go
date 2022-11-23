@@ -1,7 +1,7 @@
 package api
 
 import (
-	db "github.com/gabriel-henriq/smart-agenda/db/sqlc"
+	"github.com/gabriel-henriq/smart-agenda/db"
 	"github.com/gin-gonic/gin"
 )
 
@@ -26,7 +26,6 @@ func (server *Server) setupRouter() {
 	server.router = router
 }
 
-// Start runs the HTTP server on a specific address.
 func (server *Server) Start(address string) error {
 	return server.router.Run(address)
 }

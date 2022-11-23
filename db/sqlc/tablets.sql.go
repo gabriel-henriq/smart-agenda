@@ -3,7 +3,7 @@
 //   sqlc v1.16.0
 // source: tablets.sql
 
-package db
+package sqlc
 
 import (
 	"context"

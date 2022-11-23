@@ -3,7 +3,7 @@
 //   sqlc v1.16.0
 // source: rooms.sql
 
-package db
+package sqlc
 
 import (
 	"context"

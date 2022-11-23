@@ -4,35 +4,32 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
 )
 
-// Store defines all functions to execute db queries and transactions
 type Store interface {
-	Querier
+	sqlc.Querier
 }
 
-// SQLStore provides all functions to execute SQL queries and transactions
 type SQLStore struct {
 	db *sql.DB
-	*Queries
+	*sqlc.Queries
 }
 
-// NewStore creates a new store
 func NewStore(db *sql.DB) Store {
 	return &SQLStore{
 		db:      db,
-		Queries: New(db),
+		Queries: sqlc.New(db),
 	}
 }
 
-// ExecTx executes a function within a database transaction
-func (store *SQLStore) execTx(ctx context.Context, fn func(*Queries) error) error {
+func (store *SQLStore) execTx(ctx context.Context, fn func(*sqlc.Queries) error) error {
 	tx, err := store.db.BeginTx(ctx, nil)
 	if err != nil {
 		return err
 	}
 
-	q := New(tx)
+	q := sqlc.New(tx)
 	err = fn(q)
 	if err != nil {
 		if rbErr := tx.Rollback(); rbErr != nil {

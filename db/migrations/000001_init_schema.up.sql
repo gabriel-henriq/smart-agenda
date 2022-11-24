@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS professors
 (
     id           SERIAL PRIMARY KEY NOT NULL,
     name         TEXT,
-    label_color        TEXT,
+    label_color  TEXT,
     created_at   TIMESTAMP DEFAULT NOW(),
     updated_at   TIMESTAMP DEFAULT NOW()
 );

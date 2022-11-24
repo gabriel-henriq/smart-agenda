@@ -1,5 +1,4 @@
 include .env
-.PHONY: migrate-up migrate-down migrate-create down up sqlc
 
 migrate-up:
 	migrate -database ${POSTGRESQL_URL} -path db/migrations up
@@ -19,3 +18,8 @@ up:
 sqlc:
 	rm -rf db/sqlc
 	sqlc generate
+
+start:
+	go run main.go
+
+.PHONY: migrate-up migrate-down migrate-create down up sqlc start

@@ -14,10 +14,6 @@ func main() {
 	//}
 	store := db.NewStore(conn)
 
-	runGinServer(store)
-}
-
-func runGinServer(store db.Store) {
 	server := api.NewServer(store)
 	//if err != nil {
 	//	log.Fatal().Err(err).Msg("cannot create server")
@@ -27,4 +23,5 @@ func runGinServer(store db.Store) {
 	//if err != nil {
 	//	log.Fatal().Err(err).Msg("cannot start server")
 	//}
+
 }

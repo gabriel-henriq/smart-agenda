@@ -2,7 +2,8 @@
 SELECT * FROM professors WHERE id = $1;
 
 -- name: ListProfessors :many
-SELECT * FROM professors ORDER BY id LIMIT $1 OFFSET $2;
+SELECT COUNT(*) OVER () AS total_pages, sub_query.* FROM
+    (SELECT * FROM  professors ORDER BY name) sub_query LIMIT $1 OFFSET $2;
 
 -- name: UpdateProfessorByID :exec
 UPDATE professors SET name = $2, label_color = $3 WHERE id = $1;

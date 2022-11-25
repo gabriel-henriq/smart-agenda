@@ -21,9 +21,9 @@ func NewProfessor(db db.Store) IProfessor {
 
 func (p Professor) SetupProfessorRoute(router *gin.Engine) {
 
-	//router.POST("/professor")
-	//router.GET("/professor", p.istProfessor)
+	router.POST("/professor", p.createProfessor)
+	router.GET("/professor", p.listProfessor)
 	router.GET("/professor/:id", p.getProfessor)
-	//router.DELETE("/professor/:id", server.deleteProfessor)
+	router.DELETE("/professor/:id", p.deleteProfessor)
 
 }

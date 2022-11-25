@@ -1,10 +1,9 @@
-package api
+package server
 
 import (
+	"github.com/gabriel-henriq/smart-agenda/api/professor"
 	"github.com/gabriel-henriq/smart-agenda/db"
 	"github.com/gin-gonic/gin"
-
-	"github.com/gabriel-henriq/smart-agenda/api/professor"
 )
 
 type Server struct {
@@ -23,7 +22,6 @@ func NewServer(store db.Store) *Server {
 func (server *Server) setupRouter() {
 	router := gin.Default()
 
-	// Professor Routes
 	professorRoutes := professor.NewProfessor(server.store)
 
 	professorRoutes.SetupProfessorRoute(router)

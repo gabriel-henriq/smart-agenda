@@ -103,7 +103,7 @@ func (q *Queries) ListAvailableProfessorsByTimeRange(ctx context.Context, arg Li
 }
 
 const listProfessors = `-- name: ListProfessors :many
-SELECT COUNT(*) OVER () AS total_pages, sub_query.id, sub_query.name, sub_query.label_color, sub_query.created_at, sub_query.updated_at FROM
+SELECT COUNT(*) OVER () AS total_professors, sub_query.id, sub_query.name, sub_query.label_color, sub_query.created_at, sub_query.updated_at FROM
     (SELECT id, name, label_color, created_at, updated_at FROM  professors ORDER BY name) sub_query LIMIT $1 OFFSET $2
 `
 
@@ -113,12 +113,12 @@ type ListProfessorsParams struct {
 }
 
 type ListProfessorsRow struct {
-	TotalPages int64          `json:"totalPages"`
-	ID         int32          `json:"id"`
-	Name       sql.NullString `json:"name"`
-	LabelColor sql.NullString `json:"labelColor"`
-	CreatedAt  sql.NullTime   `json:"createdAt"`
-	UpdatedAt  sql.NullTime   `json:"updatedAt"`
+	TotalProfessors int64          `json:"totalProfessors"`
+	ID              int32          `json:"id"`
+	Name            sql.NullString `json:"name"`
+	LabelColor      sql.NullString `json:"labelColor"`
+	CreatedAt       sql.NullTime   `json:"createdAt"`
+	UpdatedAt       sql.NullTime   `json:"updatedAt"`
 }
 
 func (q *Queries) ListProfessors(ctx context.Context, arg ListProfessorsParams) ([]ListProfessorsRow, error) {
@@ -131,7 +131,7 @@ func (q *Queries) ListProfessors(ctx context.Context, arg ListProfessorsParams) 
 	for rows.Next() {
 		var i ListProfessorsRow
 		if err := rows.Scan(
-			&i.TotalPages,
+			&i.TotalProfessors,
 			&i.ID,
 			&i.Name,
 			&i.LabelColor,

@@ -3,6 +3,8 @@ package api
 import (
 	"github.com/gabriel-henriq/smart-agenda/db"
 	"github.com/gin-gonic/gin"
+
+	"github.com/gabriel-henriq/smart-agenda/api/professor"
 )
 
 type Server struct {
@@ -21,18 +23,14 @@ func NewServer(store db.Store) *Server {
 func (server *Server) setupRouter() {
 	router := gin.Default()
 
-	router.POST("/professor", server.createProfessor)
-	router.GET("/professor", server.listProfessor)
-	router.GET("/professor/:id", server.getProfessor)
-	router.DELETE("/professor/:id", server.deleteProfessor)
+	// Professor Routes
+	professorRoutes := professor.NewProfessor(server.store)
+
+	professorRoutes.SetupProfessorRoute(router)
 
 	server.router = router
 }
 
 func (server *Server) Start(address string) error {
 	return server.router.Run(address)
-}
-
-func errorResponse(err error) gin.H {
-	return gin.H{"error": err.Error()}
 }

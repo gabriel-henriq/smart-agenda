@@ -1,6 +1,8 @@
-package api
+package professor
 
-import "github.com/gabriel-henriq/smart-agenda/db/sqlc"
+import (
+	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
+)
 
 func toJSONProfessor(professor sqlc.Professor) professorResponse {
 	return professorResponse{
@@ -13,11 +15,11 @@ func toJSONProfessorArray(professors []sqlc.ListProfessorsRow) []professorRespon
 	resps := make([]professorResponse, 0)
 	for _, professor := range professors {
 		resps = append(resps, professorResponse{
-			TotalPages: professor.TotalPages,
 			Name:       professor.Name.String,
 			LabelColor: professor.LabelColor.String,
 		})
 	}
+	resps = append(resps)
 	return resps
 }
 
@@ -40,7 +42,13 @@ type createProfessorRequest struct {
 }
 
 type professorResponse struct {
-	TotalPages int64  `json:"totalPages" binding:"omitempty"`
 	Name       string `json:"name" binding:"omitempty"`
 	LabelColor string `json:"labelColor" binding:"omitempty"`
+	pagination
+}
+
+type pagination struct {
+	TotalItems int64 `json:"totalItems" binding:"omitempty"`
+	Limit      int64 `json:"limit" binding:"omitempty"`
+	Skip       int64 `json:"skip" binding:"omitempty"`
 }

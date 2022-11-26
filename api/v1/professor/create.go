@@ -4,25 +4,14 @@ import (
 	"database/sql"
 	"github.com/gabriel-henriq/smart-agenda/api"
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
+	"github.com/gabriel-henriq/smart-agenda/models"
 	"github.com/gin-gonic/gin"
 	"github.com/lib/pq"
 	"net/http"
 )
 
-type createProfessorRequest struct {
-	Name       string `json:"name"`
-	LabelColor string `json:"labelColor"`
-}
-
-func toJSONProfessor(professor sqlc.Professor) professorResponse {
-	return professorResponse{
-		Name:       professor.Name.String,
-		LabelColor: professor.LabelColor.String,
-	}
-}
-
 func (p Professor) createProfessor(ctx *gin.Context) {
-	var req createProfessorRequest
+	var req models.Professor
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, api.ErrorResponse(err))
@@ -34,8 +23,7 @@ func (p Professor) createProfessor(ctx *gin.Context) {
 		LabelColor: sql.NullString{String: req.LabelColor, Valid: true},
 	}
 
-	prof, err := p.CreateProfessor(ctx, arg)
-
+	prof, err := p.db.CreateProfessor(ctx, arg)
 	if err != nil {
 		if pqErr, ok := err.(*pq.Error); ok {
 			switch pqErr.Code.Name() {
@@ -48,7 +36,7 @@ func (p Professor) createProfessor(ctx *gin.Context) {
 		return
 	}
 
-	rsp := toJSONProfessor(prof)
+	rsp := p.toJSONProfessor(prof)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

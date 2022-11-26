@@ -10,12 +10,20 @@ import (
 	"database/sql"
 )
 
-const createRoom = `-- name: CreateRoom :execresult
-INSERT INTO rooms (name) VALUES ($1)
+const createRoom = `-- name: CreateRoom :one
+INSERT INTO rooms (name) VALUES ($1) RETURNING id, name, created_at, updated_at
 `
 
-func (q *Queries) CreateRoom(ctx context.Context, name sql.NullString) (sql.Result, error) {
-	return q.db.ExecContext(ctx, createRoom, name)
+func (q *Queries) CreateRoom(ctx context.Context, name sql.NullString) (Room, error) {
+	row := q.db.QueryRowContext(ctx, createRoom, name)
+	var i Room
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
 const deleteRoomByID = `-- name: DeleteRoomByID :exec
@@ -87,19 +95,34 @@ func (q *Queries) ListAvailableRoomsByTimeRange(ctx context.Context, arg ListAva
 }
 
 const listRooms = `-- name: ListRooms :many
-SELECT id, name, created_at, updated_at FROM rooms
+SELECT COUNT(*) OVER () AS total_items, sub_query.id, sub_query.name, sub_query.created_at, sub_query.updated_at FROM
+    (SELECT id, name, created_at, updated_at FROM  rooms ORDER BY name) sub_query LIMIT $1 OFFSET $2
 `
 
-func (q *Queries) ListRooms(ctx context.Context) ([]Room, error) {
-	rows, err := q.db.QueryContext(ctx, listRooms)
+type ListRoomsParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+type ListRoomsRow struct {
+	TotalItems int64          `json:"totalItems"`
+	ID         int32          `json:"id"`
+	Name       sql.NullString `json:"name"`
+	CreatedAt  sql.NullTime   `json:"createdAt"`
+	UpdatedAt  sql.NullTime   `json:"updatedAt"`
+}
+
+func (q *Queries) ListRooms(ctx context.Context, arg ListRoomsParams) ([]ListRoomsRow, error) {
+	rows, err := q.db.QueryContext(ctx, listRooms, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []Room{}
+	items := []ListRoomsRow{}
 	for rows.Next() {
-		var i Room
+		var i ListRoomsRow
 		if err := rows.Scan(
+			&i.TotalItems,
 			&i.ID,
 			&i.Name,
 			&i.CreatedAt,

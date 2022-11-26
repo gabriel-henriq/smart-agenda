@@ -10,20 +10,22 @@ type IProfessor interface {
 }
 
 type Professor struct {
-	db.Store
+	db db.Store
 }
 
 func NewProfessor(db db.Store) IProfessor {
 	return Professor{
-		Store: db,
+		db: db,
 	}
 }
 
 func (p Professor) SetupProfessorRoute(router *gin.Engine) {
 
-	router.POST("/professor", p.createProfessor)
-	router.GET("/professor", p.listProfessor)
-	router.GET("/professor/:id", p.getProfessor)
-	router.DELETE("/professor/:id", p.deleteProfessor)
-
+	v1 := router.Group("/v1")
+	{
+		v1.POST("/professor", p.createProfessor)
+		v1.GET("/professor", p.listProfessor)
+		v1.GET("/professor/:id", p.getProfessor)
+		v1.DELETE("/professor/:id", p.deleteProfessor)
+	}
 }

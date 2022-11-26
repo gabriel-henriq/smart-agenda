@@ -1,29 +1,25 @@
-package professor
+package room
 
 import (
 	"database/sql"
+	"net/http"
+
 	"github.com/gabriel-henriq/smart-agenda/api"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
-type getProfessorRequest struct {
+type getRoomRequest struct {
 	ID int32 `uri:"id" binding:"required,min=1"`
 }
 
-//type professorResponse struct {
-//	Name       string `json:"name" binding:"omitempty"`
-//	LabelColor string `json:"labelColor" binding:"omitempty"`
-//}
-
-func (p Professor) getProfessor(ctx *gin.Context) {
-	var req getProfessorRequest
+func (r Room) getRoomByID(ctx *gin.Context) {
+	var req getRoomRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, api.ErrorResponse(err))
 		return
 	}
 
-	prof, err := p.GetProfessorByID(ctx, req.ID)
+	room, err := r.db.GetRoomByID(ctx, req.ID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			ctx.JSON(http.StatusNotFound, api.ErrorResponse(err))
@@ -34,7 +30,7 @@ func (p Professor) getProfessor(ctx *gin.Context) {
 		return
 	}
 
-	rsp := toJSONProfessor(prof)
+	rsp := r.toJSONRoom(room)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

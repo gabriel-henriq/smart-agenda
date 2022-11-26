@@ -12,7 +12,7 @@ import (
 type Querier interface {
 	CreateAula(ctx context.Context, arg CreateAulaParams) (sql.Result, error)
 	CreateProfessor(ctx context.Context, arg CreateProfessorParams) (Professor, error)
-	CreateRoom(ctx context.Context, name sql.NullString) (sql.Result, error)
+	CreateRoom(ctx context.Context, name sql.NullString) (Room, error)
 	CreateTablet(ctx context.Context, name sql.NullString) (sql.Result, error)
 	DeleteAulaByID(ctx context.Context) error
 	DeleteProfessorByID(ctx context.Context, id int32) error
@@ -28,7 +28,7 @@ type Querier interface {
 	ListAvailableRoomsByTimeRange(ctx context.Context, arg ListAvailableRoomsByTimeRangeParams) ([]Room, error)
 	ListAvailableTabletsByTimeRange(ctx context.Context, arg ListAvailableTabletsByTimeRangeParams) ([]Tablet, error)
 	ListProfessors(ctx context.Context, arg ListProfessorsParams) ([]ListProfessorsRow, error)
-	ListRooms(ctx context.Context) ([]Room, error)
+	ListRooms(ctx context.Context, arg ListRoomsParams) ([]ListRoomsRow, error)
 	ListTablets(ctx context.Context) ([]Tablet, error)
 	UpdateAulaByID(ctx context.Context, arg UpdateAulaByIDParams) (sql.Result, error)
 	UpdateProfessorByID(ctx context.Context, arg UpdateProfessorByIDParams) error

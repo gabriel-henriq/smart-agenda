@@ -2,7 +2,7 @@
 SELECT * FROM professors WHERE id = $1;
 
 -- name: ListProfessors :many
-SELECT COUNT(*) OVER () AS total_professors, sub_query.* FROM
+SELECT COUNT(*) OVER () AS total_items, sub_query.* FROM
     (SELECT * FROM  professors ORDER BY name) sub_query LIMIT $1 OFFSET $2;
 
 -- name: UpdateProfessorByID :exec

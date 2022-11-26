@@ -2,7 +2,7 @@ package professor
 
 import (
 	"database/sql"
-	"github.com/gabriel-henriq/smart-agenda/api"
+	"github.com/gabriel-henriq/smart-agenda/api/v1"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -14,18 +14,18 @@ type getProfessorRequest struct {
 func (p Professor) getProfessor(ctx *gin.Context) {
 	var req getProfessorRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, api.ErrorResponse(err))
+		ctx.JSON(http.StatusBadRequest, v1.ErrorResponse(err))
 		return
 	}
 
 	prof, err := p.db.GetProfessorByID(ctx, req.ID)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			ctx.JSON(http.StatusNotFound, api.ErrorResponse(err))
+			ctx.JSON(http.StatusNotFound, v1.ErrorResponse(err))
 			return
 		}
 
-		ctx.JSON(http.StatusInternalServerError, api.ErrorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, v1.ErrorResponse(err))
 		return
 	}
 

@@ -30,10 +30,11 @@ type Professor struct {
 }
 
 type Room struct {
-	ID        int32          `json:"id"`
-	Name      sql.NullString `json:"name"`
-	CreatedAt sql.NullTime   `json:"createdAt"`
-	UpdatedAt sql.NullTime   `json:"updatedAt"`
+	ID         int32          `json:"id"`
+	Name       sql.NullString `json:"name"`
+	LabelColor sql.NullString `json:"labelColor"`
+	CreatedAt  sql.NullTime   `json:"createdAt"`
+	UpdatedAt  sql.NullTime   `json:"updatedAt"`
 }
 
 type Tablet struct {

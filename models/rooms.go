@@ -3,10 +3,11 @@ package models
 import "time"
 
 type Room struct {
-	ID        int32     `json:"id,omitempty"`
-	Name      string    `json:"name,omitempty"`
-	CreatedAt time.Time `json:"createdAt,omitempty"`
-	UpdatedAt time.Time `json:"updatedAt,omitempty"`
+	ID         int32     `json:"id,omitempty"`
+	Name       string    `json:"name,omitempty"`
+	CreatedAt  time.Time `json:"createdAt,omitempty"`
+	UpdatedAt  time.Time `json:"updatedAt,omitempty"`
+	LabelColor string    `json:"labelColor" binding:"omitempty"`
 }
 
 type RoomList struct {

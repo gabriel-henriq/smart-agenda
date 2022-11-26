@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS rooms
 (
     id           SERIAL PRIMARY KEY NOT NULL,
     name         TEXT,
+    label_color  TEXT,
     created_at   TIMESTAMP DEFAULT NOW(),
     updated_at   TIMESTAMP DEFAULT NOW()
 );

@@ -2,7 +2,7 @@ package professor
 
 import (
 	"database/sql"
-	"github.com/gabriel-henriq/smart-agenda/api"
+	"github.com/gabriel-henriq/smart-agenda/api/v1"
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
 	"github.com/gabriel-henriq/smart-agenda/models"
 	"github.com/gin-gonic/gin"
@@ -14,7 +14,7 @@ func (p Professor) createProfessor(ctx *gin.Context) {
 	var req models.Professor
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, api.ErrorResponse(err))
+		ctx.JSON(http.StatusBadRequest, v1.ErrorResponse(err))
 		return
 	}
 
@@ -28,11 +28,11 @@ func (p Professor) createProfessor(ctx *gin.Context) {
 		if pqErr, ok := err.(*pq.Error); ok {
 			switch pqErr.Code.Name() {
 			case "unique_violation":
-				ctx.JSON(http.StatusForbidden, api.ErrorResponse(err))
+				ctx.JSON(http.StatusForbidden, v1.ErrorResponse(err))
 				return
 			}
 		}
-		ctx.JSON(http.StatusInternalServerError, api.ErrorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, v1.ErrorResponse(err))
 		return
 	}
 

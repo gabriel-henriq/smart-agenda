@@ -20,19 +20,21 @@ func (r Room) toJSONRoomList(SQLRooms []sqlc.ListRoomsRow, pageID, pageSize int3
 
 	for _, room := range SQLRooms {
 		rooms = append(rooms, models.Room{
-			Name:      room.Name.String,
-			CreatedAt: room.CreatedAt.Time,
-			UpdatedAt: room.UpdatedAt.Time,
+			Name:       room.Name.String,
+			LabelColor: room.LabelColor.String,
+			CreatedAt:  room.CreatedAt.Time,
+			UpdatedAt:  room.UpdatedAt.Time,
 		})
 	}
 
-	totalPages := int32(math.Ceil(math.Round(float64(pageID / pageSize))))
+	totalPages := int32(math.Ceil(float64(SQLRooms[len(SQLRooms)-1].Item) / float64(pageSize)))
 
 	return models.RoomList{
 		Rooms: rooms,
 		Pagination: models.Pagination{
 			Limit:      pageID,
 			Offset:     pageSize,
+			Items:      SQLRooms[len(SQLRooms)-1].Item,
 			TotalPages: totalPages,
 		},
 	}

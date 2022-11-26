@@ -11,15 +11,21 @@ import (
 )
 
 const createRoom = `-- name: CreateRoom :one
-INSERT INTO rooms (name) VALUES ($1) RETURNING id, name, created_at, updated_at
+INSERT INTO rooms (name, label_color) VALUES ($1, $2) RETURNING id, name, label_color, created_at, updated_at
 `
 
-func (q *Queries) CreateRoom(ctx context.Context, name sql.NullString) (Room, error) {
-	row := q.db.QueryRowContext(ctx, createRoom, name)
+type CreateRoomParams struct {
+	Name       sql.NullString `json:"name"`
+	LabelColor sql.NullString `json:"labelColor"`
+}
+
+func (q *Queries) CreateRoom(ctx context.Context, arg CreateRoomParams) (Room, error) {
+	row := q.db.QueryRowContext(ctx, createRoom, arg.Name, arg.LabelColor)
 	var i Room
 	err := row.Scan(
 		&i.ID,
 		&i.Name,
+		&i.LabelColor,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -36,7 +42,7 @@ func (q *Queries) DeleteRoomByID(ctx context.Context, id int32) error {
 }
 
 const getRoomByID = `-- name: GetRoomByID :one
-SELECT id, name, created_at, updated_at FROM rooms WHERE id = $1
+SELECT id, name, label_color, created_at, updated_at FROM rooms WHERE id = $1
 `
 
 func (q *Queries) GetRoomByID(ctx context.Context, id int32) (Room, error) {
@@ -45,6 +51,7 @@ func (q *Queries) GetRoomByID(ctx context.Context, id int32) (Room, error) {
 	err := row.Scan(
 		&i.ID,
 		&i.Name,
+		&i.LabelColor,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -52,7 +59,7 @@ func (q *Queries) GetRoomByID(ctx context.Context, id int32) (Room, error) {
 }
 
 const listAvailableRoomsByTimeRange = `-- name: ListAvailableRoomsByTimeRange :many
-SELECT id, name, created_at, updated_at
+SELECT id, name, label_color, created_at, updated_at
 FROM rooms
 WHERE id NOT IN (SELECT room_id
                  FROM aulas a
@@ -78,6 +85,7 @@ func (q *Queries) ListAvailableRoomsByTimeRange(ctx context.Context, arg ListAva
 		if err := rows.Scan(
 			&i.ID,
 			&i.Name,
+			&i.LabelColor,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -95,8 +103,8 @@ func (q *Queries) ListAvailableRoomsByTimeRange(ctx context.Context, arg ListAva
 }
 
 const listRooms = `-- name: ListRooms :many
-SELECT COUNT(*) OVER () AS total_items, sub_query.id, sub_query.name, sub_query.created_at, sub_query.updated_at FROM
-    (SELECT id, name, created_at, updated_at FROM  rooms ORDER BY name) sub_query LIMIT $1 OFFSET $2
+SELECT row_number() OVER () AS item, sub_query.id, sub_query.name, sub_query.label_color, sub_query.created_at, sub_query.updated_at FROM
+    (SELECT id, name, label_color, created_at, updated_at FROM  rooms ORDER BY name) sub_query LIMIT $1 OFFSET $2
 `
 
 type ListRoomsParams struct {
@@ -105,9 +113,10 @@ type ListRoomsParams struct {
 }
 
 type ListRoomsRow struct {
-	TotalItems int64          `json:"totalItems"`
+	Item       int64          `json:"item"`
 	ID         int32          `json:"id"`
 	Name       sql.NullString `json:"name"`
+	LabelColor sql.NullString `json:"labelColor"`
 	CreatedAt  sql.NullTime   `json:"createdAt"`
 	UpdatedAt  sql.NullTime   `json:"updatedAt"`
 }
@@ -122,9 +131,10 @@ func (q *Queries) ListRooms(ctx context.Context, arg ListRoomsParams) ([]ListRoo
 	for rows.Next() {
 		var i ListRoomsRow
 		if err := rows.Scan(
-			&i.TotalItems,
+			&i.Item,
 			&i.ID,
 			&i.Name,
+			&i.LabelColor,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {

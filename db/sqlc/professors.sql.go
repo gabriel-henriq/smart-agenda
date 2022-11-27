@@ -104,12 +104,23 @@ func (q *Queries) ListAvailableProfessorsByTimeRange(ctx context.Context, arg Li
 
 const listProfessors = `-- name: ListProfessors :many
 SELECT count(*) OVER () AS total_items, sub_query.id, sub_query.name, sub_query.label_color, sub_query.created_at, sub_query.updated_at FROM
-    (SELECT id, name, label_color, created_at, updated_at FROM professors) sub_query LIMIT $1 OFFSET $2
+    (SELECT id, name, label_color, created_at, updated_at FROM professors ORDER BY CASE
+        WHEN NOT $3::bool AND $4::text = 'name' THEN name
+      END ASC, CASE
+        WHEN $3::bool AND $4::text = 'name' THEN name
+      END DESC, CASE
+        WHEN NOT $3::bool AND $4::text = 'id' THEN id
+     END ASC, CASE
+       WHEN $3::bool AND $4::text = 'id' THEN id
+     END DESC)
+        sub_query LIMIT $1 OFFSET $2
 `
 
 type ListProfessorsParams struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
+	Limit   int32  `json:"limit"`
+	Offset  int32  `json:"offset"`
+	Reverse bool   `json:"reverse"`
+	OrderBy string `json:"orderBy"`
 }
 
 type ListProfessorsRow struct {
@@ -122,7 +133,12 @@ type ListProfessorsRow struct {
 }
 
 func (q *Queries) ListProfessors(ctx context.Context, arg ListProfessorsParams) ([]ListProfessorsRow, error) {
-	rows, err := q.db.QueryContext(ctx, listProfessors, arg.Limit, arg.Offset)
+	rows, err := q.db.QueryContext(ctx, listProfessors,
+		arg.Limit,
+		arg.Offset,
+		arg.Reverse,
+		arg.OrderBy,
+	)
 	if err != nil {
 		return nil, err
 	}

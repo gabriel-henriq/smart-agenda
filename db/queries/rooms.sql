@@ -3,7 +3,17 @@ SELECT * FROM rooms WHERE id = $1;
 
 -- name: ListRooms :many
 SELECT count(*) OVER () AS total_items, sub_query.* FROM
-    (SELECT * FROM rooms) sub_query LIMIT $1 OFFSET $2;
+    (SELECT * FROM rooms
+     ORDER BY CASE
+      WHEN NOT @reverse::bool AND @order_by::text = 'name' THEN name
+      END ASC, CASE
+                   WHEN @reverse::bool AND @order_by::text = 'name' THEN name
+      END DESC, CASE
+                    WHEN NOT @reverse::bool AND @order_by::text = 'id' THEN id
+      END ASC, CASE
+                   WHEN @reverse::bool AND @order_by::text = 'id' THEN id
+      END DESC)
+        sub_query LIMIT $1 OFFSET $2;
 
 -- name: CreateRoom :one
 INSERT INTO rooms (name, label_color) VALUES ($1, $2) RETURNING *;

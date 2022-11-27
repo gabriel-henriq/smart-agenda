@@ -9,8 +9,10 @@ import (
 )
 
 type listRoomRequest struct {
-	PageID   int32 `form:"page_id" binding:"required,min=1"`
-	PageSize int32 `form:"page_size" binding:"required,min=1,max=100"`
+	PageSize int32  `form:"page_size" binding:"required,min=1,max=100"`
+	PageID   int32  `form:"page_id" binding:"required,min=1"`
+	OrderBy  string `form:"order_by"`
+	Reverse  bool   `form:"reverse"`
 }
 
 func (r Room) listRoom(ctx *gin.Context) {
@@ -21,8 +23,10 @@ func (r Room) listRoom(ctx *gin.Context) {
 	}
 
 	args := sqlc.ListRoomsParams{
-		Limit:  req.PageSize,
-		Offset: (req.PageID - 1) * req.PageSize,
+		Limit:   req.PageSize,
+		Offset:  (req.PageID - 1) * req.PageSize,
+		OrderBy: req.OrderBy,
+		Reverse: req.Reverse,
 	}
 
 	rooms, err := r.db.ListRooms(ctx, args)

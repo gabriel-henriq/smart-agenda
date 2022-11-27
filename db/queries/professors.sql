@@ -3,7 +3,16 @@ SELECT * FROM professors WHERE id = $1;
 
 -- name: ListProfessors :many
 SELECT count(*) OVER () AS total_items, sub_query.* FROM
-    (SELECT * FROM professors) sub_query LIMIT $1 OFFSET $2;
+    (SELECT * FROM professors ORDER BY CASE
+        WHEN NOT @reverse::bool AND @order_by::text = 'name' THEN name
+      END ASC, CASE
+        WHEN @reverse::bool AND @order_by::text = 'name' THEN name
+      END DESC, CASE
+        WHEN NOT @reverse::bool AND @order_by::text = 'id' THEN id
+     END ASC, CASE
+       WHEN @reverse::bool AND @order_by::text = 'id' THEN id
+     END DESC)
+        sub_query LIMIT $1 OFFSET $2;
 
 -- name: CreateProfessor :one
 INSERT INTO professors (name, label_color) VALUES ($1, $2) RETURNING *;

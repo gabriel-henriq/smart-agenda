@@ -9,9 +9,10 @@ import (
 )
 
 type listProfessorRequest struct {
-	PageID   int32  `form:"page_id" binding:"required,min=1"`
 	PageSize int32  `form:"page_size" binding:"required,min=1,max=100"`
+	PageID   int32  `form:"page_id" binding:"required,min=1"`
 	OrderBy  string `form:"order_by"`
+	Reverse  bool   `form:"reverse"`
 }
 
 func (p Professor) listProfessor(ctx *gin.Context) {
@@ -22,8 +23,10 @@ func (p Professor) listProfessor(ctx *gin.Context) {
 	}
 
 	arg := sqlc.ListProfessorsParams{
-		Limit:  req.PageSize,
-		Offset: (req.PageID - 1) * req.PageSize,
+		Limit:   req.PageSize,
+		Offset:  (req.PageID - 1) * req.PageSize,
+		OrderBy: req.OrderBy,
+		Reverse: req.Reverse,
 	}
 
 	profs, err := p.db.ListProfessors(ctx, arg)

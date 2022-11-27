@@ -104,12 +104,24 @@ func (q *Queries) ListAvailableRoomsByTimeRange(ctx context.Context, arg ListAva
 
 const listRooms = `-- name: ListRooms :many
 SELECT count(*) OVER () AS total_items, sub_query.id, sub_query.name, sub_query.label_color, sub_query.created_at, sub_query.updated_at FROM
-    (SELECT id, name, label_color, created_at, updated_at FROM rooms) sub_query LIMIT $1 OFFSET $2
+    (SELECT id, name, label_color, created_at, updated_at FROM rooms
+     ORDER BY CASE
+      WHEN NOT $3::bool AND $4::text = 'name' THEN name
+      END ASC, CASE
+                   WHEN $3::bool AND $4::text = 'name' THEN name
+      END DESC, CASE
+                    WHEN NOT $3::bool AND $4::text = 'id' THEN id
+      END ASC, CASE
+                   WHEN $3::bool AND $4::text = 'id' THEN id
+      END DESC)
+        sub_query LIMIT $1 OFFSET $2
 `
 
 type ListRoomsParams struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
+	Limit   int32  `json:"limit"`
+	Offset  int32  `json:"offset"`
+	Reverse bool   `json:"reverse"`
+	OrderBy string `json:"orderBy"`
 }
 
 type ListRoomsRow struct {
@@ -122,7 +134,12 @@ type ListRoomsRow struct {
 }
 
 func (q *Queries) ListRooms(ctx context.Context, arg ListRoomsParams) ([]ListRoomsRow, error) {
-	rows, err := q.db.QueryContext(ctx, listRooms, arg.Limit, arg.Offset)
+	rows, err := q.db.QueryContext(ctx, listRooms,
+		arg.Limit,
+		arg.Offset,
+		arg.Reverse,
+		arg.OrderBy,
+	)
 	if err != nil {
 		return nil, err
 	}

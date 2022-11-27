@@ -11,6 +11,8 @@ func (p Professor) toJSONProfessor(sqlProfessor sqlc.Professor) models.Professor
 		ID:         sqlProfessor.ID,
 		Name:       sqlProfessor.Name.String,
 		LabelColor: sqlProfessor.LabelColor.String,
+		CreatedAt:  sqlProfessor.CreatedAt.Time,
+		UpdatedAt:  sqlProfessor.UpdatedAt.Time,
 	}
 }
 
@@ -27,14 +29,14 @@ func (p Professor) toJSONProfessorList(SQLProfessors []sqlc.ListProfessorsRow, p
 		})
 	}
 
-	totalPages := int32(math.Ceil(float64(SQLProfessors[len(SQLProfessors)-1].Item) / float64(pageSize)))
+	totalPages := int32(math.Ceil(float64(SQLProfessors[0].TotalItems) / float64(pageSize)))
 
 	return models.ProfessorList{
 		Professors: profs,
 		Pagination: models.Pagination{
 			Limit:      pageID,
 			Offset:     pageSize,
-			Items:      SQLProfessors[len(SQLProfessors)-1].Item,
+			TotalItems: SQLProfessors[0].TotalItems,
 			TotalPages: totalPages,
 		},
 	}

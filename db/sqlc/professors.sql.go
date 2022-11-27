@@ -103,8 +103,8 @@ func (q *Queries) ListAvailableProfessorsByTimeRange(ctx context.Context, arg Li
 }
 
 const listProfessors = `-- name: ListProfessors :many
-SELECT row_number() OVER () AS item, sub_query.id, sub_query.name, sub_query.label_color, sub_query.created_at, sub_query.updated_at FROM
-    (SELECT id, name, label_color, created_at, updated_at FROM  professors ORDER BY name) sub_query LIMIT $1 OFFSET $2
+SELECT count(*) OVER () AS total_items, sub_query.id, sub_query.name, sub_query.label_color, sub_query.created_at, sub_query.updated_at FROM
+    (SELECT id, name, label_color, created_at, updated_at FROM professors) sub_query LIMIT $1 OFFSET $2
 `
 
 type ListProfessorsParams struct {
@@ -113,7 +113,7 @@ type ListProfessorsParams struct {
 }
 
 type ListProfessorsRow struct {
-	Item       int64          `json:"item"`
+	TotalItems int64          `json:"totalItems"`
 	ID         int32          `json:"id"`
 	Name       sql.NullString `json:"name"`
 	LabelColor sql.NullString `json:"labelColor"`
@@ -131,7 +131,7 @@ func (q *Queries) ListProfessors(ctx context.Context, arg ListProfessorsParams) 
 	for rows.Next() {
 		var i ListProfessorsRow
 		if err := rows.Scan(
-			&i.Item,
+			&i.TotalItems,
 			&i.ID,
 			&i.Name,
 			&i.LabelColor,

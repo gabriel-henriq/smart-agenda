@@ -8,10 +8,11 @@ import (
 
 func (r Room) toJSONRoom(sqlRoom sqlc.Room) models.Room {
 	return models.Room{
-		ID:        sqlRoom.ID,
-		Name:      sqlRoom.Name.String,
-		CreatedAt: sqlRoom.CreatedAt.Time,
-		UpdatedAt: sqlRoom.UpdatedAt.Time,
+		ID:         sqlRoom.ID,
+		Name:       sqlRoom.Name.String,
+		LabelColor: sqlRoom.LabelColor.String,
+		CreatedAt:  sqlRoom.CreatedAt.Time,
+		UpdatedAt:  sqlRoom.UpdatedAt.Time,
 	}
 }
 
@@ -27,14 +28,14 @@ func (r Room) toJSONRoomList(SQLRooms []sqlc.ListRoomsRow, pageID, pageSize int3
 		})
 	}
 
-	totalPages := int32(math.Ceil(float64(SQLRooms[len(SQLRooms)-1].Item) / float64(pageSize)))
+	totalPages := int32(math.Ceil(float64(SQLRooms[0].TotalItems) / float64(pageSize)))
 
 	return models.RoomList{
 		Rooms: rooms,
 		Pagination: models.Pagination{
 			Limit:      pageID,
 			Offset:     pageSize,
-			Items:      SQLRooms[len(SQLRooms)-1].Item,
+			TotalItems: SQLRooms[0].TotalItems,
 			TotalPages: totalPages,
 		},
 	}

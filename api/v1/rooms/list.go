@@ -8,13 +8,13 @@ import (
 	"net/http"
 )
 
-type listProfessorRequest struct {
+type listRoomRequest struct {
 	PageID   int32 `form:"page_id" binding:"required,min=1"`
 	PageSize int32 `form:"page_size" binding:"required,min=1,max=100"`
 }
 
 func (r Room) listRoom(ctx *gin.Context) {
-	var req listProfessorRequest
+	var req listRoomRequest
 	if err := ctx.ShouldBindQuery(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, v1.ErrorResponse(err))
 		return
@@ -31,13 +31,11 @@ func (r Room) listRoom(ctx *gin.Context) {
 		return
 	}
 	if len(rooms) == 0 {
-		ctx.JSON(http.StatusOK, models.ProfessorList{
-			Professors: []models.Professor{},
+		ctx.JSON(http.StatusOK, models.RoomList{
+			Rooms: []models.Room{},
 			Pagination: models.Pagination{
-				Limit:      req.PageID,
-				Offset:     req.PageSize,
-				Items:      0,
-				TotalPages: 0,
+				Limit:  req.PageID,
+				Offset: req.PageSize,
 			},
 		})
 		return

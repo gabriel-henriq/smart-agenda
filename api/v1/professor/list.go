@@ -9,8 +9,9 @@ import (
 )
 
 type listProfessorRequest struct {
-	PageID   int32 `form:"page_id" binding:"required,min=1"`
-	PageSize int32 `form:"page_size" binding:"required,min=1,max=100"`
+	PageID   int32  `form:"page_id" binding:"required,min=1"`
+	PageSize int32  `form:"page_size" binding:"required,min=1,max=100"`
+	OrderBy  string `form:"order_by"`
 }
 
 func (p Professor) listProfessor(ctx *gin.Context) {
@@ -34,10 +35,8 @@ func (p Professor) listProfessor(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, models.ProfessorList{
 			Professors: []models.Professor{},
 			Pagination: models.Pagination{
-				Limit:      req.PageID,
-				Offset:     req.PageSize,
-				Items:      0,
-				TotalPages: 0,
+				Limit:  req.PageID,
+				Offset: req.PageSize,
 			},
 		})
 		return

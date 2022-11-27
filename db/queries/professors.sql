@@ -2,8 +2,8 @@
 SELECT * FROM professors WHERE id = $1;
 
 -- name: ListProfessors :many
-SELECT row_number() OVER () AS item, sub_query.* FROM
-    (SELECT * FROM  professors ORDER BY name) sub_query LIMIT $1 OFFSET $2;
+SELECT count(*) OVER () AS total_items, sub_query.* FROM
+    (SELECT * FROM professors) sub_query LIMIT $1 OFFSET $2;
 
 -- name: CreateProfessor :one
 INSERT INTO professors (name, label_color) VALUES ($1, $2) RETURNING *;

@@ -13,7 +13,7 @@ type Querier interface {
 	CreateAula(ctx context.Context, arg CreateAulaParams) (Aula, error)
 	CreateProfessor(ctx context.Context, arg CreateProfessorParams) (Professor, error)
 	CreateRoom(ctx context.Context, arg CreateRoomParams) (Room, error)
-	CreateTablet(ctx context.Context, name sql.NullString) (Tablet, error)
+	CreateTablet(ctx context.Context, name string) (Tablet, error)
 	DeleteAulaByID(ctx context.Context, id int32) error
 	DeleteProfessorByID(ctx context.Context, id int32) error
 	DeleteRoomByID(ctx context.Context, id int32) error

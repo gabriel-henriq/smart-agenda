@@ -7,7 +7,7 @@ package sqlc
 
 import (
 	"context"
-	"database/sql"
+	"time"
 )
 
 const createProfessor = `-- name: CreateProfessor :one
@@ -15,8 +15,8 @@ INSERT INTO professors (name, label_color) VALUES ($1, $2) RETURNING id, name, l
 `
 
 type CreateProfessorParams struct {
-	Name       sql.NullString `json:"name"`
-	LabelColor sql.NullString `json:"labelColor"`
+	Name       string `json:"name"`
+	LabelColor string `json:"labelColor"`
 }
 
 func (q *Queries) CreateProfessor(ctx context.Context, arg CreateProfessorParams) (Professor, error) {
@@ -69,8 +69,8 @@ WHERE id NOT IN (SELECT professor_id
 `
 
 type ListAvailableProfessorsByTimeRangeParams struct {
-	MeetStart sql.NullTime `json:"meetStart"`
-	MeetEnd   sql.NullTime `json:"meetEnd"`
+	MeetStart time.Time `json:"meetStart"`
+	MeetEnd   time.Time `json:"meetEnd"`
 }
 
 func (q *Queries) ListAvailableProfessorsByTimeRange(ctx context.Context, arg ListAvailableProfessorsByTimeRangeParams) ([]Professor, error) {
@@ -124,12 +124,12 @@ type ListProfessorsParams struct {
 }
 
 type ListProfessorsRow struct {
-	TotalItems int64          `json:"totalItems"`
-	ID         int32          `json:"id"`
-	Name       sql.NullString `json:"name"`
-	LabelColor sql.NullString `json:"labelColor"`
-	CreatedAt  sql.NullTime   `json:"createdAt"`
-	UpdatedAt  sql.NullTime   `json:"updatedAt"`
+	TotalItems int64     `json:"totalItems"`
+	ID         int32     `json:"id"`
+	Name       string    `json:"name"`
+	LabelColor string    `json:"labelColor"`
+	CreatedAt  time.Time `json:"createdAt"`
+	UpdatedAt  time.Time `json:"updatedAt"`
 }
 
 func (q *Queries) ListProfessors(ctx context.Context, arg ListProfessorsParams) ([]ListProfessorsRow, error) {
@@ -172,9 +172,9 @@ UPDATE professors SET name = $2, label_color = $3 WHERE id = $1
 `
 
 type UpdateProfessorByIDParams struct {
-	ID         int32          `json:"id"`
-	Name       sql.NullString `json:"name"`
-	LabelColor sql.NullString `json:"labelColor"`
+	ID         int32  `json:"id"`
+	Name       string `json:"name"`
+	LabelColor string `json:"labelColor"`
 }
 
 func (q *Queries) UpdateProfessorByID(ctx context.Context, arg UpdateProfessorByIDParams) error {

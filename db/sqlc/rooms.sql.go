@@ -8,6 +8,7 @@ package sqlc
 import (
 	"context"
 	"database/sql"
+	"time"
 )
 
 const createRoom = `-- name: CreateRoom :one
@@ -15,8 +16,8 @@ INSERT INTO rooms (name, label_color) VALUES ($1, $2) RETURNING id, name, label_
 `
 
 type CreateRoomParams struct {
-	Name       sql.NullString `json:"name"`
-	LabelColor sql.NullString `json:"labelColor"`
+	Name       string `json:"name"`
+	LabelColor string `json:"labelColor"`
 }
 
 func (q *Queries) CreateRoom(ctx context.Context, arg CreateRoomParams) (Room, error) {
@@ -69,8 +70,8 @@ WHERE id NOT IN (SELECT room_id
 `
 
 type ListAvailableRoomsByTimeRangeParams struct {
-	MeetStart sql.NullTime `json:"meetStart"`
-	MeetEnd   sql.NullTime `json:"meetEnd"`
+	MeetStart time.Time `json:"meetStart"`
+	MeetEnd   time.Time `json:"meetEnd"`
 }
 
 func (q *Queries) ListAvailableRoomsByTimeRange(ctx context.Context, arg ListAvailableRoomsByTimeRangeParams) ([]Room, error) {
@@ -125,12 +126,12 @@ type ListRoomsParams struct {
 }
 
 type ListRoomsRow struct {
-	TotalItems int64          `json:"totalItems"`
-	ID         int32          `json:"id"`
-	Name       sql.NullString `json:"name"`
-	LabelColor sql.NullString `json:"labelColor"`
-	CreatedAt  sql.NullTime   `json:"createdAt"`
-	UpdatedAt  sql.NullTime   `json:"updatedAt"`
+	TotalItems int64     `json:"totalItems"`
+	ID         int32     `json:"id"`
+	Name       string    `json:"name"`
+	LabelColor string    `json:"labelColor"`
+	CreatedAt  time.Time `json:"createdAt"`
+	UpdatedAt  time.Time `json:"updatedAt"`
 }
 
 func (q *Queries) ListRooms(ctx context.Context, arg ListRoomsParams) ([]ListRoomsRow, error) {
@@ -173,8 +174,8 @@ UPDATE rooms SET name = $2 WHERE id = $1
 `
 
 type UpdateRoomByIDParams struct {
-	ID   int32          `json:"id"`
-	Name sql.NullString `json:"name"`
+	ID   int32  `json:"id"`
+	Name string `json:"name"`
 }
 
 func (q *Queries) UpdateRoomByID(ctx context.Context, arg UpdateRoomByIDParams) (sql.Result, error) {

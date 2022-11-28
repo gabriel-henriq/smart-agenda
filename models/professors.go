@@ -1,16 +1,8 @@
 package models
 
-import "time"
-
-type Professor struct {
-	ID         int32     `json:"id"`
-	Name       string    `json:"name"`
-	LabelColor string    `json:"labelColor"`
-	CreatedAt  time.Time `json:"createdAt"`
-	UpdatedAt  time.Time `json:"updatedAt"`
-}
+import "github.com/gabriel-henriq/smart-agenda/db/sqlc"
 
 type ProfessorList struct {
-	Professors []Professor `json:"professors"`
+	Professors []sqlc.Professor `json:"professors"`
 	Pagination `json:"pagination"`
 }

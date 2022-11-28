@@ -8,13 +8,14 @@ package sqlc
 import (
 	"context"
 	"database/sql"
+	"time"
 )
 
 const createTablet = `-- name: CreateTablet :one
 INSERT INTO tablets (name) VALUES ($1) RETURNING id, name, created_at, updated_at
 `
 
-func (q *Queries) CreateTablet(ctx context.Context, name sql.NullString) (Tablet, error) {
+func (q *Queries) CreateTablet(ctx context.Context, name string) (Tablet, error) {
 	row := q.db.QueryRowContext(ctx, createTablet, name)
 	var i Tablet
 	err := row.Scan(
@@ -61,8 +62,8 @@ SELECT id, name, created_at, updated_at FROM tablets WHERE id NOT IN (
 `
 
 type ListAvailableTabletsByTimeRangeParams struct {
-	MeetStart sql.NullTime `json:"meetStart"`
-	MeetEnd   sql.NullTime `json:"meetEnd"`
+	MeetStart time.Time `json:"meetStart"`
+	MeetEnd   time.Time `json:"meetEnd"`
 }
 
 func (q *Queries) ListAvailableTabletsByTimeRange(ctx context.Context, arg ListAvailableTabletsByTimeRangeParams) ([]Tablet, error) {
@@ -111,11 +112,11 @@ type ListTabletsParams struct {
 }
 
 type ListTabletsRow struct {
-	TotalItems int64          `json:"totalItems"`
-	ID         int32          `json:"id"`
-	Name       sql.NullString `json:"name"`
-	CreatedAt  sql.NullTime   `json:"createdAt"`
-	UpdatedAt  sql.NullTime   `json:"updatedAt"`
+	TotalItems int64     `json:"totalItems"`
+	ID         int32     `json:"id"`
+	Name       string    `json:"name"`
+	CreatedAt  time.Time `json:"createdAt"`
+	UpdatedAt  time.Time `json:"updatedAt"`
 }
 
 func (q *Queries) ListTablets(ctx context.Context, arg ListTabletsParams) ([]ListTabletsRow, error) {
@@ -157,8 +158,8 @@ UPDATE tablets SET name = $2 WHERE id = $1
 `
 
 type UpdateTabletByIDParams struct {
-	ID   int32          `json:"id"`
-	Name sql.NullString `json:"name"`
+	ID   int32  `json:"id"`
+	Name string `json:"name"`
 }
 
 func (q *Queries) UpdateTabletByID(ctx context.Context, arg UpdateTabletByIDParams) (sql.Result, error) {

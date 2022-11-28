@@ -6,7 +6,7 @@ import (
 )
 
 type IRoom interface {
-	SetupRoomRoute(router *gin.Engine)
+	SetupRoomRoute(routerGroup *gin.RouterGroup)
 }
 
 type Room struct {
@@ -19,13 +19,9 @@ func NewRoom(db db.Store) IRoom {
 	}
 }
 
-func (r Room) SetupRoomRoute(router *gin.Engine) {
-
-	v1 := router.Group("/v1")
-	{
-		v1.POST("/room", r.createRooms)
-		v1.GET("/room", r.listRoom)
-		v1.GET("/room/:id", r.getRoomByID)
-		v1.DELETE("/room/:id", r.deleteRoom)
-	}
+func (r Room) SetupRoomRoute(routerGroup *gin.RouterGroup) {
+	routerGroup.POST("/room", r.createRoom)
+	routerGroup.GET("/room", r.listRoom)
+	routerGroup.GET("/room/:id", r.getRoomByID)
+	routerGroup.DELETE("/room/:id", r.deleteRoom)
 }

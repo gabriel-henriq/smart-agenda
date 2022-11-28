@@ -1,4 +1,4 @@
-package room
+package aulas
 
 import (
 	"net/http"
@@ -7,17 +7,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type deleteRoomRequest struct {
-	ID int32 `uri:"id" binding:"required,min=1"`
+type deleteAulaRequest struct {
+	ID int32 `json:"id" uri:"id" binding:"required,min=1"`
 }
 
-func (r Room) deleteRoom(ctx *gin.Context) {
-	var req deleteRoomRequest
+func (r Aula) deleteAula(ctx *gin.Context) {
+	var req deleteAulaRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
-	err := r.db.DeleteRoomByID(ctx, req.ID)
+	err := r.db.DeleteAulaByID(ctx, req.ID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err))
 		return

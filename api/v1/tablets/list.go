@@ -1,42 +1,43 @@
-package professor
+package tablets
 
 import (
-	"github.com/gabriel-henriq/smart-agenda/api/v1"
+	"net/http"
+
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
 	"github.com/gabriel-henriq/smart-agenda/models"
+	"github.com/gabriel-henriq/smart-agenda/utils"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
-type listProfessorRequest struct {
+type listTabletRequest struct {
 	PageSize int32  `form:"page_size" binding:"required,min=1,max=100"`
 	PageID   int32  `form:"page_id" binding:"required,min=1"`
 	OrderBy  string `form:"order_by"`
 	Reverse  bool   `form:"reverse"`
 }
 
-func (p Professor) listProfessor(ctx *gin.Context) {
-	var req listProfessorRequest
+func (r Tablet) listTablet(ctx *gin.Context) {
+	var req listTabletRequest
 	if err := ctx.ShouldBindQuery(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, v1.ErrorResponse(err))
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
 
-	arg := sqlc.ListProfessorsParams{
+	args := sqlc.ListTabletsParams{
 		Limit:   req.PageSize,
 		Offset:  (req.PageID - 1) * req.PageSize,
 		OrderBy: req.OrderBy,
 		Reverse: req.Reverse,
 	}
 
-	profs, err := p.db.ListProfessors(ctx, arg)
+	rooms, err := r.db.ListTablets(ctx, args)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, v1.ErrorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err))
 		return
 	}
-	if len(profs) == 0 {
-		ctx.JSON(http.StatusOK, models.ProfessorList{
-			Professors: []models.Professor{},
+	if len(rooms) == 0 {
+		ctx.JSON(http.StatusOK, models.TabletList{
+			Tablets: []models.Tablet{},
 			Pagination: models.Pagination{
 				Limit:  req.PageID,
 				Offset: req.PageSize,
@@ -45,7 +46,7 @@ func (p Professor) listProfessor(ctx *gin.Context) {
 		return
 	}
 
-	rsp := p.toJSONProfessorList(profs, req.PageID, req.PageSize)
+	rsp := r.toJSONTabletList(rooms, req.PageID, req.PageSize)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

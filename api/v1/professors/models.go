@@ -1,4 +1,4 @@
-package professor
+package professors
 
 import (
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"

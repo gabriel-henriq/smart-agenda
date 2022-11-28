@@ -10,9 +10,9 @@ import (
 	"database/sql"
 )
 
-const createAula = `-- name: CreateAula :execresult
+const createAula = `-- name: CreateAula :one
 INSERT INTO aulas (tablet_id, professor_id, room_id, student_name, meet_start, meet_end, observation)
-VALUES ($1, $2, $3, $4, $5, $6, $7)
+VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, tablet_id, professor_id, room_id, student_name, meet_start, meet_end, observation, created_at, updated_at
 `
 
 type CreateAulaParams struct {
@@ -25,8 +25,8 @@ type CreateAulaParams struct {
 	Observation sql.NullString `json:"observation"`
 }
 
-func (q *Queries) CreateAula(ctx context.Context, arg CreateAulaParams) (sql.Result, error) {
-	return q.db.ExecContext(ctx, createAula,
+func (q *Queries) CreateAula(ctx context.Context, arg CreateAulaParams) (Aula, error) {
+	row := q.db.QueryRowContext(ctx, createAula,
 		arg.TabletID,
 		arg.ProfessorID,
 		arg.RoomID,
@@ -35,14 +35,28 @@ func (q *Queries) CreateAula(ctx context.Context, arg CreateAulaParams) (sql.Res
 		arg.MeetEnd,
 		arg.Observation,
 	)
+	var i Aula
+	err := row.Scan(
+		&i.ID,
+		&i.TabletID,
+		&i.ProfessorID,
+		&i.RoomID,
+		&i.StudentName,
+		&i.MeetStart,
+		&i.MeetEnd,
+		&i.Observation,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
 const deleteAulaByID = `-- name: DeleteAulaByID :exec
-DELETE FROM aulas WHERE id = 1
+DELETE FROM aulas WHERE id = $1
 `
 
-func (q *Queries) DeleteAulaByID(ctx context.Context) error {
-	_, err := q.db.ExecContext(ctx, deleteAulaByID)
+func (q *Queries) DeleteAulaByID(ctx context.Context, id int32) error {
+	_, err := q.db.ExecContext(ctx, deleteAulaByID, id)
 	return err
 }
 
@@ -107,7 +121,19 @@ func (q *Queries) ListAulas(ctx context.Context) ([]Aula, error) {
 }
 
 const listAulasByTimeRange = `-- name: ListAulasByTimeRange :many
-SELECT id, tablet_id, professor_id, room_id, student_name, meet_start, meet_end, observation, created_at, updated_at FROM aulas WHERE
+SELECT a.id,
+       a.student_name,
+       a.meet_start,
+       a.meet_end,
+       p.name AS professor_name,
+       t.name AS tablet_name,
+       r.name AS room_name,
+       a.created_at,
+       a.updated_at FROM aulas a
+    JOIN professors p on p.id = a.professor_id
+    JOIN tablets    t on t.id = a.tablet_id
+    JOIN rooms      r on r.id = a.room_id
+WHERE
     meet_start >= $1 AND meet_end   <= $2 OR
     meet_end   >= $1 AND meet_start <= $2
 `
@@ -117,24 +143,35 @@ type ListAulasByTimeRangeParams struct {
 	MeetEnd   sql.NullTime `json:"meetEnd"`
 }
 
-func (q *Queries) ListAulasByTimeRange(ctx context.Context, arg ListAulasByTimeRangeParams) ([]Aula, error) {
+type ListAulasByTimeRangeRow struct {
+	ID            int32          `json:"id"`
+	StudentName   sql.NullString `json:"studentName"`
+	MeetStart     sql.NullTime   `json:"meetStart"`
+	MeetEnd       sql.NullTime   `json:"meetEnd"`
+	ProfessorName sql.NullString `json:"professorName"`
+	TabletName    sql.NullString `json:"tabletName"`
+	RoomName      sql.NullString `json:"roomName"`
+	CreatedAt     sql.NullTime   `json:"createdAt"`
+	UpdatedAt     sql.NullTime   `json:"updatedAt"`
+}
+
+func (q *Queries) ListAulasByTimeRange(ctx context.Context, arg ListAulasByTimeRangeParams) ([]ListAulasByTimeRangeRow, error) {
 	rows, err := q.db.QueryContext(ctx, listAulasByTimeRange, arg.MeetStart, arg.MeetEnd)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []Aula{}
+	items := []ListAulasByTimeRangeRow{}
 	for rows.Next() {
-		var i Aula
+		var i ListAulasByTimeRangeRow
 		if err := rows.Scan(
 			&i.ID,
-			&i.TabletID,
-			&i.ProfessorID,
-			&i.RoomID,
 			&i.StudentName,
 			&i.MeetStart,
 			&i.MeetEnd,
-			&i.Observation,
+			&i.ProfessorName,
+			&i.TabletName,
+			&i.RoomName,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {

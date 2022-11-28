@@ -1,4 +1,4 @@
-package room
+package tablets
 
 import (
 	"database/sql"
@@ -8,18 +8,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type getRoomRequest struct {
+type getTabletRequest struct {
 	ID int32 `uri:"id" binding:"required,min=1"`
 }
 
-func (r Room) getRoomByID(ctx *gin.Context) {
-	var req getRoomRequest
+func (r Tablet) getTabletByID(ctx *gin.Context) {
+	var req getTabletRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
 
-	room, err := r.db.GetRoomByID(ctx, req.ID)
+	room, err := r.db.GetTabletByID(ctx, req.ID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			ctx.JSON(http.StatusNotFound, utils.ErrorResponse(err))
@@ -30,7 +30,7 @@ func (r Room) getRoomByID(ctx *gin.Context) {
 		return
 	}
 
-	rsp := r.toJSONRoom(room)
+	rsp := r.toJSONTablet(room)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

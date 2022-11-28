@@ -10,12 +10,20 @@ import (
 	"database/sql"
 )
 
-const createTablet = `-- name: CreateTablet :execresult
-INSERT INTO tablets (name) VALUES ($1)
+const createTablet = `-- name: CreateTablet :one
+INSERT INTO tablets (name) VALUES ($1) RETURNING id, name, created_at, updated_at
 `
 
-func (q *Queries) CreateTablet(ctx context.Context, name sql.NullString) (sql.Result, error) {
-	return q.db.ExecContext(ctx, createTablet, name)
+func (q *Queries) CreateTablet(ctx context.Context, name sql.NullString) (Tablet, error) {
+	row := q.db.QueryRowContext(ctx, createTablet, name)
+	var i Tablet
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
 const deleteTabletByID = `-- name: DeleteTabletByID :exec
@@ -44,13 +52,12 @@ func (q *Queries) GetTabletByID(ctx context.Context, id int32) (Tablet, error) {
 }
 
 const listAvailableTabletsByTimeRange = `-- name: ListAvailableTabletsByTimeRange :many
-SELECT id, name, created_at, updated_at
-FROM tablets
-WHERE id NOT IN (SELECT tablet_id
-                 FROM aulas a
-                 WHERE (meet_start >= $1 AND meet_end   <= $2 OR
-                        meet_end   >= $1 AND meet_start <= $2)
-                   AND tablet_id IS NOT NULL)
+SELECT id, name, created_at, updated_at FROM tablets WHERE id NOT IN (
+     SELECT room_id FROM aulas a
+     WHERE (meet_start >= $1 AND meet_end   <= $2 OR
+            meet_end   >= $1 AND meet_start <= $2)
+     AND room_id IS NOT NULL
+)
 `
 
 type ListAvailableTabletsByTimeRangeParams struct {
@@ -87,19 +94,46 @@ func (q *Queries) ListAvailableTabletsByTimeRange(ctx context.Context, arg ListA
 }
 
 const listTablets = `-- name: ListTablets :many
-SELECT id, name, created_at, updated_at FROM tablets
+SELECT count(*) OVER () AS total_items, sub_query.id, sub_query.name, sub_query.created_at, sub_query.updated_at FROM
+    (SELECT id, name, created_at, updated_at FROM tablets ORDER BY
+         CASE WHEN NOT  $3::bool AND $4::text = 'name' THEN name END ASC,
+         CASE WHEN      $3::bool AND $4::text = 'name' THEN name END DESC,
+         CASE WHEN NOT  $3::bool AND $4::text = 'id'   THEN id END ASC,
+         CASE WHEN      $3::bool AND $4::text = 'id'   THEN id END DESC
+    ) sub_query LIMIT $1 OFFSET $2
 `
 
-func (q *Queries) ListTablets(ctx context.Context) ([]Tablet, error) {
-	rows, err := q.db.QueryContext(ctx, listTablets)
+type ListTabletsParams struct {
+	Limit   int32  `json:"limit"`
+	Offset  int32  `json:"offset"`
+	Reverse bool   `json:"reverse"`
+	OrderBy string `json:"orderBy"`
+}
+
+type ListTabletsRow struct {
+	TotalItems int64          `json:"totalItems"`
+	ID         int32          `json:"id"`
+	Name       sql.NullString `json:"name"`
+	CreatedAt  sql.NullTime   `json:"createdAt"`
+	UpdatedAt  sql.NullTime   `json:"updatedAt"`
+}
+
+func (q *Queries) ListTablets(ctx context.Context, arg ListTabletsParams) ([]ListTabletsRow, error) {
+	rows, err := q.db.QueryContext(ctx, listTablets,
+		arg.Limit,
+		arg.Offset,
+		arg.Reverse,
+		arg.OrderBy,
+	)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []Tablet{}
+	items := []ListTabletsRow{}
 	for rows.Next() {
-		var i Tablet
+		var i ListTabletsRow
 		if err := rows.Scan(
+			&i.TotalItems,
 			&i.ID,
 			&i.Name,
 			&i.CreatedAt,

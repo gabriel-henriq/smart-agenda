@@ -1,9 +1,10 @@
-package professor
+package professors
 
 import (
-	"github.com/gabriel-henriq/smart-agenda/api/v1"
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gabriel-henriq/smart-agenda/utils"
+	"github.com/gin-gonic/gin"
 )
 
 type deleteProfessorRequest struct {
@@ -13,12 +14,12 @@ type deleteProfessorRequest struct {
 func (p Professor) deleteProfessor(ctx *gin.Context) {
 	var req deleteProfessorRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, v1.ErrorResponse(err))
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
 	err := p.db.DeleteProfessorByID(ctx, req.ID)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, v1.ErrorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err))
 		return
 	}
 

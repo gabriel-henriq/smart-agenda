@@ -1,13 +1,12 @@
 include .env
-.PHONY: all services clean
 
-migrate_up:
+migrate-up:
 	migrate -database ${POSTGRESQL_URL} -path db/migrations up
 
-migrate_down:
-	migrate -database ${POSTGRESQL_URL} -path db/migrations down
+migrate-down:
+	migrate -database ${POSTGRESQL_URL} -path db/migrations down all
 
-migrate_create:
+migrate-create:
 	migrate create -dir db/migrations -ext sql -seq $(n)
 
 down:
@@ -17,4 +16,10 @@ up:
 	docker-compose up -d
 
 sqlc:
+	rm -rf db/sqlc
 	sqlc generate
+
+start:
+	go run main.go
+
+.PHONY: migrate-up migrate-down migrate-create down up sqlc start

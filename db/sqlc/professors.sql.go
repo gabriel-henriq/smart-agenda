@@ -3,24 +3,33 @@
 //   sqlc v1.16.0
 // source: professors.sql
 
-package db
+package sqlc
 
 import (
 	"context"
-	"database/sql"
+	"time"
 )
 
-const createProfessor = `-- name: CreateProfessor :execresult
-INSERT INTO professors (name, label_color) VALUES ($1, $2)
+const createProfessor = `-- name: CreateProfessor :one
+INSERT INTO professors (name, label_color) VALUES ($1, $2) RETURNING id, name, label_color, created_at, updated_at
 `
 
 type CreateProfessorParams struct {
-	Name       sql.NullString `json:"name"`
-	LabelColor sql.NullString `json:"labelColor"`
+	Name       string `json:"name"`
+	LabelColor string `json:"labelColor"`
 }
 
-func (q *Queries) CreateProfessor(ctx context.Context, arg CreateProfessorParams) (sql.Result, error) {
-	return q.db.ExecContext(ctx, createProfessor, arg.Name, arg.LabelColor)
+func (q *Queries) CreateProfessor(ctx context.Context, arg CreateProfessorParams) (Professor, error) {
+	row := q.db.QueryRowContext(ctx, createProfessor, arg.Name, arg.LabelColor)
+	var i Professor
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.LabelColor,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
 const deleteProfessorByID = `-- name: DeleteProfessorByID :exec
@@ -60,8 +69,8 @@ WHERE id NOT IN (SELECT professor_id
 `
 
 type ListAvailableProfessorsByTimeRangeParams struct {
-	MeetStart sql.NullTime `json:"meetStart"`
-	MeetEnd   sql.NullTime `json:"meetEnd"`
+	MeetStart time.Time `json:"meetStart"`
+	MeetEnd   time.Time `json:"meetEnd"`
 }
 
 func (q *Queries) ListAvailableProfessorsByTimeRange(ctx context.Context, arg ListAvailableProfessorsByTimeRangeParams) ([]Professor, error) {
@@ -94,27 +103,54 @@ func (q *Queries) ListAvailableProfessorsByTimeRange(ctx context.Context, arg Li
 }
 
 const listProfessors = `-- name: ListProfessors :many
-SELECT id, tablet_id, professor_id, room_id, student_name, meet_start, meet_end, observation, created_at, updated_at FROM aulas
+SELECT count(*) OVER () AS total_items, sub_query.id, sub_query.name, sub_query.label_color, sub_query.created_at, sub_query.updated_at FROM
+    (SELECT id, name, label_color, created_at, updated_at FROM professors ORDER BY CASE
+        WHEN NOT $3::bool AND $4::text = 'name' THEN name
+      END ASC, CASE
+        WHEN $3::bool AND $4::text = 'name' THEN name
+      END DESC, CASE
+        WHEN NOT $3::bool AND $4::text = 'id' THEN id
+     END ASC, CASE
+       WHEN $3::bool AND $4::text = 'id' THEN id
+     END DESC)
+        sub_query LIMIT $1 OFFSET $2
 `
 
-func (q *Queries) ListProfessors(ctx context.Context) ([]Aula, error) {
-	rows, err := q.db.QueryContext(ctx, listProfessors)
+type ListProfessorsParams struct {
+	Limit   int32  `json:"limit"`
+	Offset  int32  `json:"offset"`
+	Reverse bool   `json:"reverse"`
+	OrderBy string `json:"orderBy"`
+}
+
+type ListProfessorsRow struct {
+	TotalItems int64     `json:"totalItems"`
+	ID         int32     `json:"id"`
+	Name       string    `json:"name"`
+	LabelColor string    `json:"labelColor"`
+	CreatedAt  time.Time `json:"createdAt"`
+	UpdatedAt  time.Time `json:"updatedAt"`
+}
+
+func (q *Queries) ListProfessors(ctx context.Context, arg ListProfessorsParams) ([]ListProfessorsRow, error) {
+	rows, err := q.db.QueryContext(ctx, listProfessors,
+		arg.Limit,
+		arg.Offset,
+		arg.Reverse,
+		arg.OrderBy,
+	)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []Aula{}
+	items := []ListProfessorsRow{}
 	for rows.Next() {
-		var i Aula
+		var i ListProfessorsRow
 		if err := rows.Scan(
+			&i.TotalItems,
 			&i.ID,
-			&i.TabletID,
-			&i.ProfessorID,
-			&i.RoomID,
-			&i.StudentName,
-			&i.MeetStart,
-			&i.MeetEnd,
-			&i.Observation,
+			&i.Name,
+			&i.LabelColor,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -131,16 +167,25 @@ func (q *Queries) ListProfessors(ctx context.Context) ([]Aula, error) {
 	return items, nil
 }
 
-const updateProfessorByID = `-- name: UpdateProfessorByID :execresult
-UPDATE professors SET name = $2, label_color = $3 WHERE id = $1
+const updateProfessorByID = `-- name: UpdateProfessorByID :one
+UPDATE professors SET name = $2, label_color = $3 WHERE id = $1 RETURNING id, name, label_color, created_at, updated_at
 `
 
 type UpdateProfessorByIDParams struct {
-	ID         int32          `json:"id"`
-	Name       sql.NullString `json:"name"`
-	LabelColor sql.NullString `json:"labelColor"`
+	ID         int32  `json:"id"`
+	Name       string `json:"name"`
+	LabelColor string `json:"labelColor"`
 }
 
-func (q *Queries) UpdateProfessorByID(ctx context.Context, arg UpdateProfessorByIDParams) (sql.Result, error) {
-	return q.db.ExecContext(ctx, updateProfessorByID, arg.ID, arg.Name, arg.LabelColor)
+func (q *Queries) UpdateProfessorByID(ctx context.Context, arg UpdateProfessorByIDParams) (Professor, error) {
+	row := q.db.QueryRowContext(ctx, updateProfessorByID, arg.ID, arg.Name, arg.LabelColor)
+	var i Professor
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.LabelColor,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }

@@ -3,19 +3,33 @@
 //   sqlc v1.16.0
 // source: rooms.sql
 
-package db
+package sqlc
 
 import (
 	"context"
-	"database/sql"
+	"time"
 )
 
-const createRoom = `-- name: CreateRoom :execresult
-INSERT INTO rooms (name) VALUES ($1)
+const createRoom = `-- name: CreateRoom :one
+INSERT INTO rooms (name, label_color) VALUES ($1, $2) RETURNING id, name, label_color, created_at, updated_at
 `
 
-func (q *Queries) CreateRoom(ctx context.Context, name sql.NullString) (sql.Result, error) {
-	return q.db.ExecContext(ctx, createRoom, name)
+type CreateRoomParams struct {
+	Name       string `json:"name"`
+	LabelColor string `json:"labelColor"`
+}
+
+func (q *Queries) CreateRoom(ctx context.Context, arg CreateRoomParams) (Room, error) {
+	row := q.db.QueryRowContext(ctx, createRoom, arg.Name, arg.LabelColor)
+	var i Room
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.LabelColor,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
 const deleteRoomByID = `-- name: DeleteRoomByID :exec
@@ -28,7 +42,7 @@ func (q *Queries) DeleteRoomByID(ctx context.Context, id int32) error {
 }
 
 const getRoomByID = `-- name: GetRoomByID :one
-SELECT id, name, created_at, updated_at FROM rooms WHERE id = $1
+SELECT id, name, label_color, created_at, updated_at FROM rooms WHERE id = $1
 `
 
 func (q *Queries) GetRoomByID(ctx context.Context, id int32) (Room, error) {
@@ -37,6 +51,7 @@ func (q *Queries) GetRoomByID(ctx context.Context, id int32) (Room, error) {
 	err := row.Scan(
 		&i.ID,
 		&i.Name,
+		&i.LabelColor,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -44,7 +59,7 @@ func (q *Queries) GetRoomByID(ctx context.Context, id int32) (Room, error) {
 }
 
 const listAvailableRoomsByTimeRange = `-- name: ListAvailableRoomsByTimeRange :many
-SELECT id, name, created_at, updated_at
+SELECT id, name, label_color, created_at, updated_at
 FROM rooms
 WHERE id NOT IN (SELECT room_id
                  FROM aulas a
@@ -54,8 +69,8 @@ WHERE id NOT IN (SELECT room_id
 `
 
 type ListAvailableRoomsByTimeRangeParams struct {
-	MeetStart sql.NullTime `json:"meetStart"`
-	MeetEnd   sql.NullTime `json:"meetEnd"`
+	MeetStart time.Time `json:"meetStart"`
+	MeetEnd   time.Time `json:"meetEnd"`
 }
 
 func (q *Queries) ListAvailableRoomsByTimeRange(ctx context.Context, arg ListAvailableRoomsByTimeRangeParams) ([]Room, error) {
@@ -70,6 +85,7 @@ func (q *Queries) ListAvailableRoomsByTimeRange(ctx context.Context, arg ListAva
 		if err := rows.Scan(
 			&i.ID,
 			&i.Name,
+			&i.LabelColor,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -87,21 +103,55 @@ func (q *Queries) ListAvailableRoomsByTimeRange(ctx context.Context, arg ListAva
 }
 
 const listRooms = `-- name: ListRooms :many
-SELECT id, name, created_at, updated_at FROM rooms
+SELECT count(*) OVER () AS total_items, sub_query.id, sub_query.name, sub_query.label_color, sub_query.created_at, sub_query.updated_at FROM
+    (SELECT id, name, label_color, created_at, updated_at FROM rooms
+     ORDER BY CASE
+      WHEN NOT $3::bool AND $4::text = 'name' THEN name
+      END ASC, CASE
+                   WHEN $3::bool AND $4::text = 'name' THEN name
+      END DESC, CASE
+                    WHEN NOT $3::bool AND $4::text = 'id' THEN id
+      END ASC, CASE
+                   WHEN $3::bool AND $4::text = 'id' THEN id
+      END DESC)
+        sub_query LIMIT $1 OFFSET $2
 `
 
-func (q *Queries) ListRooms(ctx context.Context) ([]Room, error) {
-	rows, err := q.db.QueryContext(ctx, listRooms)
+type ListRoomsParams struct {
+	Limit   int32  `json:"limit"`
+	Offset  int32  `json:"offset"`
+	Reverse bool   `json:"reverse"`
+	OrderBy string `json:"orderBy"`
+}
+
+type ListRoomsRow struct {
+	TotalItems int64     `json:"totalItems"`
+	ID         int32     `json:"id"`
+	Name       string    `json:"name"`
+	LabelColor string    `json:"labelColor"`
+	CreatedAt  time.Time `json:"createdAt"`
+	UpdatedAt  time.Time `json:"updatedAt"`
+}
+
+func (q *Queries) ListRooms(ctx context.Context, arg ListRoomsParams) ([]ListRoomsRow, error) {
+	rows, err := q.db.QueryContext(ctx, listRooms,
+		arg.Limit,
+		arg.Offset,
+		arg.Reverse,
+		arg.OrderBy,
+	)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []Room{}
+	items := []ListRoomsRow{}
 	for rows.Next() {
-		var i Room
+		var i ListRoomsRow
 		if err := rows.Scan(
+			&i.TotalItems,
 			&i.ID,
 			&i.Name,
+			&i.LabelColor,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -118,15 +168,25 @@ func (q *Queries) ListRooms(ctx context.Context) ([]Room, error) {
 	return items, nil
 }
 
-const updateRoomByID = `-- name: UpdateRoomByID :execresult
-UPDATE rooms SET name = $2 WHERE id = $1
+const updateRoomByID = `-- name: UpdateRoomByID :one
+UPDATE rooms SET name = $2, label_color = $3 WHERE id = $1 RETURNING id, name, label_color, created_at, updated_at
 `
 
 type UpdateRoomByIDParams struct {
-	ID   int32          `json:"id"`
-	Name sql.NullString `json:"name"`
+	ID         int32  `json:"id"`
+	Name       string `json:"name"`
+	LabelColor string `json:"labelColor"`
 }
 
-func (q *Queries) UpdateRoomByID(ctx context.Context, arg UpdateRoomByIDParams) (sql.Result, error) {
-	return q.db.ExecContext(ctx, updateRoomByID, arg.ID, arg.Name)
+func (q *Queries) UpdateRoomByID(ctx context.Context, arg UpdateRoomByIDParams) (Room, error) {
+	row := q.db.QueryRowContext(ctx, updateRoomByID, arg.ID, arg.Name, arg.LabelColor)
+	var i Room
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.LabelColor,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }

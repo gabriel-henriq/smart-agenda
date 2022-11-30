@@ -1,0 +1,543 @@
+{
+	"info": {
+		"_postman_id": "12bd4b3a-d531-46ed-9b26-0a8cba15a985",
+		"name": "smart-agenda",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12570087"
+	},
+	"item": [
+		{
+			"name": "Professor",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"aaaa\",\n    \"labelColor\": \"azul\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/professor",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"professor"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 1,\n    \"name\": \"Ivan Noleto\",\n    \"labelColor\": \"azul\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/professor",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"professor"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/professor/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"professor",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"pageSize\": 5,\n    \"pageID\": 1,\n    \"orderBy\": \"name\",\n    \"reverse\": \"false\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/professor/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"professor",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/professor/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"professor",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Room",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"aaaa\",\n    \"labelColor\": \"azul\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/room/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"room",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/room/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"room",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 1,\n    \"name\": \"Sala 1\",\n    \"labelColor\": \"azul\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/room",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"room"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/room/?page_size=10&page_id=1&order_by=name&reverse=false",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"room",
+								""
+							],
+							"query": [
+								{
+									"key": "page_size",
+									"value": "10"
+								},
+								{
+									"key": "page_id",
+									"value": "1"
+								},
+								{
+									"key": "order_by",
+									"value": "name"
+								},
+								{
+									"key": "reverse",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/room/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"room",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tablet",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"aaaa\",\n    \"labelColor\": \"azul\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/tablet",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"tablet"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/tablet/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"tablet",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 1,\n    \"name\": \"Samsung\",\n    \"labelColor\": \"azul\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/tablet",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"tablet"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/tablet/?page_id=1&page_size=10&order_by=name&reverse=false",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"tablet",
+								""
+							],
+							"query": [
+								{
+									"key": "page_id",
+									"value": "1"
+								},
+								{
+									"key": "page_size",
+									"value": "10"
+								},
+								{
+									"key": "order_by",
+									"value": "name"
+								},
+								{
+									"key": "reverse",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/tablet/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"tablet",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Aula",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"TabletID\": 1,\n    \"professorID\": 1,\n    \"roomID\": 1,\n    \"studentName\": \"Ivan\",\n    \"meetStart\": \"2022-11-28T01:28:09.995389Z\",\n    \"meetEnd\": \"2022-12-28T01:28:09.995389Z\",\n    \"Observation\": \"vai acabar m dia\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/aula",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"aula"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/aula/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"aula",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"TabletID\": 1,\n    \"professorID\": 1,\n    \"roomID\": 1,\n    \"studentName\": \"Ivan\",\n    \"meetStart\": \"2022-11-28T01:28:09.995389Z\",\n    \"meetEnd\": \"2022-12-28T01:28:09.995389Z\",\n    \"Observation\": \"vai acabar m dia\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/aula",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"aula"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/aula/?meet_start=2004-01-02T15:04:05Z&meet_end=2023-01-02T15:04:05Z",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"aula",
+								""
+							],
+							"query": [
+								{
+									"key": "meet_start",
+									"value": "2004-01-02T15:04:05Z",
+									"description": "t"
+								},
+								{
+									"key": "meet_end",
+									"value": "2023-01-02T15:04:05Z"
+								},
+								{
+									"key": "a",
+									"value": "2004-01-02T15:04:05Z",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/aula/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"aula",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "localhost:5000"
+		}
+	]
+}

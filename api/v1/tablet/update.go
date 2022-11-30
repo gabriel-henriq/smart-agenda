@@ -4,14 +4,13 @@ import (
 	"net/http"
 
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
-	"github.com/gabriel-henriq/smart-agenda/models"
 	"github.com/gabriel-henriq/smart-agenda/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/lib/pq"
 )
 
 func (t Tablet) updateTablets(ctx *gin.Context) {
-	var req models.UpdateTabletRequest
+	var req UpdateTabletRequest
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
@@ -37,7 +36,7 @@ func (t Tablet) updateTablets(ctx *gin.Context) {
 		return
 	}
 
-	rsp := models.ToJSONTablet(prof)
+	rsp := ToJSONTablet(prof)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

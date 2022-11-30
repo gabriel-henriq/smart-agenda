@@ -1,7 +1,8 @@
-package models
+package tablet
 
 import (
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
+	"github.com/gabriel-henriq/smart-agenda/models"
 	"math"
 )
 
@@ -32,15 +33,8 @@ type GetTabletRequest struct {
 }
 
 type TabletList struct {
-	Tablets    []TabletResponse `json:"tablets"`
-	Pagination `json:"pagination"`
-}
-
-type ListTabletRequest struct {
-	PageSize int32  `form:"page_size"`
-	PageID   int32  `form:"page_id"`
-	OrderBy  string `form:"order_by"`
-	Reverse  bool   `form:"reverse"`
+	Tablets                   []TabletResponse `json:"tablets"`
+	models.PaginationResponse `json:"pagination"`
 }
 
 func ToJSONTablet(sqlTablet sqlc.Tablet) TabletResponse {
@@ -68,7 +62,7 @@ func ToJSONTabletList(SQLTablets []sqlc.ListTabletsRow, pageID, pageSize int32) 
 
 	return TabletList{
 		Tablets: tablets,
-		Pagination: Pagination{
+		PaginationResponse: models.PaginationResponse{
 			Limit:      pageID,
 			Offset:     pageSize,
 			TotalItems: SQLTablets[0].TotalItems,

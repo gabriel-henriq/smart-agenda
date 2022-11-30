@@ -10,7 +10,7 @@ import (
 )
 
 func (r Room) listRoom(ctx *gin.Context) {
-	var req models.ListRoomRequest
+	var req models.PaginationRequest
 	if err := ctx.ShouldBindQuery(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
@@ -29,9 +29,9 @@ func (r Room) listRoom(ctx *gin.Context) {
 		return
 	}
 	if len(rooms) == 0 {
-		ctx.JSON(http.StatusOK, models.RoomList{
-			Rooms: []models.RoomResponse{},
-			Pagination: models.Pagination{
+		ctx.JSON(http.StatusOK, RoomList{
+			Rooms: []RoomResponse{},
+			PaginationResponse: models.PaginationResponse{
 				Limit:  req.PageID,
 				Offset: req.PageSize,
 			},
@@ -39,7 +39,7 @@ func (r Room) listRoom(ctx *gin.Context) {
 		return
 	}
 
-	rsp := models.ToJSONRoomList(rooms, req.PageID, req.PageSize)
+	rsp := ToJSONRoomList(rooms, req.PageID, req.PageSize)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

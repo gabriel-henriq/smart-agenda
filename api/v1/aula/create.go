@@ -2,7 +2,6 @@ package aula
 
 import (
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
-	"github.com/gabriel-henriq/smart-agenda/models"
 	"github.com/gabriel-henriq/smart-agenda/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/lib/pq"
@@ -10,7 +9,7 @@ import (
 )
 
 func (a Aula) createAula(ctx *gin.Context) {
-	var req models.CreateAulaRequest
+	var req CreateAulaRequest
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
@@ -40,7 +39,7 @@ func (a Aula) createAula(ctx *gin.Context) {
 		return
 	}
 
-	rsp := models.ToJSONAula(aula)
+	rsp := ToJSONAula(aula)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

@@ -10,7 +10,7 @@ import (
 )
 
 func (t Tablet) listTablet(ctx *gin.Context) {
-	var req models.ListTabletRequest
+	var req models.PaginationRequest
 	if err := ctx.ShouldBindQuery(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
@@ -29,9 +29,9 @@ func (t Tablet) listTablet(ctx *gin.Context) {
 		return
 	}
 	if len(rooms) == 0 {
-		ctx.JSON(http.StatusOK, models.TabletList{
-			Tablets: []models.TabletResponse{},
-			Pagination: models.Pagination{
+		ctx.JSON(http.StatusOK, TabletList{
+			Tablets: []TabletResponse{},
+			PaginationResponse: models.PaginationResponse{
 				Limit:  req.PageID,
 				Offset: req.PageSize,
 			},
@@ -39,7 +39,7 @@ func (t Tablet) listTablet(ctx *gin.Context) {
 		return
 	}
 
-	rsp := models.ToJSONTabletList(rooms, req.PageID, req.PageSize)
+	rsp := ToJSONTabletList(rooms, req.PageID, req.PageSize)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

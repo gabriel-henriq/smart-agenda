@@ -1,4 +1,4 @@
-package models
+package aula
 
 import (
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
@@ -52,7 +52,7 @@ type AulasResponse struct {
 }
 
 type DeleteAulaRequest struct {
-	ID int32 `json:"id" uri:"id" binding:"required,min=1"`
+	ID int32 `uri:"id" uri:"id" binding:"required,min=1"`
 }
 
 type GetAulaRequest struct {

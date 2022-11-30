@@ -25,5 +25,4 @@ func (p Professor) SetupProfessorRoute(routerGroup *gin.RouterGroup) {
 	routerGroup.PATCH("/professor/", p.updateProfessor)
 	routerGroup.GET("/professor/:id", p.getProfessor)
 	routerGroup.DELETE("/professor/:id", p.deleteProfessor)
-
 }

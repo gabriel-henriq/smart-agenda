@@ -1,7 +1,6 @@
 package professor
 
 import (
-	"github.com/gabriel-henriq/smart-agenda/models"
 	"net/http"
 
 	"github.com/gabriel-henriq/smart-agenda/utils"
@@ -9,7 +8,7 @@ import (
 )
 
 func (p Professor) deleteProfessor(ctx *gin.Context) {
-	var req models.DeleteProfessorRequest
+	var req DeleteProfessorRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return

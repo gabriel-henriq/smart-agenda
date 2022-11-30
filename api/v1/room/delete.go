@@ -1,7 +1,6 @@
 package room
 
 import (
-	"github.com/gabriel-henriq/smart-agenda/models"
 	"net/http"
 
 	"github.com/gabriel-henriq/smart-agenda/utils"
@@ -9,7 +8,7 @@ import (
 )
 
 func (r Room) deleteRoom(ctx *gin.Context) {
-	var req models.DeleteRoomRequest
+	var req DeleteRoomRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return

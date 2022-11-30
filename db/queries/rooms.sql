@@ -5,14 +5,10 @@ SELECT * FROM rooms WHERE id = $1;
 SELECT count(*) OVER () AS total_items, sub_query.* FROM
     (SELECT * FROM rooms
      ORDER BY CASE
-      WHEN NOT @reverse::bool AND @order_by::text = 'name' THEN name
-      END ASC, CASE
-                   WHEN @reverse::bool AND @order_by::text = 'name' THEN name
-      END DESC, CASE
-                    WHEN NOT @reverse::bool AND @order_by::text = 'id' THEN id
-      END ASC, CASE
-                   WHEN @reverse::bool AND @order_by::text = 'id' THEN id
-      END DESC)
+      WHEN NOT @reverse::bool AND @order_by::text = 'name' THEN name END ASC, CASE
+      WHEN @reverse::bool     AND @order_by::text = 'name' THEN name END DESC, CASE
+      WHEN NOT @reverse::bool AND @order_by::text = 'id'   THEN id   END ASC, CASE
+      WHEN @reverse::bool     AND @order_by::text = 'id'   THEN id   END DESC)
         sub_query LIMIT $1 OFFSET $2;
 
 -- name: CreateRoom :one
@@ -28,7 +24,7 @@ UPDATE rooms SET name = $2, label_color = $3 WHERE id = $1 RETURNING *;
 SELECT *
 FROM rooms
 WHERE id NOT IN (SELECT room_id
-                 FROM aulas a
-                 WHERE (meet_start >= $1 AND meet_end   <= $2 OR
-                        meet_end   >= $1 AND meet_start <= $2)
-                   AND room_id IS NOT NULL);
+     FROM aulas a
+     WHERE (meet_start >= $1 AND meet_end   <= $2 OR
+            meet_end   >= $1 AND meet_start <= $2)
+       AND room_id IS NOT NULL);

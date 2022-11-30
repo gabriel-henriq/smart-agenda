@@ -31,7 +31,6 @@ func (server *Server) setupRouter() {
 
 // Create all V1 routes
 func (server *Server) createRoutesV1(router *gin.Engine) {
-
 	v1 := router.Group("/v1")
 
 	professorRoutes := professor.NewProfessor(server.store)

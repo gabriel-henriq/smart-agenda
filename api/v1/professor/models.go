@@ -1,7 +1,8 @@
-package models
+package professor
 
 import (
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
+	"github.com/gabriel-henriq/smart-agenda/models"
 	"math"
 )
 
@@ -25,8 +26,8 @@ type ProfessorResponse struct {
 }
 
 type ProfessorListResponse struct {
-	Professors []ProfessorResponse `json:"professors"`
-	Pagination `json:"pagination"`
+	Professors                []ProfessorResponse `json:"professors"`
+	models.PaginationResponse `json:"pagination"`
 }
 
 func ToJSONProfessor(sqlProfessor sqlc.Professor) ProfessorResponse {
@@ -47,13 +48,6 @@ type GetProfessorRequest struct {
 	ID int32 `uri:"id" binding:"required,min=1"`
 }
 
-type ListProfessorRequest struct {
-	PageSize int32  `form:"pageSize"`
-	PageID   int32  `form:"pageID"`
-	OrderBy  string `form:"orderBy"`
-	Reverse  bool   `form:"reverse"`
-}
-
 func ToJSONProfessorList(SQLProfessors []sqlc.ListProfessorsRow, pageID, pageSize int32) ProfessorListResponse {
 	var profs []ProfessorResponse
 
@@ -71,7 +65,7 @@ func ToJSONProfessorList(SQLProfessors []sqlc.ListProfessorsRow, pageID, pageSiz
 
 	return ProfessorListResponse{
 		Professors: profs,
-		Pagination: Pagination{
+		PaginationResponse: models.PaginationResponse{
 			Limit:      pageID,
 			Offset:     pageSize,
 			TotalItems: SQLProfessors[0].TotalItems,

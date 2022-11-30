@@ -2,15 +2,13 @@ package professor
 
 import (
 	"database/sql"
-	"github.com/gabriel-henriq/smart-agenda/models"
-
 	"github.com/gabriel-henriq/smart-agenda/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 func (p Professor) getProfessor(ctx *gin.Context) {
-	var req models.GetProfessorRequest
+	var req GetProfessorRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
@@ -27,7 +25,7 @@ func (p Professor) getProfessor(ctx *gin.Context) {
 		return
 	}
 
-	rsp := models.ToJSONProfessor(prof)
+	rsp := ToJSONProfessor(prof)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

@@ -10,7 +10,7 @@ import (
 )
 
 func (p Professor) listProfessor(ctx *gin.Context) {
-	var req models.ListProfessorRequest
+	var req models.PaginationRequest
 
 	if err := ctx.ShouldBindQuery(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
@@ -30,9 +30,9 @@ func (p Professor) listProfessor(ctx *gin.Context) {
 		return
 	}
 	if len(profs) == 0 {
-		ctx.JSON(http.StatusOK, models.ProfessorListResponse{
-			Professors: []models.ProfessorResponse{},
-			Pagination: models.Pagination{
+		ctx.JSON(http.StatusOK, ProfessorListResponse{
+			Professors: []ProfessorResponse{},
+			PaginationResponse: models.PaginationResponse{
 				Limit:  req.PageID,
 				Offset: req.PageSize,
 			},
@@ -40,7 +40,7 @@ func (p Professor) listProfessor(ctx *gin.Context) {
 		return
 	}
 
-	rsp := models.ToJSONProfessorList(profs, req.PageID, req.PageSize)
+	rsp := ToJSONProfessorList(profs, req.PageID, req.PageSize)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

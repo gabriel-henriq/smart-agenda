@@ -1,7 +1,6 @@
 package aula
 
 import (
-	"github.com/gabriel-henriq/smart-agenda/models"
 	"net/http"
 
 	"github.com/gabriel-henriq/smart-agenda/utils"
@@ -9,7 +8,7 @@ import (
 )
 
 func (a Aula) deleteAula(ctx *gin.Context) {
-	var req models.DeleteAulaRequest
+	var req DeleteAulaRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return

@@ -1,7 +1,8 @@
-package models
+package room
 
 import (
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
+	"github.com/gabriel-henriq/smart-agenda/models"
 	"math"
 )
 
@@ -32,16 +33,9 @@ type GetRoomRequest struct {
 	ID int32 `uri:"id" binding:"required,min=1"`
 }
 
-type ListRoomRequest struct {
-	PageSize int32  `form:"page_size"`
-	PageID   int32  `form:"page_id"`
-	OrderBy  string `form:"order_by"`
-	Reverse  bool   `form:"reverse"`
-}
-
 type RoomList struct {
-	Rooms      []RoomResponse `json:"rooms"`
-	Pagination `json:"pagination"`
+	Rooms                     []RoomResponse `json:"rooms"`
+	models.PaginationResponse `json:"pagination"`
 }
 
 func ToJSONRoom(sqlRoom sqlc.Room) RoomResponse {
@@ -70,7 +64,7 @@ func ToJSONRoomList(SQLRooms []sqlc.ListRoomsRow, pageID, pageSize int32) RoomLi
 
 	return RoomList{
 		Rooms: rooms,
-		Pagination: Pagination{
+		PaginationResponse: models.PaginationResponse{
 			Limit:      pageID,
 			Offset:     pageSize,
 			TotalItems: SQLRooms[0].TotalItems,

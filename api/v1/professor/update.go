@@ -1,7 +1,6 @@
-package tablets
+package professor
 
 import (
-	"database/sql"
 	"net/http"
 
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
@@ -11,19 +10,21 @@ import (
 	"github.com/lib/pq"
 )
 
-func (r Tablet) createTablet(ctx *gin.Context) {
-	var req models.Tablet
+func (p Professor) updateProfessor(ctx *gin.Context) {
+	var req models.UpdateProfessorRequest
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
 
-	arg := sqlc.Tablet{
-		Name: sql.NullString{String: req.Name, Valid: true},
+	arg := sqlc.UpdateProfessorByIDParams{
+		ID:         req.ID,
+		Name:       req.Name,
+		LabelColor: req.LabelColor,
 	}
 
-	tablet, err := r.db.CreateTablet(ctx, arg.Name)
+	prof, err := p.db.UpdateProfessorByID(ctx, arg)
 	if err != nil {
 		if pqErr, ok := err.(*pq.Error); ok {
 			switch pqErr.Code.Name() {
@@ -36,7 +37,7 @@ func (r Tablet) createTablet(ctx *gin.Context) {
 		return
 	}
 
-	rsp := r.toJSONTablet(tablet)
+	rsp := models.ToJSONProfessor(prof)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

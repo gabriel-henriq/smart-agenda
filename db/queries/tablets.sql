@@ -11,13 +11,13 @@ SELECT count(*) OVER () AS total_items, sub_query.* FROM
     ) sub_query LIMIT $1 OFFSET $2;
 
 -- name: CreateTablet :one
-INSERT INTO tablets (name) VALUES ($1) RETURNING *;
+INSERT INTO tablets (name, label_color) VALUES ($1, $2) RETURNING *;
 
 -- name: DeleteTabletByID :exec
 DELETE FROM tablets WHERE id = $1;
 
--- name: UpdateTabletByID :execresult
-UPDATE tablets SET name = $2 WHERE id = $1;
+-- name: UpdateTabletByID :one
+UPDATE tablets SET name = $2, label_color = $3 WHERE id = $1 RETURNING *;
 
 -- name: ListAvailableTabletsByTimeRange :many
 SELECT * FROM tablets WHERE id NOT IN (

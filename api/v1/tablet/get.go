@@ -1,25 +1,22 @@
-package room
+package tablet
 
 import (
 	"database/sql"
+	"github.com/gabriel-henriq/smart-agenda/models"
 	"net/http"
 
 	"github.com/gabriel-henriq/smart-agenda/utils"
 	"github.com/gin-gonic/gin"
 )
 
-type getRoomRequest struct {
-	ID int32 `uri:"id" binding:"required,min=1"`
-}
-
-func (r Room) getRoomByID(ctx *gin.Context) {
-	var req getRoomRequest
+func (t Tablet) getTabletByID(ctx *gin.Context) {
+	var req models.GetTabletRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
 
-	room, err := r.db.GetRoomByID(ctx, req.ID)
+	room, err := t.db.GetTabletByID(ctx, req.ID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			ctx.JSON(http.StatusNotFound, utils.ErrorResponse(err))
@@ -30,7 +27,7 @@ func (r Room) getRoomByID(ctx *gin.Context) {
 		return
 	}
 
-	rsp := r.toJSONRoom(room)
+	rsp := models.ToJSONTablet(room)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

@@ -1,7 +1,6 @@
-package professors
+package room
 
 import (
-	"database/sql"
 	"net/http"
 
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
@@ -11,20 +10,21 @@ import (
 	"github.com/lib/pq"
 )
 
-func (p Professor) createProfessor(ctx *gin.Context) {
-	var req models.Professor
+func (r Room) updateRoom(ctx *gin.Context) {
+	var req models.UpdateRoomRequest
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
 
-	arg := sqlc.CreateProfessorParams{
-		Name:       sql.NullString{String: req.Name, Valid: true},
-		LabelColor: sql.NullString{String: req.LabelColor, Valid: true},
+	arg := sqlc.UpdateRoomByIDParams{
+		ID:         req.ID,
+		Name:       req.Name,
+		LabelColor: req.LabelColor,
 	}
 
-	prof, err := p.db.CreateProfessor(ctx, arg)
+	room, err := r.db.UpdateRoomByID(ctx, arg)
 	if err != nil {
 		if pqErr, ok := err.(*pq.Error); ok {
 			switch pqErr.Code.Name() {
@@ -37,7 +37,7 @@ func (p Professor) createProfessor(ctx *gin.Context) {
 		return
 	}
 
-	rsp := p.toJSONProfessor(prof)
+	rsp := models.ToJSONRoom(room)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

@@ -1,25 +1,22 @@
-package aulas
+package room
 
 import (
 	"database/sql"
+	"github.com/gabriel-henriq/smart-agenda/models"
 	"net/http"
 
 	"github.com/gabriel-henriq/smart-agenda/utils"
 	"github.com/gin-gonic/gin"
 )
 
-type getAulaRequest struct {
-	ID int32 `uri:"id" binding:"required,min=1"`
-}
-
-func (r Aula) getAulaByID(ctx *gin.Context) {
-	var req getAulaRequest
+func (r Room) getRoomByID(ctx *gin.Context) {
+	var req models.GetRoomRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
 
-	aula, err := r.db.GetAulaByID(ctx, req.ID)
+	room, err := r.db.GetRoomByID(ctx, req.ID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			ctx.JSON(http.StatusNotFound, utils.ErrorResponse(err))
@@ -30,7 +27,7 @@ func (r Aula) getAulaByID(ctx *gin.Context) {
 		return
 	}
 
-	rsp := r.toJSONAula(aula)
+	rsp := models.ToJSONRoom(room)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

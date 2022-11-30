@@ -5,21 +5,20 @@
 package sqlc
 
 import (
-	"database/sql"
 	"time"
 )
 
 type Aula struct {
-	ID          int32         `json:"id"`
-	TabletID    sql.NullInt32 `json:"tabletID"`
-	ProfessorID int32         `json:"professorID"`
-	RoomID      int32         `json:"roomID"`
-	StudentName string        `json:"studentName"`
-	Observation string        `json:"observation"`
-	MeetStart   time.Time     `json:"meetStart"`
-	MeetEnd     time.Time     `json:"meetEnd"`
-	CreatedAt   time.Time     `json:"createdAt"`
-	UpdatedAt   time.Time     `json:"updatedAt"`
+	ID          int32     `json:"id"`
+	TabletID    int32     `json:"tabletID"`
+	ProfessorID int32     `json:"professorID"`
+	RoomID      int32     `json:"roomID"`
+	StudentName string    `json:"studentName"`
+	Observation string    `json:"observation"`
+	MeetStart   time.Time `json:"meetStart"`
+	MeetEnd     time.Time `json:"meetEnd"`
+	CreatedAt   time.Time `json:"createdAt"`
+	UpdatedAt   time.Time `json:"updatedAt"`
 }
 
 type Professor struct {
@@ -39,8 +38,9 @@ type Room struct {
 }
 
 type Tablet struct {
-	ID        int32     `json:"id"`
-	Name      string    `json:"name"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
+	ID         int32     `json:"id"`
+	Name       string    `json:"name"`
+	LabelColor string    `json:"labelColor"`
+	CreatedAt  time.Time `json:"createdAt"`
+	UpdatedAt  time.Time `json:"updatedAt"`
 }

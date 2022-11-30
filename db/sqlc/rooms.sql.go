@@ -7,7 +7,6 @@ package sqlc
 
 import (
 	"context"
-	"database/sql"
 	"time"
 )
 
@@ -169,15 +168,25 @@ func (q *Queries) ListRooms(ctx context.Context, arg ListRoomsParams) ([]ListRoo
 	return items, nil
 }
 
-const updateRoomByID = `-- name: UpdateRoomByID :execresult
-UPDATE rooms SET name = $2 WHERE id = $1
+const updateRoomByID = `-- name: UpdateRoomByID :one
+UPDATE rooms SET name = $2, label_color = $3 WHERE id = $1 RETURNING id, name, label_color, created_at, updated_at
 `
 
 type UpdateRoomByIDParams struct {
-	ID   int32  `json:"id"`
-	Name string `json:"name"`
+	ID         int32  `json:"id"`
+	Name       string `json:"name"`
+	LabelColor string `json:"labelColor"`
 }
 
-func (q *Queries) UpdateRoomByID(ctx context.Context, arg UpdateRoomByIDParams) (sql.Result, error) {
-	return q.db.ExecContext(ctx, updateRoomByID, arg.ID, arg.Name)
+func (q *Queries) UpdateRoomByID(ctx context.Context, arg UpdateRoomByIDParams) (Room, error) {
+	row := q.db.QueryRowContext(ctx, updateRoomByID, arg.ID, arg.Name, arg.LabelColor)
+	var i Room
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.LabelColor,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }

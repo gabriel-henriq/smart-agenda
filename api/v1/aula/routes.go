@@ -1,4 +1,4 @@
-package aulas
+package aula
 
 import (
 	"github.com/gabriel-henriq/smart-agenda/db"
@@ -19,9 +19,9 @@ func NewAula(db db.Store) IAula {
 	}
 }
 
-func (r Aula) SetupAulaRoute(routerGroup *gin.RouterGroup) {
-	routerGroup.POST("/aula", r.createAula)
-	routerGroup.GET("/aula", r.listAula)
-	routerGroup.GET("/aula/:id", r.getAulaByID)
-	routerGroup.DELETE("/aula/:id", r.deleteAula)
+func (a Aula) SetupAulaRoute(routerGroup *gin.RouterGroup) {
+	routerGroup.POST("/aula", a.createAula)
+	routerGroup.GET("/aula", a.listAula)
+	routerGroup.GET("/aula/:id", a.getAulaByID)
+	routerGroup.DELETE("/aula/:id", a.deleteAula)
 }

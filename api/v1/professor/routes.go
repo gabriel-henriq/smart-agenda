@@ -1,4 +1,4 @@
-package professors
+package professor
 
 import (
 	"github.com/gabriel-henriq/smart-agenda/db"
@@ -22,6 +22,7 @@ func NewProfessor(db db.Store) IProfessor {
 func (p Professor) SetupProfessorRoute(routerGroup *gin.RouterGroup) {
 	routerGroup.POST("/professor", p.createProfessor)
 	routerGroup.GET("/professor", p.listProfessor)
+	routerGroup.PATCH("/professor/", p.updateProfessor)
 	routerGroup.GET("/professor/:id", p.getProfessor)
 	routerGroup.DELETE("/professor/:id", p.deleteProfessor)
 

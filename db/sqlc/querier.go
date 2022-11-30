@@ -6,14 +6,13 @@ package sqlc
 
 import (
 	"context"
-	"database/sql"
 )
 
 type Querier interface {
 	CreateAula(ctx context.Context, arg CreateAulaParams) (Aula, error)
 	CreateProfessor(ctx context.Context, arg CreateProfessorParams) (Professor, error)
 	CreateRoom(ctx context.Context, arg CreateRoomParams) (Room, error)
-	CreateTablet(ctx context.Context, name string) (Tablet, error)
+	CreateTablet(ctx context.Context, arg CreateTabletParams) (Tablet, error)
 	DeleteAulaByID(ctx context.Context, id int32) error
 	DeleteProfessorByID(ctx context.Context, id int32) error
 	DeleteRoomByID(ctx context.Context, id int32) error
@@ -30,10 +29,10 @@ type Querier interface {
 	ListProfessors(ctx context.Context, arg ListProfessorsParams) ([]ListProfessorsRow, error)
 	ListRooms(ctx context.Context, arg ListRoomsParams) ([]ListRoomsRow, error)
 	ListTablets(ctx context.Context, arg ListTabletsParams) ([]ListTabletsRow, error)
-	UpdateAulaByID(ctx context.Context, arg UpdateAulaByIDParams) (sql.Result, error)
-	UpdateProfessorByID(ctx context.Context, arg UpdateProfessorByIDParams) error
-	UpdateRoomByID(ctx context.Context, arg UpdateRoomByIDParams) (sql.Result, error)
-	UpdateTabletByID(ctx context.Context, arg UpdateTabletByIDParams) (sql.Result, error)
+	UpdateAulaByID(ctx context.Context, arg UpdateAulaByIDParams) (Aula, error)
+	UpdateProfessorByID(ctx context.Context, arg UpdateProfessorByIDParams) (Professor, error)
+	UpdateRoomByID(ctx context.Context, arg UpdateRoomByIDParams) (Room, error)
+	UpdateTabletByID(ctx context.Context, arg UpdateTabletByIDParams) (Tablet, error)
 }
 
 var _ Querier = (*Queries)(nil)

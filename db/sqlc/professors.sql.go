@@ -167,8 +167,8 @@ func (q *Queries) ListProfessors(ctx context.Context, arg ListProfessorsParams) 
 	return items, nil
 }
 
-const updateProfessorByID = `-- name: UpdateProfessorByID :exec
-UPDATE professors SET name = $2, label_color = $3 WHERE id = $1
+const updateProfessorByID = `-- name: UpdateProfessorByID :one
+UPDATE professors SET name = $2, label_color = $3 WHERE id = $1 RETURNING id, name, label_color, created_at, updated_at
 `
 
 type UpdateProfessorByIDParams struct {
@@ -177,7 +177,15 @@ type UpdateProfessorByIDParams struct {
 	LabelColor string `json:"labelColor"`
 }
 
-func (q *Queries) UpdateProfessorByID(ctx context.Context, arg UpdateProfessorByIDParams) error {
-	_, err := q.db.ExecContext(ctx, updateProfessorByID, arg.ID, arg.Name, arg.LabelColor)
-	return err
+func (q *Queries) UpdateProfessorByID(ctx context.Context, arg UpdateProfessorByIDParams) (Professor, error) {
+	row := q.db.QueryRowContext(ctx, updateProfessorByID, arg.ID, arg.Name, arg.LabelColor)
+	var i Professor
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.LabelColor,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }

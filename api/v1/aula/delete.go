@@ -1,23 +1,20 @@
-package room
+package aula
 
 import (
+	"github.com/gabriel-henriq/smart-agenda/models"
 	"net/http"
 
 	"github.com/gabriel-henriq/smart-agenda/utils"
 	"github.com/gin-gonic/gin"
 )
 
-type deleteRoomRequest struct {
-	ID int32 `uri:"id" binding:"required,min=1"`
-}
-
-func (r Room) deleteRoom(ctx *gin.Context) {
-	var req deleteRoomRequest
+func (a Aula) deleteAula(ctx *gin.Context) {
+	var req models.DeleteAulaRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
-	err := r.db.DeleteRoomByID(ctx, req.ID)
+	err := a.db.DeleteAulaByID(ctx, req.ID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err))
 		return

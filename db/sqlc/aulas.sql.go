@@ -7,7 +7,6 @@ package sqlc
 
 import (
 	"context"
-	"database/sql"
 	"time"
 )
 
@@ -17,13 +16,13 @@ VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, tablet_id, professor_id, room_
 `
 
 type CreateAulaParams struct {
-	TabletID    sql.NullInt32 `json:"tabletID"`
-	ProfessorID int32         `json:"professorID"`
-	RoomID      int32         `json:"roomID"`
-	StudentName string        `json:"studentName"`
-	MeetStart   time.Time     `json:"meetStart"`
-	MeetEnd     time.Time     `json:"meetEnd"`
-	Observation string        `json:"observation"`
+	TabletID    int32     `json:"tabletID"`
+	ProfessorID int32     `json:"professorID"`
+	RoomID      int32     `json:"roomID"`
+	StudentName string    `json:"studentName"`
+	MeetStart   time.Time `json:"meetStart"`
+	MeetEnd     time.Time `json:"meetEnd"`
+	Observation string    `json:"observation"`
 }
 
 func (q *Queries) CreateAula(ctx context.Context, arg CreateAulaParams) (Aula, error) {
@@ -189,24 +188,44 @@ func (q *Queries) ListAulasByTimeRange(ctx context.Context, arg ListAulasByTimeR
 	return items, nil
 }
 
-const updateAulaByID = `-- name: UpdateAulaByID :execresult
-UPDATE aulas SET room_id = $2, tablet_id = $3, professor_id = $4, student_name = $5 WHERE id = $1
+const updateAulaByID = `-- name: UpdateAulaByID :one
+UPDATE aulas SET room_id = $2, tablet_id = $3, professor_id = $4, student_name = $5, meet_start = $6, meet_end = $7, observation = $8 WHERE id = $1 RETURNING id, tablet_id, professor_id, room_id, student_name, observation, meet_start, meet_end, created_at, updated_at
 `
 
 type UpdateAulaByIDParams struct {
-	ID          int32         `json:"id"`
-	RoomID      int32         `json:"roomID"`
-	TabletID    sql.NullInt32 `json:"tabletID"`
-	ProfessorID int32         `json:"professorID"`
-	StudentName string        `json:"studentName"`
+	ID          int32     `json:"id"`
+	RoomID      int32     `json:"roomID"`
+	TabletID    int32     `json:"tabletID"`
+	ProfessorID int32     `json:"professorID"`
+	StudentName string    `json:"studentName"`
+	MeetStart   time.Time `json:"meetStart"`
+	MeetEnd     time.Time `json:"meetEnd"`
+	Observation string    `json:"observation"`
 }
 
-func (q *Queries) UpdateAulaByID(ctx context.Context, arg UpdateAulaByIDParams) (sql.Result, error) {
-	return q.db.ExecContext(ctx, updateAulaByID,
+func (q *Queries) UpdateAulaByID(ctx context.Context, arg UpdateAulaByIDParams) (Aula, error) {
+	row := q.db.QueryRowContext(ctx, updateAulaByID,
 		arg.ID,
 		arg.RoomID,
 		arg.TabletID,
 		arg.ProfessorID,
 		arg.StudentName,
+		arg.MeetStart,
+		arg.MeetEnd,
+		arg.Observation,
 	)
+	var i Aula
+	err := row.Scan(
+		&i.ID,
+		&i.TabletID,
+		&i.ProfessorID,
+		&i.RoomID,
+		&i.StudentName,
+		&i.Observation,
+		&i.MeetStart,
+		&i.MeetEnd,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }

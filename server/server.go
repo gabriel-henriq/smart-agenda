@@ -1,10 +1,10 @@
 package server
 
 import (
-	"github.com/gabriel-henriq/smart-agenda/api/v1/aulas"
-	"github.com/gabriel-henriq/smart-agenda/api/v1/professors"
-	"github.com/gabriel-henriq/smart-agenda/api/v1/rooms"
-	"github.com/gabriel-henriq/smart-agenda/api/v1/tablets"
+	"github.com/gabriel-henriq/smart-agenda/api/v1/aula"
+	"github.com/gabriel-henriq/smart-agenda/api/v1/professor"
+	"github.com/gabriel-henriq/smart-agenda/api/v1/room"
+	"github.com/gabriel-henriq/smart-agenda/api/v1/tablet"
 	"github.com/gabriel-henriq/smart-agenda/db"
 	"github.com/gin-gonic/gin"
 )
@@ -34,10 +34,10 @@ func (server *Server) createRoutesV1(router *gin.Engine) {
 
 	v1 := router.Group("/v1")
 
-	professorRoutes := professors.NewProfessor(server.store)
+	professorRoutes := professor.NewProfessor(server.store)
 	roomRoutes := room.NewRoom(server.store)
-	tabletRoutes := tablets.NewTablet(server.store)
-	aulaRoutes := aulas.NewAula(server.store)
+	tabletRoutes := tablet.NewTablet(server.store)
+	aulaRoutes := aula.NewAula(server.store)
 
 	professorRoutes.SetupProfessorRoute(v1)
 	roomRoutes.SetupRoomRoute(v1)

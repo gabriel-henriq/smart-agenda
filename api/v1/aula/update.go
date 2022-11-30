@@ -1,7 +1,6 @@
-package room
+package aula
 
 import (
-	"database/sql"
 	"net/http"
 
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
@@ -11,20 +10,26 @@ import (
 	"github.com/lib/pq"
 )
 
-func (r Room) createRoom(ctx *gin.Context) {
-	var req models.Room
+func (a Aula) updateAula(ctx *gin.Context) {
+	var req models.UpdateAulaRequest
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
 
-	arg := sqlc.CreateRoomParams{
-		Name:       sql.NullString{String: req.Name, Valid: true},
-		LabelColor: sql.NullString{String: req.LabelColor, Valid: true},
+	arg := sqlc.UpdateAulaByIDParams{
+		ID:          req.ID,
+		TabletID:    req.TabletID,
+		ProfessorID: req.ProfessorID,
+		RoomID:      req.RoomID,
+		StudentName: req.StudentName,
+		Observation: req.Observation,
+		MeetStart:   req.MeetStart,
+		MeetEnd:     req.MeetEnd,
 	}
 
-	room, err := r.db.CreateRoom(ctx, arg)
+	aula, err := a.db.UpdateAulaByID(ctx, arg)
 	if err != nil {
 		if pqErr, ok := err.(*pq.Error); ok {
 			switch pqErr.Code.Name() {
@@ -37,7 +42,7 @@ func (r Room) createRoom(ctx *gin.Context) {
 		return
 	}
 
-	rsp := r.toJSONRoom(room)
+	rsp := models.ToJSONAula(aula)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

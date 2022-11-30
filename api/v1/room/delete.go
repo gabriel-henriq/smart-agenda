@@ -1,23 +1,20 @@
-package tablets
+package room
 
 import (
+	"github.com/gabriel-henriq/smart-agenda/models"
 	"net/http"
 
 	"github.com/gabriel-henriq/smart-agenda/utils"
 	"github.com/gin-gonic/gin"
 )
 
-type deleteTabletRequest struct {
-	ID int32 `uri:"id" binding:"required,min=1"`
-}
-
-func (r Tablet) deleteTablet(ctx *gin.Context) {
-	var req deleteTabletRequest
+func (r Room) deleteRoom(ctx *gin.Context) {
+	var req models.DeleteRoomRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
-	err := r.db.DeleteTabletByID(ctx, req.ID)
+	err := r.db.DeleteRoomByID(ctx, req.ID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err))
 		return

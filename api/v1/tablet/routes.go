@@ -1,4 +1,4 @@
-package tablets
+package tablet
 
 import (
 	"github.com/gabriel-henriq/smart-agenda/db"
@@ -19,9 +19,9 @@ func NewTablet(db db.Store) ITablet {
 	}
 }
 
-func (r Tablet) SetupTabletRoute(routerGroup *gin.RouterGroup) {
-	routerGroup.POST("/tablet", r.createTablet)
-	routerGroup.GET("/tablet", r.listTablet)
-	routerGroup.GET("/tablet/:id", r.getTabletByID)
-	routerGroup.DELETE("/tablet/:id", r.deleteTablet)
+func (t Tablet) SetupTabletRoute(routerGroup *gin.RouterGroup) {
+	routerGroup.POST("/tablet", t.createTablet)
+	routerGroup.GET("/tablet", t.listTablet)
+	routerGroup.GET("/tablet/:id", t.getTabletByID)
+	routerGroup.DELETE("/tablet/:id", t.deleteTablet)
 }

@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS tablets
 (
     id           SERIAL PRIMARY KEY NOT NULL,
     name         TEXT NOT NULL,
+    label_color  TEXT NOT NULL,
     created_at   TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at   TIMESTAMP NOT NULL DEFAULT NOW()
 );
@@ -24,11 +25,10 @@ CREATE TABLE IF NOT EXISTS rooms
     updated_at   TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
-
 CREATE TABLE IF NOT EXISTS aulas
 (
     id           SERIAL PRIMARY KEY NOT NULL,
-    tablet_id    INT,
+    tablet_id    INT NOT NULL,
     professor_id INT NOT NULL,
     room_id      INT NOT NULL,
     student_name TEXT NOT NULL,

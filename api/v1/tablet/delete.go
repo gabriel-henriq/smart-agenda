@@ -1,23 +1,20 @@
-package professors
+package tablet
 
 import (
+	"github.com/gabriel-henriq/smart-agenda/models"
 	"net/http"
 
 	"github.com/gabriel-henriq/smart-agenda/utils"
 	"github.com/gin-gonic/gin"
 )
 
-type deleteProfessorRequest struct {
-	ID int32 `uri:"id" binding:"required,min=1"`
-}
-
-func (p Professor) deleteProfessor(ctx *gin.Context) {
-	var req deleteProfessorRequest
+func (t Tablet) deleteTablet(ctx *gin.Context) {
+	var req models.DeleteTabletRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
-	err := p.db.DeleteProfessorByID(ctx, req.ID)
+	err := t.db.DeleteTabletByID(ctx, req.ID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err))
 		return

@@ -21,8 +21,8 @@ INSERT INTO rooms (name, label_color) VALUES ($1, $2) RETURNING *;
 -- name: DeleteRoomByID :exec
 DELETE FROM rooms WHERE id = $1;
 
--- name: UpdateRoomByID :execresult
-UPDATE rooms SET name = $2 WHERE id = $1;
+-- name: UpdateRoomByID :one
+UPDATE rooms SET name = $2, label_color = $3 WHERE id = $1 RETURNING *;
 
 -- name: ListAvailableRoomsByTimeRange :many
 SELECT *

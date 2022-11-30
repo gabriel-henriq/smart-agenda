@@ -7,20 +7,25 @@ package sqlc
 
 import (
 	"context"
-	"database/sql"
 	"time"
 )
 
 const createTablet = `-- name: CreateTablet :one
-INSERT INTO tablets (name) VALUES ($1) RETURNING id, name, created_at, updated_at
+INSERT INTO tablets (name, label_color) VALUES ($1, $2) RETURNING id, name, label_color, created_at, updated_at
 `
 
-func (q *Queries) CreateTablet(ctx context.Context, name string) (Tablet, error) {
-	row := q.db.QueryRowContext(ctx, createTablet, name)
+type CreateTabletParams struct {
+	Name       string `json:"name"`
+	LabelColor string `json:"labelColor"`
+}
+
+func (q *Queries) CreateTablet(ctx context.Context, arg CreateTabletParams) (Tablet, error) {
+	row := q.db.QueryRowContext(ctx, createTablet, arg.Name, arg.LabelColor)
 	var i Tablet
 	err := row.Scan(
 		&i.ID,
 		&i.Name,
+		&i.LabelColor,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -37,7 +42,7 @@ func (q *Queries) DeleteTabletByID(ctx context.Context, id int32) error {
 }
 
 const getTabletByID = `-- name: GetTabletByID :one
-SELECT id, name, created_at, updated_at FROM tablets WHERE id = $1
+SELECT id, name, label_color, created_at, updated_at FROM tablets WHERE id = $1
 `
 
 func (q *Queries) GetTabletByID(ctx context.Context, id int32) (Tablet, error) {
@@ -46,6 +51,7 @@ func (q *Queries) GetTabletByID(ctx context.Context, id int32) (Tablet, error) {
 	err := row.Scan(
 		&i.ID,
 		&i.Name,
+		&i.LabelColor,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -53,7 +59,7 @@ func (q *Queries) GetTabletByID(ctx context.Context, id int32) (Tablet, error) {
 }
 
 const listAvailableTabletsByTimeRange = `-- name: ListAvailableTabletsByTimeRange :many
-SELECT id, name, created_at, updated_at FROM tablets WHERE id NOT IN (
+SELECT id, name, label_color, created_at, updated_at FROM tablets WHERE id NOT IN (
      SELECT room_id FROM aulas a
      WHERE (meet_start >= $1 AND meet_end   <= $2 OR
             meet_end   >= $1 AND meet_start <= $2)
@@ -78,6 +84,7 @@ func (q *Queries) ListAvailableTabletsByTimeRange(ctx context.Context, arg ListA
 		if err := rows.Scan(
 			&i.ID,
 			&i.Name,
+			&i.LabelColor,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -95,8 +102,8 @@ func (q *Queries) ListAvailableTabletsByTimeRange(ctx context.Context, arg ListA
 }
 
 const listTablets = `-- name: ListTablets :many
-SELECT count(*) OVER () AS total_items, sub_query.id, sub_query.name, sub_query.created_at, sub_query.updated_at FROM
-    (SELECT id, name, created_at, updated_at FROM tablets ORDER BY
+SELECT count(*) OVER () AS total_items, sub_query.id, sub_query.name, sub_query.label_color, sub_query.created_at, sub_query.updated_at FROM
+    (SELECT id, name, label_color, created_at, updated_at FROM tablets ORDER BY
          CASE WHEN NOT  $3::bool AND $4::text = 'name' THEN name END ASC,
          CASE WHEN      $3::bool AND $4::text = 'name' THEN name END DESC,
          CASE WHEN NOT  $3::bool AND $4::text = 'id'   THEN id END ASC,
@@ -115,6 +122,7 @@ type ListTabletsRow struct {
 	TotalItems int64     `json:"totalItems"`
 	ID         int32     `json:"id"`
 	Name       string    `json:"name"`
+	LabelColor string    `json:"labelColor"`
 	CreatedAt  time.Time `json:"createdAt"`
 	UpdatedAt  time.Time `json:"updatedAt"`
 }
@@ -137,6 +145,7 @@ func (q *Queries) ListTablets(ctx context.Context, arg ListTabletsParams) ([]Lis
 			&i.TotalItems,
 			&i.ID,
 			&i.Name,
+			&i.LabelColor,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -153,15 +162,25 @@ func (q *Queries) ListTablets(ctx context.Context, arg ListTabletsParams) ([]Lis
 	return items, nil
 }
 
-const updateTabletByID = `-- name: UpdateTabletByID :execresult
-UPDATE tablets SET name = $2 WHERE id = $1
+const updateTabletByID = `-- name: UpdateTabletByID :one
+UPDATE tablets SET name = $2, label_color = $3 WHERE id = $1 RETURNING id, name, label_color, created_at, updated_at
 `
 
 type UpdateTabletByIDParams struct {
-	ID   int32  `json:"id"`
-	Name string `json:"name"`
+	ID         int32  `json:"id"`
+	Name       string `json:"name"`
+	LabelColor string `json:"labelColor"`
 }
 
-func (q *Queries) UpdateTabletByID(ctx context.Context, arg UpdateTabletByIDParams) (sql.Result, error) {
-	return q.db.ExecContext(ctx, updateTabletByID, arg.ID, arg.Name)
+func (q *Queries) UpdateTabletByID(ctx context.Context, arg UpdateTabletByIDParams) (Tablet, error) {
+	row := q.db.QueryRowContext(ctx, updateTabletByID, arg.ID, arg.Name, arg.LabelColor)
+	var i Tablet
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.LabelColor,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }

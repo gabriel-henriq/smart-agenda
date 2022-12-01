@@ -49,12 +49,12 @@ func ToJSONTablet(sqlTablet sqlc.Tablet) TabletResponse {
 func ToJSONTabletList(SQLTablets []sqlc.ListTabletsRow, pageID, pageSize int32) TabletList {
 	var tablets []TabletResponse
 
-	for _, room := range SQLTablets {
+	for _, tablet := range SQLTablets {
 		tablets = append(tablets, TabletResponse{
-			ID:        room.ID,
-			Name:      room.Name,
-			CreatedAt: room.CreatedAt.String(),
-			UpdatedAt: room.UpdatedAt.String(),
+			ID:        tablet.ID,
+			Name:      tablet.Name,
+			CreatedAt: tablet.CreatedAt.String(),
+			UpdatedAt: tablet.UpdatedAt.String(),
 		})
 	}
 

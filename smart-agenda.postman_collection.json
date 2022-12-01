@@ -84,23 +84,11 @@
 				},
 				{
 					"name": "List",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"pageSize\": 5,\n    \"pageID\": 1,\n    \"orderBy\": \"name\",\n    \"reverse\": \"false\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "{{base_url}}/v1/professor/",
+							"raw": "{{base_url}}/v1/professor/?pageSize=10&pageID=1&orderBy=name&reverse=false",
 							"host": [
 								"{{base_url}}"
 							],
@@ -108,6 +96,24 @@
 								"v1",
 								"professor",
 								""
+							],
+							"query": [
+								{
+									"key": "pageSize",
+									"value": "10"
+								},
+								{
+									"key": "pageID",
+									"value": "1"
+								},
+								{
+									"key": "orderBy",
+									"value": "name"
+								},
+								{
+									"key": "reverse",
+									"value": "false"
+								}
 							]
 						}
 					},
@@ -171,11 +177,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/room/2",
+							"raw": "{{base_url}}/v1/room/2",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
+								"v1",
 								"room",
 								"2"
 							]
@@ -216,7 +223,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/v1/room/?page_size=10&page_id=1&order_by=name&reverse=false",
+							"raw": "{{base_url}}/v1/room/?pageSize=100&pageID=1&orderBy=name&reverse=false",
 							"host": [
 								"{{base_url}}"
 							],
@@ -227,15 +234,15 @@
 							],
 							"query": [
 								{
-									"key": "page_size",
-									"value": "10"
+									"key": "pageSize",
+									"value": "100"
 								},
 								{
-									"key": "page_id",
+									"key": "pageID",
 									"value": "1"
 								},
 								{
-									"key": "order_by",
+									"key": "orderBy",
 									"value": "name"
 								},
 								{
@@ -253,11 +260,12 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/room/2",
+							"raw": "{{base_url}}/v1/room/2",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
+								"v1",
 								"room",
 								"2"
 							]
@@ -349,7 +357,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/v1/tablet/?page_id=1&page_size=10&order_by=name&reverse=false",
+							"raw": "{{base_url}}/v1/tablet/?pageID=1&pageSize=10&orderBy=name&reverse=false",
 							"host": [
 								"{{base_url}}"
 							],
@@ -360,15 +368,15 @@
 							],
 							"query": [
 								{
-									"key": "page_id",
+									"key": "pageID",
 									"value": "1"
 								},
 								{
-									"key": "page_size",
+									"key": "pageSize",
 									"value": "10"
 								},
 								{
-									"key": "order_by",
+									"key": "orderBy",
 									"value": "name"
 								},
 								{
@@ -483,7 +491,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/v1/aula/?meet_start=2004-01-02T15:04:05Z&meet_end=2023-01-02T15:04:05Z",
+							"raw": "{{base_url}}/v1/aula/?meetStart=2004-01-02T15:04:05Z&meetEnd=2023-01-02T15:04:05Z",
 							"host": [
 								"{{base_url}}"
 							],
@@ -494,12 +502,12 @@
 							],
 							"query": [
 								{
-									"key": "meet_start",
+									"key": "meetStart",
 									"value": "2004-01-02T15:04:05Z",
 									"description": "t"
 								},
 								{
-									"key": "meet_end",
+									"key": "meetEnd",
 									"value": "2023-01-02T15:04:05Z"
 								},
 								{
@@ -534,10 +542,30 @@
 			]
 		}
 	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
 	"variable": [
 		{
 			"key": "base_url",
-			"value": "localhost:5000"
+			"value": ""
 		}
 	]
 }

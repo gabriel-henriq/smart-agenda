@@ -53,6 +53,7 @@ func ToJSONRoomList(SQLRooms []sqlc.ListRoomsRow, pageID, pageSize int32) RoomLi
 
 	for _, room := range SQLRooms {
 		rooms = append(rooms, RoomResponse{
+			ID:         room.ID,
 			Name:       room.Name,
 			LabelColor: room.LabelColor,
 			CreatedAt:  room.CreatedAt.String(),

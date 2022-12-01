@@ -22,7 +22,7 @@ func NewRoom(db db.Store) IRoom {
 func (r Room) SetupRoomRoute(routerGroup *gin.RouterGroup) {
 	routerGroup.POST("/room", r.createRoom)
 	routerGroup.GET("/room", r.listRoom)
-	routerGroup.PATCH("/professor/", r.updateRoom)
+	routerGroup.PATCH("/room", r.updateRoom)
 	routerGroup.GET("/room/:id", r.getRoomByID)
 	routerGroup.DELETE("/room/:id", r.deleteRoom)
 }

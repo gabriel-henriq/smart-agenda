@@ -32,13 +32,21 @@ func (q *Queries) CreateProfessor(ctx context.Context, arg CreateProfessorParams
 	return i, err
 }
 
-const deleteProfessorByID = `-- name: DeleteProfessorByID :exec
-DELETE FROM professors WHERE id = $1
+const deleteProfessorByID = `-- name: DeleteProfessorByID :one
+DELETE FROM professors WHERE id = $1 RETURNING id, name, label_color, created_at, updated_at
 `
 
-func (q *Queries) DeleteProfessorByID(ctx context.Context, id int32) error {
-	_, err := q.db.ExecContext(ctx, deleteProfessorByID, id)
-	return err
+func (q *Queries) DeleteProfessorByID(ctx context.Context, id int32) (Professor, error) {
+	row := q.db.QueryRowContext(ctx, deleteProfessorByID, id)
+	var i Professor
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.LabelColor,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
 const getProfessorByID = `-- name: GetProfessorByID :one
@@ -62,10 +70,10 @@ const listAvailableProfessorsByTimeRange = `-- name: ListAvailableProfessorsByTi
 SELECT id, name, label_color, created_at, updated_at
 FROM professors
 WHERE id NOT IN (SELECT professor_id
-                 FROM aulas a
-                 WHERE (meet_start >= $1 AND meet_end   <= $2 OR
-                        meet_end   >= $1 AND meet_start <= $2)
-                   AND professor_id IS NOT NULL)
+     FROM aulas a
+     WHERE (meet_start >= $1 AND meet_end   <= $2 OR
+            meet_end   >= $1 AND meet_start <= $2)
+     AND professor_id IS NOT NULL)
 `
 
 type ListAvailableProfessorsByTimeRangeParams struct {
@@ -105,14 +113,10 @@ func (q *Queries) ListAvailableProfessorsByTimeRange(ctx context.Context, arg Li
 const listProfessors = `-- name: ListProfessors :many
 SELECT count(*) OVER () AS total_items, sub_query.id, sub_query.name, sub_query.label_color, sub_query.created_at, sub_query.updated_at FROM
     (SELECT id, name, label_color, created_at, updated_at FROM professors ORDER BY CASE
-        WHEN NOT $3::bool AND $4::text = 'name' THEN name
-      END ASC, CASE
-        WHEN $3::bool AND $4::text = 'name' THEN name
-      END DESC, CASE
-        WHEN NOT $3::bool AND $4::text = 'id' THEN id
-     END ASC, CASE
-       WHEN $3::bool AND $4::text = 'id' THEN id
-     END DESC)
+        WHEN NOT $3::bool AND $4::text = 'name' THEN name END ASC, CASE
+        WHEN $3::bool     AND $4::text = 'name' THEN name END DESC, CASE
+        WHEN NOT $3::bool AND $4::text = 'id'   THEN id   END ASC, CASE
+        WHEN $3::bool     AND $4::text = 'id'   THEN id   END DESC)
         sub_query LIMIT $1 OFFSET $2
 `
 

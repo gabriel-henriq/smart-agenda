@@ -13,11 +13,11 @@ func (a Aula) delete(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, v1.ErrorResponse(err))
 		return
 	}
-	err := a.db.DeleteAulaByID(ctx, req.ID)
+	_, err := a.db.DeleteAulaByID(ctx, req.ID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, v1.ErrorResponse(err))
 		return
 	}
 
-	ctx.JSON(http.StatusOK, nil)
+	ctx.JSON(http.StatusOK, v1.SuccessResponse())
 }

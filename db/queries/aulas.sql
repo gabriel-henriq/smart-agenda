@@ -28,5 +28,5 @@ VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;
 -- name: UpdateAulaByID :one
 UPDATE aulas SET room_id = $2, tablet_id = $3, professor_id = $4, student_name = $5, meet_start = $6, meet_end = $7, observation = $8 WHERE id = $1 RETURNING *;
 
--- name: DeleteAulaByID :exec
-DELETE FROM aulas WHERE id = $1;
+-- name: DeleteAulaByID :one
+DELETE FROM aulas WHERE id = $1 RETURNING *;

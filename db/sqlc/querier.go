@@ -13,10 +13,10 @@ type Querier interface {
 	CreateProfessor(ctx context.Context, arg CreateProfessorParams) (Professor, error)
 	CreateRoom(ctx context.Context, arg CreateRoomParams) (Room, error)
 	CreateTablet(ctx context.Context, arg CreateTabletParams) (Tablet, error)
-	DeleteAulaByID(ctx context.Context, id int32) error
-	DeleteProfessorByID(ctx context.Context, id int32) error
-	DeleteRoomByID(ctx context.Context, id int32) error
-	DeleteTabletByID(ctx context.Context, id int32) error
+	DeleteAulaByID(ctx context.Context, id int32) (Aula, error)
+	DeleteProfessorByID(ctx context.Context, id int32) (Professor, error)
+	DeleteRoomByID(ctx context.Context, id int32) (Room, error)
+	DeleteTabletByID(ctx context.Context, id int32) (Tablet, error)
 	GetAulaByID(ctx context.Context, id int32) (Aula, error)
 	GetProfessorByID(ctx context.Context, id int32) (Professor, error)
 	GetRoomByID(ctx context.Context, id int32) (Room, error)

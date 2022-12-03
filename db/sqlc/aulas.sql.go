@@ -51,13 +51,26 @@ func (q *Queries) CreateAula(ctx context.Context, arg CreateAulaParams) (Aula, e
 	return i, err
 }
 
-const deleteAulaByID = `-- name: DeleteAulaByID :exec
-DELETE FROM aulas WHERE id = $1
+const deleteAulaByID = `-- name: DeleteAulaByID :one
+DELETE FROM aulas WHERE id = $1 RETURNING id, tablet_id, professor_id, room_id, student_name, observation, meet_start, meet_end, created_at, updated_at
 `
 
-func (q *Queries) DeleteAulaByID(ctx context.Context, id int32) error {
-	_, err := q.db.ExecContext(ctx, deleteAulaByID, id)
-	return err
+func (q *Queries) DeleteAulaByID(ctx context.Context, id int32) (Aula, error) {
+	row := q.db.QueryRowContext(ctx, deleteAulaByID, id)
+	var i Aula
+	err := row.Scan(
+		&i.ID,
+		&i.TabletID,
+		&i.ProfessorID,
+		&i.RoomID,
+		&i.StudentName,
+		&i.Observation,
+		&i.MeetStart,
+		&i.MeetEnd,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
 const getAulaByID = `-- name: GetAulaByID :one

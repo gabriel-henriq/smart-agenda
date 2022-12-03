@@ -16,8 +16,8 @@ INSERT INTO professors (name, label_color) VALUES ($1, $2) RETURNING *;
 -- name: UpdateProfessorByID :one
 UPDATE professors SET name = $2, label_color = $3 WHERE id = $1 RETURNING *;
 
--- name: DeleteProfessorByID :exec
-DELETE FROM professors WHERE id = $1;
+-- name: DeleteProfessorByID :one
+DELETE FROM professors WHERE id = $1 RETURNING *;
 
 -- name: ListAvailableProfessorsByTimeRange :many
 SELECT *

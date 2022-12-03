@@ -32,13 +32,21 @@ func (q *Queries) CreateTablet(ctx context.Context, arg CreateTabletParams) (Tab
 	return i, err
 }
 
-const deleteTabletByID = `-- name: DeleteTabletByID :exec
-DELETE FROM tablets WHERE id = $1
+const deleteTabletByID = `-- name: DeleteTabletByID :one
+DELETE FROM tablets WHERE id = $1 RETURNING id, name, label_color, created_at, updated_at
 `
 
-func (q *Queries) DeleteTabletByID(ctx context.Context, id int32) error {
-	_, err := q.db.ExecContext(ctx, deleteTabletByID, id)
-	return err
+func (q *Queries) DeleteTabletByID(ctx context.Context, id int32) (Tablet, error) {
+	row := q.db.QueryRowContext(ctx, deleteTabletByID, id)
+	var i Tablet
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.LabelColor,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
 const getTabletByID = `-- name: GetTabletByID :one

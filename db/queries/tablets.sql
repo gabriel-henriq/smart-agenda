@@ -13,8 +13,8 @@ SELECT count(*) OVER () AS total_items, sub_query.* FROM
 -- name: CreateTablet :one
 INSERT INTO tablets (name, label_color) VALUES ($1, $2) RETURNING *;
 
--- name: DeleteTabletByID :exec
-DELETE FROM tablets WHERE id = $1;
+-- name: DeleteTabletByID :one
+DELETE FROM tablets WHERE id = $1 RETURNING *;
 
 -- name: UpdateTabletByID :one
 UPDATE tablets SET name = $2, label_color = $3 WHERE id = $1 RETURNING *;

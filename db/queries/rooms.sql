@@ -14,8 +14,8 @@ SELECT count(*) OVER () AS total_items, sub_query.* FROM
 -- name: CreateRoom :one
 INSERT INTO rooms (name, label_color) VALUES ($1, $2) RETURNING *;
 
--- name: DeleteRoomByID :exec
-DELETE FROM rooms WHERE id = $1;
+-- name: DeleteRoomByID :one
+DELETE FROM rooms WHERE id = $1 RETURNING *;
 
 -- name: UpdateRoomByID :one
 UPDATE rooms SET name = $2, label_color = $3 WHERE id = $1 RETURNING *;

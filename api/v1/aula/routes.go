@@ -20,8 +20,9 @@ func NewAula(db db.Store) IAula {
 }
 
 func (a Aula) SetupAulaRoute(routerGroup *gin.RouterGroup) {
-	routerGroup.POST("/aula", a.createAula)
-	routerGroup.GET("/aula", a.listAula)
-	routerGroup.GET("/aula/:id", a.getAulaByID)
-	routerGroup.DELETE("/aula/:id", a.deleteAula)
+	routerGroup.POST("/aula", a.create)
+	routerGroup.GET("/aula", a.list)
+	routerGroup.PATCH("/aula", a.update)
+	routerGroup.GET("/aula/:id", a.getByID)
+	routerGroup.DELETE("/aula/:id", a.delete)
 }

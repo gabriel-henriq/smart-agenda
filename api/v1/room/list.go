@@ -1,18 +1,17 @@
 package room
 
 import (
+	"github.com/gabriel-henriq/smart-agenda/api/v1"
 	"net/http"
 
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
-	"github.com/gabriel-henriq/smart-agenda/models"
-	"github.com/gabriel-henriq/smart-agenda/utils"
 	"github.com/gin-gonic/gin"
 )
 
-func (r Room) listRoom(ctx *gin.Context) {
-	var req models.PaginationRequest
+func (r Room) list(ctx *gin.Context) {
+	var req v1.PaginationRequest
 	if err := ctx.ShouldBindQuery(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+		ctx.JSON(http.StatusBadRequest, v1.ErrorResponse(err))
 		return
 	}
 
@@ -25,13 +24,13 @@ func (r Room) listRoom(ctx *gin.Context) {
 
 	rooms, err := r.db.ListRooms(ctx, args)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, v1.ErrorResponse(err))
 		return
 	}
 	if len(rooms) == 0 {
-		ctx.JSON(http.StatusOK, RoomList{
-			Rooms: []RoomResponse{},
-			PaginationResponse: models.PaginationResponse{
+		ctx.JSON(http.StatusOK, list{
+			Rooms: []response{},
+			PaginationResponse: v1.PaginationResponse{
 				Limit:  req.PageID,
 				Offset: req.PageSize,
 			},
@@ -39,7 +38,7 @@ func (r Room) listRoom(ctx *gin.Context) {
 		return
 	}
 
-	rsp := ToJSONRoomList(rooms, req.PageID, req.PageSize)
+	rsp := toJSONList(rooms, req.PageID, req.PageSize)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

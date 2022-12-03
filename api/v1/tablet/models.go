@@ -1,44 +1,44 @@
 package tablet
 
 import (
+	"github.com/gabriel-henriq/smart-agenda/api/v1"
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
-	"github.com/gabriel-henriq/smart-agenda/models"
 	"math"
 )
 
-type CreateTabletRequest struct {
+type createRequest struct {
 	Name       string `json:"name" binding:"required"`
 	LabelColor string `json:"labelColor" binding:"required"`
 }
 
-type UpdateTabletRequest struct {
+type updateRequest struct {
 	ID         int32  `json:"id" binding:"required"`
 	Name       string `json:"name"`
 	LabelColor string `json:"labelColor"`
 }
 
-type TabletResponse struct {
+type response struct {
 	ID        int32  `json:"ID"`
 	Name      string `json:"name"`
 	CreatedAt string `json:"createdAt"`
 	UpdatedAt string `json:"updatedAt"`
 }
 
-type DeleteTabletRequest struct {
+type deleteRequest struct {
 	ID int32 `uri:"id" binding:"required,min=1"`
 }
 
-type GetTabletRequest struct {
+type getRequest struct {
 	ID int32 `uri:"id" binding:"required,min=1"`
 }
 
-type TabletList struct {
-	Tablets                   []TabletResponse `json:"tablets"`
-	models.PaginationResponse `json:"pagination"`
+type list struct {
+	Tablets               []response `json:"tablets"`
+	v1.PaginationResponse `json:"pagination"`
 }
 
-func ToJSONTablet(sqlTablet sqlc.Tablet) TabletResponse {
-	return TabletResponse{
+func toJSON(sqlTablet sqlc.Tablet) response {
+	return response{
 		ID:        sqlTablet.ID,
 		Name:      sqlTablet.Name,
 		CreatedAt: sqlTablet.CreatedAt.String(),
@@ -46,11 +46,11 @@ func ToJSONTablet(sqlTablet sqlc.Tablet) TabletResponse {
 	}
 }
 
-func ToJSONTabletList(SQLTablets []sqlc.ListTabletsRow, pageID, pageSize int32) TabletList {
-	var tablets []TabletResponse
+func toJSONList(SQLTablets []sqlc.ListTabletsRow, pageID, pageSize int32) list {
+	var tablets []response
 
 	for _, tablet := range SQLTablets {
-		tablets = append(tablets, TabletResponse{
+		tablets = append(tablets, response{
 			ID:        tablet.ID,
 			Name:      tablet.Name,
 			CreatedAt: tablet.CreatedAt.String(),
@@ -60,9 +60,9 @@ func ToJSONTabletList(SQLTablets []sqlc.ListTabletsRow, pageID, pageSize int32) 
 
 	totalPages := int32(math.Ceil(float64(SQLTablets[0].TotalItems) / float64(pageSize)))
 
-	return TabletList{
+	return list{
 		Tablets: tablets,
-		PaginationResponse: models.PaginationResponse{
+		PaginationResponse: v1.PaginationResponse{
 			Limit:      pageID,
 			Offset:     pageSize,
 			TotalItems: SQLTablets[0].TotalItems,

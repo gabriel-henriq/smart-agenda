@@ -1,23 +1,23 @@
 package room
 
 import (
+	"github.com/gabriel-henriq/smart-agenda/api/v1"
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
-	"github.com/gabriel-henriq/smart-agenda/models"
 	"math"
 )
 
-type CreateRoomRequest struct {
+type createRequest struct {
 	Name       string `json:"name" binding:"required"`
 	LabelColor string `json:"labelColor" binding:"required"`
 }
 
-type UpdateRoomRequest struct {
+type updateRequest struct {
 	ID         int32  `json:"id" binding:"required"`
 	Name       string `json:"name"`
 	LabelColor string `json:"labelColor"`
 }
 
-type RoomResponse struct {
+type response struct {
 	ID         int32  `json:"id"`
 	Name       string `json:"name"`
 	LabelColor string `json:"labelColor"`
@@ -25,21 +25,21 @@ type RoomResponse struct {
 	UpdatedAt  string `json:"updatedAt"`
 }
 
-type DeleteRoomRequest struct {
+type deleteRequest struct {
 	ID int32 `uri:"id" binding:"required,min=1"`
 }
 
-type GetRoomRequest struct {
+type getRequest struct {
 	ID int32 `uri:"id" binding:"required,min=1"`
 }
 
-type RoomList struct {
-	Rooms                     []RoomResponse `json:"rooms"`
-	models.PaginationResponse `json:"pagination"`
+type list struct {
+	Rooms                 []response `json:"rooms"`
+	v1.PaginationResponse `json:"pagination"`
 }
 
-func ToJSONRoom(sqlRoom sqlc.Room) RoomResponse {
-	return RoomResponse{
+func toJSON(sqlRoom sqlc.Room) response {
+	return response{
 		ID:         sqlRoom.ID,
 		Name:       sqlRoom.Name,
 		LabelColor: sqlRoom.LabelColor,
@@ -48,11 +48,11 @@ func ToJSONRoom(sqlRoom sqlc.Room) RoomResponse {
 	}
 }
 
-func ToJSONRoomList(SQLRooms []sqlc.ListRoomsRow, pageID, pageSize int32) RoomList {
-	var rooms []RoomResponse
+func toJSONList(SQLRooms []sqlc.ListRoomsRow, pageID, pageSize int32) list {
+	var rooms []response
 
 	for _, room := range SQLRooms {
-		rooms = append(rooms, RoomResponse{
+		rooms = append(rooms, response{
 			ID:         room.ID,
 			Name:       room.Name,
 			LabelColor: room.LabelColor,
@@ -63,9 +63,9 @@ func ToJSONRoomList(SQLRooms []sqlc.ListRoomsRow, pageID, pageSize int32) RoomLi
 
 	totalPages := int32(math.Ceil(float64(SQLRooms[0].TotalItems) / float64(pageSize)))
 
-	return RoomList{
+	return list{
 		Rooms: rooms,
-		PaginationResponse: models.PaginationResponse{
+		PaginationResponse: v1.PaginationResponse{
 			Limit:      pageID,
 			Offset:     pageSize,
 			TotalItems: SQLRooms[0].TotalItems,

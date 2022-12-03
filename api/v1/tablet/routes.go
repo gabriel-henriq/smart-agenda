@@ -20,8 +20,9 @@ func NewTablet(db db.Store) ITablet {
 }
 
 func (t Tablet) SetupTabletRoute(routerGroup *gin.RouterGroup) {
-	routerGroup.POST("/tablet", t.createTablet)
-	routerGroup.GET("/tablet", t.listTablet)
-	routerGroup.GET("/tablet/:id", t.getTabletByID)
-	routerGroup.DELETE("/tablet/:id", t.deleteTablet)
+	routerGroup.POST("/tablet", t.create)
+	routerGroup.GET("/tablet", t.list)
+	routerGroup.PATCH("/tablet", t.update)
+	routerGroup.GET("/tablet/:id", t.getByID)
+	routerGroup.DELETE("/tablet/:id", t.delete)
 }

@@ -1,19 +1,18 @@
 package professor
 
 import (
-	"github.com/gabriel-henriq/smart-agenda/utils"
+	"github.com/gabriel-henriq/smart-agenda/api/v1"
 	"net/http"
 
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
-	"github.com/gabriel-henriq/smart-agenda/models"
 	"github.com/gin-gonic/gin"
 )
 
-func (p Professor) listProfessor(ctx *gin.Context) {
-	var req models.PaginationRequest
+func (p Professor) list(ctx *gin.Context) {
+	var req v1.PaginationRequest
 
 	if err := ctx.ShouldBindQuery(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+		ctx.JSON(http.StatusBadRequest, v1.ErrorResponse(err))
 		return
 	}
 
@@ -26,13 +25,13 @@ func (p Professor) listProfessor(ctx *gin.Context) {
 
 	profs, err := p.db.ListProfessors(ctx, arg)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, v1.ErrorResponse(err))
 		return
 	}
 	if len(profs) == 0 {
-		ctx.JSON(http.StatusOK, ProfessorListResponse{
-			Professors: []ProfessorResponse{},
-			PaginationResponse: models.PaginationResponse{
+		ctx.JSON(http.StatusOK, listResponse{
+			Professors: []response{},
+			PaginationResponse: v1.PaginationResponse{
 				Limit:  req.PageID,
 				Offset: req.PageSize,
 			},
@@ -40,7 +39,7 @@ func (p Professor) listProfessor(ctx *gin.Context) {
 		return
 	}
 
-	rsp := ToJSONProfessorList(profs, req.PageID, req.PageSize)
+	rsp := toJSONList(profs, req.PageID, req.PageSize)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

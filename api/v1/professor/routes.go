@@ -20,9 +20,9 @@ func NewProfessor(db db.Store) IProfessor {
 }
 
 func (p Professor) SetupProfessorRoute(routerGroup *gin.RouterGroup) {
-	routerGroup.POST("/professor", p.createProfessor)
-	routerGroup.GET("/professor", p.listProfessor)
-	routerGroup.PATCH("/professor/", p.updateProfessor)
-	routerGroup.GET("/professor/:id", p.getProfessor)
-	routerGroup.DELETE("/professor/:id", p.deleteProfessor)
+	routerGroup.POST("/professor", p.create)
+	routerGroup.GET("/professor", p.list)
+	routerGroup.PATCH("/professor/", p.update)
+	routerGroup.GET("/professor/:id", p.get)
+	routerGroup.DELETE("/professor/:id", p.delete)
 }

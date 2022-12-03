@@ -20,9 +20,9 @@ func NewRoom(db db.Store) IRoom {
 }
 
 func (r Room) SetupRoomRoute(routerGroup *gin.RouterGroup) {
-	routerGroup.POST("/room", r.createRoom)
-	routerGroup.GET("/room", r.listRoom)
-	routerGroup.PATCH("/room", r.updateRoom)
-	routerGroup.GET("/room/:id", r.getRoomByID)
-	routerGroup.DELETE("/room/:id", r.deleteRoom)
+	routerGroup.POST("/room", r.create)
+	routerGroup.GET("/room", r.list)
+	routerGroup.PATCH("/room", r.update)
+	routerGroup.GET("/room/:id", r.getByID)
+	routerGroup.DELETE("/room/:id", r.delete)
 }

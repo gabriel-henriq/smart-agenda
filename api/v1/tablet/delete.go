@@ -1,21 +1,21 @@
 package tablet
 
 import (
+	"github.com/gabriel-henriq/smart-agenda/api/v1"
 	"net/http"
 
-	"github.com/gabriel-henriq/smart-agenda/utils"
 	"github.com/gin-gonic/gin"
 )
 
-func (t Tablet) deleteTablet(ctx *gin.Context) {
-	var req DeleteTabletRequest
+func (t Tablet) delete(ctx *gin.Context) {
+	var req deleteRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+		ctx.JSON(http.StatusBadRequest, v1.ErrorResponse(err))
 		return
 	}
 	err := t.db.DeleteTabletByID(ctx, req.ID)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, v1.ErrorResponse(err))
 		return
 	}
 

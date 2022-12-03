@@ -1,23 +1,23 @@
 package professor
 
 import (
+	"github.com/gabriel-henriq/smart-agenda/api/v1"
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
-	"github.com/gabriel-henriq/smart-agenda/models"
 	"math"
 )
 
-type CreateProfessorRequest struct {
+type createRequest struct {
 	Name       string `json:"name" binding:"required"`
 	LabelColor string `json:"labelColor" binding:"required"`
 }
 
-type UpdateProfessorRequest struct {
+type updateRequest struct {
 	ID         int32  `json:"id" binding:"required"`
 	Name       string `json:"name"`
 	LabelColor string `json:"labelColor"`
 }
 
-type ProfessorResponse struct {
+type response struct {
 	ID         int32  `json:"id"`
 	Name       string `json:"name"`
 	LabelColor string `json:"labelColor"`
@@ -25,13 +25,13 @@ type ProfessorResponse struct {
 	UpdatedAt  string `json:"updatedAt"`
 }
 
-type ProfessorListResponse struct {
-	Professors                []ProfessorResponse `json:"professors"`
-	models.PaginationResponse `json:"pagination"`
+type listResponse struct {
+	Professors            []response `json:"professors"`
+	v1.PaginationResponse `json:"pagination"`
 }
 
-func ToJSONProfessor(sqlProfessor sqlc.Professor) ProfessorResponse {
-	return ProfessorResponse{
+func ToJSON(sqlProfessor sqlc.Professor) response {
+	return response{
 		ID:         sqlProfessor.ID,
 		Name:       sqlProfessor.Name,
 		LabelColor: sqlProfessor.LabelColor,
@@ -40,19 +40,19 @@ func ToJSONProfessor(sqlProfessor sqlc.Professor) ProfessorResponse {
 	}
 }
 
-type DeleteProfessorRequest struct {
+type DeleteRequest struct {
 	ID int32 `uri:"id" binding:"required,min=1"`
 }
 
-type GetProfessorRequest struct {
+type getRequest struct {
 	ID int32 `uri:"id" binding:"required,min=1"`
 }
 
-func ToJSONProfessorList(SQLProfessors []sqlc.ListProfessorsRow, pageID, pageSize int32) ProfessorListResponse {
-	var profs []ProfessorResponse
+func toJSONList(SQLProfessors []sqlc.ListProfessorsRow, pageID, pageSize int32) listResponse {
+	var profs []response
 
 	for _, professor := range SQLProfessors {
-		profs = append(profs, ProfessorResponse{
+		profs = append(profs, response{
 			ID:         professor.ID,
 			Name:       professor.Name,
 			LabelColor: professor.LabelColor,
@@ -63,9 +63,9 @@ func ToJSONProfessorList(SQLProfessors []sqlc.ListProfessorsRow, pageID, pageSiz
 
 	totalPages := int32(math.Ceil(float64(SQLProfessors[0].TotalItems) / float64(pageSize)))
 
-	return ProfessorListResponse{
+	return listResponse{
 		Professors: profs,
-		PaginationResponse: models.PaginationResponse{
+		PaginationResponse: v1.PaginationResponse{
 			Limit:      pageID,
 			Offset:     pageSize,
 			TotalItems: SQLProfessors[0].TotalItems,

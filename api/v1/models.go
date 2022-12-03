@@ -1,4 +1,4 @@
-package models
+package v1
 
 type PaginationResponse struct {
 	Limit      int32 `json:"limit"`
@@ -9,7 +9,7 @@ type PaginationResponse struct {
 
 type PaginationRequest struct {
 	PageSize int32  `form:"pageSize"`
-	PageID   int32  `form:"pageID"`
+	PageID   int32  `form:"pageId"`
 	OrderBy  string `form:"orderBy"`
 	Reverse  bool   `form:"reverse"`
 }

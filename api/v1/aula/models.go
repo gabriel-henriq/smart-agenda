@@ -5,32 +5,32 @@ import (
 	"time"
 )
 
-type CreateAulaRequest struct {
-	TabletID    int32     `json:"tabletID" binding:"numeric"`
-	ProfessorID int32     `json:"professorID" binding:"required,numeric"`
-	RoomID      int32     `json:"roomID" binding:"required,numeric"`
+type createRequest struct {
+	TabletID    int32     `json:"tabletId" binding:"numeric"`
+	ProfessorID int32     `json:"professorId" binding:"required,numeric"`
+	RoomID      int32     `json:"roomId" binding:"required,numeric"`
 	StudentName string    `json:"studentName" binding:"alpha"`
 	MeetStart   time.Time `json:"meetStart" binding:"required,ltefield=MeetEnd"`
 	MeetEnd     time.Time `json:"meetEnd" binding:"required"`
 	Observation string    `json:"observation"`
 }
 
-type UpdateAulaRequest struct {
+type updateRequest struct {
 	ID          int32     `json:"id" binding:"required,numeric"`
-	TabletID    int32     `json:"tabletID" binding:"numeric"`
-	ProfessorID int32     `json:"professorID" binding:"numeric"`
-	RoomID      int32     `json:"roomID" binding:"numeric"`
+	TabletID    int32     `json:"tabletId" binding:"numeric"`
+	ProfessorID int32     `json:"professorId" binding:"numeric"`
+	RoomID      int32     `json:"roomId" binding:"numeric"`
 	StudentName string    `json:"studentName" binding:"alpha"`
 	MeetStart   time.Time `json:"meetStart" binding:"ltefield=MeetEnd"`
 	MeetEnd     time.Time `json:"meetEnd" binding:""`
 	Observation string    `json:"observation"`
 }
 
-type AulaResponse struct {
+type response struct {
 	ID          int32     `json:"id"`
-	TabletID    int32     `json:"TabletID"`
-	ProfessorID int32     `json:"ProfessorID"`
-	RoomID      int32     `json:"RoomID"`
+	TabletID    int32     `json:"TabletId"`
+	ProfessorID int32     `json:"ProfessorId"`
+	RoomID      int32     `json:"RoomId"`
 	StudentName string    `json:"studentName"`
 	Observation string    `json:"observation"`
 	MeetStart   time.Time `json:"meetStart"`
@@ -39,7 +39,7 @@ type AulaResponse struct {
 	UpdatedAt   time.Time `json:"updatedAt"`
 }
 
-type AulasResponse struct {
+type listResponse struct {
 	ID            int32     `json:"id"`
 	StudentName   string    `json:"studentName"`
 	MeetStart     time.Time `json:"meetStart"`
@@ -51,25 +51,25 @@ type AulasResponse struct {
 	UpdatedAt     time.Time `json:"updatedAt"`
 }
 
-type DeleteAulaRequest struct {
+type deleteRequest struct {
 	ID int32 `uri:"id" uri:"id" binding:"required,min=1"`
 }
 
-type GetAulaRequest struct {
+type GetRequest struct {
 	ID int32 `uri:"id" binding:"required,min=1"`
 }
 
-type ListAulaRequest struct {
-	MeetStart time.Time `form:"meet_start" binding:"ltefield=MeetEnd"`
-	MeetEnd   time.Time `form:"meet_end"`
+type listRequest struct {
+	MeetStart time.Time `form:"meetStart" binding:"ltefield=MeetEnd"`
+	MeetEnd   time.Time `form:"meetEnd"`
 }
 
-type ListAulaResponse struct {
-	Aulas []AulaResponse `json:"Aulas"`
+type ListResponse struct {
+	Aulas []response `json:"Aulas"`
 }
 
-func ToJSONAula(sqlAula sqlc.Aula) AulaResponse {
-	return AulaResponse{
+func ToJSON(sqlAula sqlc.Aula) response {
+	return response{
 		ID:          sqlAula.ID,
 		TabletID:    sqlAula.TabletID,
 		ProfessorID: sqlAula.ProfessorID,
@@ -83,11 +83,11 @@ func ToJSONAula(sqlAula sqlc.Aula) AulaResponse {
 	}
 }
 
-func ToJSONAulasList(SQLAulas []sqlc.ListAulasByTimeRangeRow) []AulasResponse {
-	var aulas []AulasResponse
+func ToJSONList(SQLAulas []sqlc.ListAulasByTimeRangeRow) []listResponse {
+	var aulas []listResponse
 
 	for _, aula := range SQLAulas {
-		aulas = append(aulas, AulasResponse{
+		aulas = append(aulas, listResponse{
 			ID:            aula.ID,
 			StudentName:   aula.StudentName,
 			MeetStart:     aula.MeetStart,

@@ -1,18 +1,17 @@
 package tablet
 
 import (
+	"github.com/gabriel-henriq/smart-agenda/api/v1"
 	"net/http"
 
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
-	"github.com/gabriel-henriq/smart-agenda/models"
-	"github.com/gabriel-henriq/smart-agenda/utils"
 	"github.com/gin-gonic/gin"
 )
 
-func (t Tablet) listTablet(ctx *gin.Context) {
-	var req models.PaginationRequest
+func (t Tablet) list(ctx *gin.Context) {
+	var req v1.PaginationRequest
 	if err := ctx.ShouldBindQuery(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+		ctx.JSON(http.StatusBadRequest, v1.ErrorResponse(err))
 		return
 	}
 
@@ -25,13 +24,13 @@ func (t Tablet) listTablet(ctx *gin.Context) {
 
 	rooms, err := t.db.ListTablets(ctx, args)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, v1.ErrorResponse(err))
 		return
 	}
 	if len(rooms) == 0 {
-		ctx.JSON(http.StatusOK, TabletList{
-			Tablets: []TabletResponse{},
-			PaginationResponse: models.PaginationResponse{
+		ctx.JSON(http.StatusOK, list{
+			Tablets: []response{},
+			PaginationResponse: v1.PaginationResponse{
 				Limit:  req.PageID,
 				Offset: req.PageSize,
 			},
@@ -39,7 +38,7 @@ func (t Tablet) listTablet(ctx *gin.Context) {
 		return
 	}
 
-	rsp := ToJSONTabletList(rooms, req.PageID, req.PageSize)
+	rsp := toJSONList(rooms, req.PageID, req.PageSize)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

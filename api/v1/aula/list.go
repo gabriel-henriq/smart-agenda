@@ -1,16 +1,16 @@
 package aula
 
 import (
+	"github.com/gabriel-henriq/smart-agenda/api/v1"
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
-	"github.com/gabriel-henriq/smart-agenda/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-func (a Aula) listAula(ctx *gin.Context) {
-	var req ListAulaRequest
+func (a Aula) list(ctx *gin.Context) {
+	var req listRequest
 	if err := ctx.ShouldBindQuery(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+		ctx.JSON(http.StatusBadRequest, v1.ErrorResponse(err))
 		return
 	}
 
@@ -21,17 +21,17 @@ func (a Aula) listAula(ctx *gin.Context) {
 
 	aulas, err := a.db.ListAulasByTimeRange(ctx, args)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, utils.ErrorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, v1.ErrorResponse(err))
 		return
 	}
 	if len(aulas) == 0 {
-		ctx.JSON(http.StatusOK, ListAulaResponse{
-			Aulas: []AulaResponse{},
+		ctx.JSON(http.StatusOK, ListResponse{
+			Aulas: []response{},
 		})
 		return
 	}
 
-	rsp := ToJSONAulasList(aulas)
+	rsp := ToJSONList(aulas)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

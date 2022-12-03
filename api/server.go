@@ -1,4 +1,4 @@
-package server
+package api
 
 import (
 	"github.com/gabriel-henriq/smart-agenda/api/v1/aula"
@@ -29,7 +29,6 @@ func (server *Server) setupRouter() {
 	server.router = router
 }
 
-// Create all V1 routes
 func (server *Server) createRoutesV1(router *gin.Engine) {
 	v1 := router.Group("/v1")
 

@@ -2,26 +2,24 @@ package main
 
 import (
 	"database/sql"
-	"github.com/gabriel-henriq/smart-agenda/db"
-	"github.com/gabriel-henriq/smart-agenda/server"
+	"github.com/gabriel-henriq/smart-agenda/api"
 	_ "github.com/lib/pq"
+
+	"github.com/gabriel-henriq/smart-agenda/db"
+	"github.com/gabriel-henriq/smart-agenda/util"
 )
 
 func main() {
-	conn, _ := sql.Open("postgres", "postgres://postgres:postgres@localhost:5432/smart-agenda?sslmode=disable")
-	//if errorRoute != nil {
-	//	log.Fatal().Err(errorRoute).Msg("cannot connect to db")
-	//}
+	config, _ := util.LoadConfig(".")
+	conn, _ := sql.Open(config.DBDriver, config.DBSource)
+
 	store := db.NewStore(conn)
 
-	server := server.NewServer(store)
-	//if errorRoute != nil {
-	//	log.Fatal().Err(errorRoute).Msg("cannot create server")
-	//}
+	runGinServer(config, store)
+}
 
-	_ = server.Start(":5000")
-	//if errorRoute != nil {
-	//	log.Fatal().Err(errorRoute).Msg("cannot start server")
-	//}
+func runGinServer(config util.Config, store db.Store) {
+	server := api.NewServer(store)
 
+	_ = server.Start(config.HTTPServerAddress)
 }

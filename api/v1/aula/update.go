@@ -42,7 +42,7 @@ func (a Aula) update(ctx *gin.Context) {
 		return
 	}
 
-	rsp := ToJSON(aula)
+	rsp := toJSON(aula)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

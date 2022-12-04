@@ -25,7 +25,7 @@ func (p Professor) get(ctx *gin.Context) {
 		return
 	}
 
-	rsp := ToJSON(prof)
+	rsp := toJSON(prof)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

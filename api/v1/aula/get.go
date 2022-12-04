@@ -9,7 +9,7 @@ import (
 )
 
 func (a Aula) getByID(ctx *gin.Context) {
-	var req GetRequest
+	var req getRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, v1.ErrorResponse(err))
 		return
@@ -26,7 +26,7 @@ func (a Aula) getByID(ctx *gin.Context) {
 		return
 	}
 
-	rsp := ToJSON(aula)
+	rsp := toJSON(aula)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

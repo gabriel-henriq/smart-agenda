@@ -19,7 +19,7 @@ type deleteRequest struct {
 	ID int32 `uri:"id" uri:"id" binding:"required,min=1"`
 }
 
-type GetRequest struct {
+type getRequest struct {
 	ID int32 `uri:"id" binding:"required,min=1"`
 }
 
@@ -48,27 +48,15 @@ type response struct {
 	Observation string    `json:"observation"`
 	MeetStart   time.Time `json:"meetStart"`
 	MeetEnd     time.Time `json:"meetEnd"`
-	CreatedAt   time.Time `json:"createdAt"`
-	UpdatedAt   time.Time `json:"updatedAt"`
+	CreatedAt   int64     `json:"createdAt"`
+	UpdatedAt   int64     `json:"updatedAt"`
 }
 
 type listResponse struct {
-	ID            int32     `json:"id"`
-	StudentName   string    `json:"studentName"`
-	MeetStart     time.Time `json:"meetStart"`
-	MeetEnd       time.Time `json:"meetEnd"`
-	ProfessorName string    `json:"professorName"`
-	TabletName    string    `json:"tabletName"`
-	RoomName      string    `json:"observation"`
-	CreatedAt     time.Time `json:"createdAt"`
-	UpdatedAt     time.Time `json:"updatedAt"`
-}
-
-type ListResponse struct {
 	Aulas []response `json:"Aulas"`
 }
 
-func ToJSON(sqlAula sqlc.Aula) response {
+func toJSON(sqlAula sqlc.Aula) response {
 	return response{
 		ID:          sqlAula.ID,
 		TabletID:    sqlAula.TabletID,
@@ -78,27 +66,28 @@ func ToJSON(sqlAula sqlc.Aula) response {
 		Observation: sqlAula.Observation,
 		MeetStart:   sqlAula.MeetStart,
 		MeetEnd:     sqlAula.MeetEnd,
-		CreatedAt:   sqlAula.CreatedAt,
-		UpdatedAt:   sqlAula.UpdatedAt,
+		CreatedAt:   sqlAula.CreatedAt.Unix(),
+		UpdatedAt:   sqlAula.UpdatedAt.Unix(),
 	}
 }
 
-func ToJSONList(SQLAulas []sqlc.ListAulasByTimeRangeRow) []listResponse {
-	var aulas []listResponse
+func toJSONList(SQLAulas []sqlc.ListAulasByTimeRangeRow) listResponse {
+	var aulas []response
 
 	for _, aula := range SQLAulas {
-		aulas = append(aulas, listResponse{
-			ID:            aula.ID,
-			StudentName:   aula.StudentName,
-			MeetStart:     aula.MeetStart,
-			MeetEnd:       aula.MeetEnd,
-			ProfessorName: aula.ProfessorName,
-			TabletName:    aula.TabletName,
-			RoomName:      aula.RoomName,
-			CreatedAt:     aula.CreatedAt,
-			UpdatedAt:     aula.UpdatedAt,
+		aulas = append(aulas, response{
+			ID:          aula.ID,
+			StudentName: aula.StudentName,
+			MeetStart:   aula.MeetStart,
+			MeetEnd:     aula.MeetEnd,
+			ProfessorID: aula.ProfessorID,
+			Observation: aula.Observation,
+			TabletID:    aula.TabletID,
+			RoomID:      aula.RoomID,
+			CreatedAt:   aula.CreatedAt.Unix(),
+			UpdatedAt:   aula.UpdatedAt.Unix(),
 		})
 	}
 
-	return aulas
+	return listResponse{Aulas: aulas}
 }

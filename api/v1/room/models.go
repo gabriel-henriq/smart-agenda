@@ -29,8 +29,8 @@ type response struct {
 	ID         int32  `json:"id"`
 	Name       string `json:"name"`
 	LabelColor string `json:"labelColor"`
-	CreatedAt  string `json:"createdAt"`
-	UpdatedAt  string `json:"updatedAt"`
+	CreatedAt  int64  `json:"createdAt"`
+	UpdatedAt  int64  `json:"updatedAt"`
 }
 
 type listResponse struct {
@@ -43,8 +43,8 @@ func toJSON(sqlRoom sqlc.Room) response {
 		ID:         sqlRoom.ID,
 		Name:       sqlRoom.Name,
 		LabelColor: sqlRoom.LabelColor,
-		CreatedAt:  sqlRoom.CreatedAt.String(),
-		UpdatedAt:  sqlRoom.UpdatedAt.String(),
+		CreatedAt:  sqlRoom.CreatedAt.Unix(),
+		UpdatedAt:  sqlRoom.UpdatedAt.Unix(),
 	}
 }
 
@@ -56,8 +56,8 @@ func toJSONList(SQLRooms []sqlc.ListRoomsRow, pageID, pageSize int32) listRespon
 			ID:         room.ID,
 			Name:       room.Name,
 			LabelColor: room.LabelColor,
-			CreatedAt:  room.CreatedAt.String(),
-			UpdatedAt:  room.UpdatedAt.String(),
+			CreatedAt:  room.CreatedAt.Unix(),
+			UpdatedAt:  room.UpdatedAt.Unix(),
 		})
 	}
 

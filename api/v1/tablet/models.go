@@ -28,8 +28,8 @@ type updateRequest struct {
 type response struct {
 	ID        int32  `json:"ID"`
 	Name      string `json:"name"`
-	CreatedAt string `json:"createdAt"`
-	UpdatedAt string `json:"updatedAt"`
+	CreatedAt int64  `json:"createdAt"`
+	UpdatedAt int64  `json:"updatedAt"`
 }
 
 type listResponse struct {
@@ -41,8 +41,8 @@ func toJSON(sqlTablet sqlc.Tablet) response {
 	return response{
 		ID:        sqlTablet.ID,
 		Name:      sqlTablet.Name,
-		CreatedAt: sqlTablet.CreatedAt.String(),
-		UpdatedAt: sqlTablet.UpdatedAt.String(),
+		CreatedAt: sqlTablet.CreatedAt.Unix(),
+		UpdatedAt: sqlTablet.UpdatedAt.Unix(),
 	}
 }
 
@@ -53,8 +53,8 @@ func toJSONList(SQLTablets []sqlc.ListTabletsRow, pageID, pageSize int32) listRe
 		tablets = append(tablets, response{
 			ID:        tablet.ID,
 			Name:      tablet.Name,
-			CreatedAt: tablet.CreatedAt.String(),
-			UpdatedAt: tablet.UpdatedAt.String(),
+			CreatedAt: tablet.CreatedAt.Unix(),
+			UpdatedAt: tablet.UpdatedAt.Unix(),
 		})
 	}
 

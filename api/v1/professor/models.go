@@ -11,7 +11,7 @@ type createRequest struct {
 	LabelColor string `json:"labelColor" binding:"required"`
 }
 
-type DeleteRequest struct {
+type deleteRequest struct {
 	ID int32 `uri:"id" binding:"required,min=1"`
 }
 
@@ -29,8 +29,8 @@ type response struct {
 	ID         int32  `json:"id"`
 	Name       string `json:"name"`
 	LabelColor string `json:"labelColor"`
-	CreatedAt  string `json:"createdAt"`
-	UpdatedAt  string `json:"updatedAt"`
+	CreatedAt  int64  `json:"createdAt"`
+	UpdatedAt  int64  `json:"updatedAt"`
 }
 
 type listResponse struct {
@@ -38,13 +38,13 @@ type listResponse struct {
 	v1.PaginationResponse `json:"pagination"`
 }
 
-func ToJSON(sqlProfessor sqlc.Professor) response {
+func toJSON(sqlProfessor sqlc.Professor) response {
 	return response{
 		ID:         sqlProfessor.ID,
 		Name:       sqlProfessor.Name,
 		LabelColor: sqlProfessor.LabelColor,
-		CreatedAt:  sqlProfessor.CreatedAt.String(),
-		UpdatedAt:  sqlProfessor.UpdatedAt.String(),
+		CreatedAt:  sqlProfessor.CreatedAt.Unix(),
+		UpdatedAt:  sqlProfessor.UpdatedAt.Unix(),
 	}
 }
 
@@ -56,8 +56,8 @@ func toJSONList(SQLProfessors []sqlc.ListProfessorsRow, pageID, pageSize int32) 
 			ID:         professor.ID,
 			Name:       professor.Name,
 			LabelColor: professor.LabelColor,
-			CreatedAt:  professor.CreatedAt.String(),
-			UpdatedAt:  professor.UpdatedAt.String(),
+			CreatedAt:  professor.CreatedAt.Unix(),
+			UpdatedAt:  professor.UpdatedAt.Unix(),
 		})
 	}
 

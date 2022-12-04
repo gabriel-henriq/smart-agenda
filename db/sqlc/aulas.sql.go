@@ -139,9 +139,10 @@ SELECT a.id,
        a.student_name,
        a.meet_start,
        a.meet_end,
-       p.name AS professor_name,
-       t.name AS tablet_name,
-       r.name AS room_name,
+       a.observation,
+       p.id AS professor_id,
+       t.id AS tablet_id,
+       r.id AS room_id,
        a.created_at,
        a.updated_at FROM aulas a
     JOIN professors p on p.id = a.professor_id
@@ -158,15 +159,16 @@ type ListAulasByTimeRangeParams struct {
 }
 
 type ListAulasByTimeRangeRow struct {
-	ID            int32
-	StudentName   string
-	MeetStart     time.Time
-	MeetEnd       time.Time
-	ProfessorName string
-	TabletName    string
-	RoomName      string
-	CreatedAt     time.Time
-	UpdatedAt     time.Time
+	ID          int32
+	StudentName string
+	MeetStart   time.Time
+	MeetEnd     time.Time
+	Observation string
+	ProfessorID int32
+	TabletID    int32
+	RoomID      int32
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
 
 func (q *Queries) ListAulasByTimeRange(ctx context.Context, arg ListAulasByTimeRangeParams) ([]ListAulasByTimeRangeRow, error) {
@@ -183,9 +185,10 @@ func (q *Queries) ListAulasByTimeRange(ctx context.Context, arg ListAulasByTimeR
 			&i.StudentName,
 			&i.MeetStart,
 			&i.MeetEnd,
-			&i.ProfessorName,
-			&i.TabletName,
-			&i.RoomName,
+			&i.Observation,
+			&i.ProfessorID,
+			&i.TabletID,
+			&i.RoomID,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {

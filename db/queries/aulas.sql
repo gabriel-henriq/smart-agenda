@@ -9,9 +9,10 @@ SELECT a.id,
        a.student_name,
        a.meet_start,
        a.meet_end,
-       p.name AS professor_name,
-       t.name AS tablet_name,
-       r.name AS room_name,
+       a.observation,
+       p.id AS professor_id,
+       t.id AS tablet_id,
+       r.id AS room_id,
        a.created_at,
        a.updated_at FROM aulas a
     JOIN professors p on p.id = a.professor_id

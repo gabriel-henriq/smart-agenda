@@ -8,7 +8,7 @@ import (
 )
 
 func (p Professor) delete(ctx *gin.Context) {
-	var req DeleteRequest
+	var req deleteRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, v1.ErrorResponse(err))
 		return

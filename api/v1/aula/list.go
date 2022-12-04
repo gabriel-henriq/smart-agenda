@@ -25,13 +25,13 @@ func (a Aula) list(ctx *gin.Context) {
 		return
 	}
 	if len(aulas) == 0 {
-		ctx.JSON(http.StatusOK, ListResponse{
+		ctx.JSON(http.StatusOK, listResponse{
 			Aulas: []response{},
 		})
 		return
 	}
 
-	rsp := ToJSONList(aulas)
+	rsp := toJSONList(aulas)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

@@ -1,6 +1,7 @@
 package tablet
 
 import (
+	"database/sql"
 	"github.com/gabriel-henriq/smart-agenda/api/v1"
 	"net/http"
 
@@ -19,8 +20,8 @@ func (t Tablet) update(ctx *gin.Context) {
 
 	arg := sqlc.UpdateTabletByIDParams{
 		ID:         req.ID,
-		Name:       req.Name,
-		LabelColor: req.LabelColor,
+		Name:       sql.NullString{String: req.Name, Valid: req.Name != ""},
+		LabelColor: sql.NullString{String: req.LabelColor, Valid: req.LabelColor != ""},
 	}
 
 	prof, err := t.db.UpdateTabletByID(ctx, arg)

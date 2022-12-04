@@ -7,6 +7,7 @@ package sqlc
 
 import (
 	"context"
+	"database/sql"
 	"time"
 )
 
@@ -202,23 +203,30 @@ func (q *Queries) ListAulasByTimeRange(ctx context.Context, arg ListAulasByTimeR
 }
 
 const updateAulaByID = `-- name: UpdateAulaByID :one
-UPDATE aulas SET room_id = $2, tablet_id = $3, professor_id = $4, student_name = $5, meet_start = $6, meet_end = $7, observation = $8 WHERE id = $1 RETURNING id, tablet_id, professor_id, room_id, student_name, observation, meet_start, meet_end, created_at, updated_at
+UPDATE aulas
+SET room_id = COALESCE($1, room_id),
+    tablet_id = COALESCE($2, tablet_id),
+    professor_id = COALESCE($3, professor_id),
+    student_name = COALESCE($4, student_name),
+    meet_start = COALESCE($5, meet_start),
+    meet_end = COALESCE($6, meet_end),
+    observation = COALESCE($7, observation)
+WHERE id = $8 RETURNING id, tablet_id, professor_id, room_id, student_name, observation, meet_start, meet_end, created_at, updated_at
 `
 
 type UpdateAulaByIDParams struct {
-	ID          int32     `json:"id"`
-	RoomID      int32     `json:"roomID"`
-	TabletID    int32     `json:"tabletID"`
-	ProfessorID int32     `json:"professorID"`
-	StudentName string    `json:"studentName"`
-	MeetStart   time.Time `json:"meetStart"`
-	MeetEnd     time.Time `json:"meetEnd"`
-	Observation string    `json:"observation"`
+	RoomID      sql.NullInt32  `json:"roomID"`
+	TabletID    sql.NullInt32  `json:"tabletID"`
+	ProfessorID sql.NullInt32  `json:"professorID"`
+	StudentName sql.NullString `json:"studentName"`
+	MeetStart   sql.NullTime   `json:"meetStart"`
+	MeetEnd     sql.NullTime   `json:"meetEnd"`
+	Observation sql.NullString `json:"observation"`
+	ID          int32          `json:"id"`
 }
 
 func (q *Queries) UpdateAulaByID(ctx context.Context, arg UpdateAulaByIDParams) (Aula, error) {
 	row := q.db.QueryRowContext(ctx, updateAulaByID,
-		arg.ID,
 		arg.RoomID,
 		arg.TabletID,
 		arg.ProfessorID,
@@ -226,6 +234,7 @@ func (q *Queries) UpdateAulaByID(ctx context.Context, arg UpdateAulaByIDParams) 
 		arg.MeetStart,
 		arg.MeetEnd,
 		arg.Observation,
+		arg.ID,
 	)
 	var i Aula
 	err := row.Scan(

@@ -1,6 +1,7 @@
 package aula
 
 import (
+	"database/sql"
 	"github.com/gabriel-henriq/smart-agenda/api/v1"
 	"net/http"
 
@@ -19,13 +20,13 @@ func (a Aula) update(ctx *gin.Context) {
 
 	arg := sqlc.UpdateAulaByIDParams{
 		ID:          req.ID,
-		TabletID:    req.TabletID,
-		ProfessorID: req.ProfessorID,
-		RoomID:      req.RoomID,
-		StudentName: req.StudentName,
-		Observation: req.Observation,
-		MeetStart:   req.MeetStart,
-		MeetEnd:     req.MeetEnd,
+		TabletID:    sql.NullInt32{Int32: req.TabletID, Valid: req.TabletID != 0},
+		ProfessorID: sql.NullInt32{Int32: req.ProfessorID, Valid: req.ProfessorID != 0},
+		RoomID:      sql.NullInt32{Int32: req.RoomID, Valid: req.RoomID != 0},
+		StudentName: sql.NullString{String: req.StudentName, Valid: req.StudentName != ""},
+		Observation: sql.NullString{String: req.Observation, Valid: req.Observation != ""},
+		MeetStart:   sql.NullTime{Time: req.MeetStart, Valid: !req.MeetStart.IsZero()},
+		MeetEnd:     sql.NullTime{Time: req.MeetEnd, Valid: !req.MeetEnd.IsZero()},
 	}
 
 	aula, err := a.db.UpdateAulaByID(ctx, arg)

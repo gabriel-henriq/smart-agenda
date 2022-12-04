@@ -7,6 +7,7 @@ package sqlc
 
 import (
 	"context"
+	"database/sql"
 	"time"
 )
 
@@ -171,17 +172,21 @@ func (q *Queries) ListTablets(ctx context.Context, arg ListTabletsParams) ([]Lis
 }
 
 const updateTabletByID = `-- name: UpdateTabletByID :one
-UPDATE tablets SET name = $2, label_color = $3 WHERE id = $1 RETURNING id, name, label_color, created_at, updated_at
+UPDATE tablets
+SET
+    name = COALESCE($1, name),
+    label_color = COALESCE($2, label_color)
+WHERE id = $3 RETURNING id, name, label_color, created_at, updated_at
 `
 
 type UpdateTabletByIDParams struct {
-	ID         int32  `json:"id"`
-	Name       string `json:"name"`
-	LabelColor string `json:"labelColor"`
+	Name       sql.NullString `json:"name"`
+	LabelColor sql.NullString `json:"labelColor"`
+	ID         int32          `json:"id"`
 }
 
 func (q *Queries) UpdateTabletByID(ctx context.Context, arg UpdateTabletByIDParams) (Tablet, error) {
-	row := q.db.QueryRowContext(ctx, updateTabletByID, arg.ID, arg.Name, arg.LabelColor)
+	row := q.db.QueryRowContext(ctx, updateTabletByID, arg.Name, arg.LabelColor, arg.ID)
 	var i Tablet
 	err := row.Scan(
 		&i.ID,

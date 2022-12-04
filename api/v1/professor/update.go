@@ -1,6 +1,7 @@
 package professor
 
 import (
+	"database/sql"
 	"github.com/gabriel-henriq/smart-agenda/api/v1"
 	"net/http"
 
@@ -19,8 +20,8 @@ func (p Professor) update(ctx *gin.Context) {
 
 	arg := sqlc.UpdateProfessorByIDParams{
 		ID:         req.ID,
-		Name:       req.Name,
-		LabelColor: req.LabelColor,
+		Name:       sql.NullString{String: req.Name, Valid: req.Name != ""},
+		LabelColor: sql.NullString{String: req.LabelColor, Valid: req.LabelColor != ""},
 	}
 
 	prof, err := p.db.UpdateProfessorByID(ctx, arg)

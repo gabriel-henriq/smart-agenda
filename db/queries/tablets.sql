@@ -17,7 +17,11 @@ INSERT INTO tablets (name, label_color) VALUES ($1, $2) RETURNING *;
 DELETE FROM tablets WHERE id = $1 RETURNING *;
 
 -- name: UpdateTabletByID :one
-UPDATE tablets SET name = $2, label_color = $3 WHERE id = $1 RETURNING *;
+UPDATE tablets
+SET
+    name = COALESCE(sqlc.narg('name'), name),
+    label_color = COALESCE(sqlc.narg('label_color'), label_color)
+WHERE id = sqlc.arg('id') RETURNING *;
 
 -- name: ListAvailableTabletsByTimeRange :many
 SELECT * FROM tablets WHERE id NOT IN (

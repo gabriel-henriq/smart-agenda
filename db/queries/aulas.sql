@@ -26,7 +26,15 @@ INSERT INTO aulas (tablet_id, professor_id, room_id, student_name, meet_start, m
 VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;
 
 -- name: UpdateAulaByID :one
-UPDATE aulas SET room_id = $2, tablet_id = $3, professor_id = $4, student_name = $5, meet_start = $6, meet_end = $7, observation = $8 WHERE id = $1 RETURNING *;
+UPDATE aulas
+SET room_id = COALESCE(sqlc.narg('room_id'), room_id),
+    tablet_id = COALESCE(sqlc.narg('tablet_id'), tablet_id),
+    professor_id = COALESCE(sqlc.narg('professor_id'), professor_id),
+    student_name = COALESCE(sqlc.narg('student_name'), student_name),
+    meet_start = COALESCE(sqlc.narg('meet_start'), meet_start),
+    meet_end = COALESCE(sqlc.narg('meet_end'), meet_end),
+    observation = COALESCE(sqlc.narg('observation'), observation)
+WHERE id = sqlc.arg('id') RETURNING *;
 
 -- name: DeleteAulaByID :one
 DELETE FROM aulas WHERE id = $1 RETURNING *;

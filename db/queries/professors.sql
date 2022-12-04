@@ -14,7 +14,11 @@ SELECT count(*) OVER () AS total_items, sub_query.* FROM
 INSERT INTO professors (name, label_color) VALUES ($1, $2) RETURNING *;
 
 -- name: UpdateProfessorByID :one
-UPDATE professors SET name = $2, label_color = $3 WHERE id = $1 RETURNING *;
+UPDATE professors
+SET
+    name = COALESCE(sqlc.narg('name'), name),
+    label_color = COALESCE(sqlc.narg('label_color'), label_color)
+WHERE id = sqlc.arg('id') RETURNING *;
 
 -- name: DeleteProfessorByID :one
 DELETE FROM professors WHERE id = $1 RETURNING *;

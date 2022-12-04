@@ -18,7 +18,11 @@ INSERT INTO rooms (name, label_color) VALUES ($1, $2) RETURNING *;
 DELETE FROM rooms WHERE id = $1 RETURNING *;
 
 -- name: UpdateRoomByID :one
-UPDATE rooms SET name = $2, label_color = $3 WHERE id = $1 RETURNING *;
+UPDATE rooms
+SET
+    name = COALESCE(sqlc.narg('name'), name),
+    label_color = coalesce(sqlc.narg('label_color'), label_color)
+WHERE id = sqlc.arg('id') RETURNING *;
 
 -- name: ListAvailableRoomsByTimeRange :many
 SELECT *

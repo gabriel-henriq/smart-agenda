@@ -16,8 +16,8 @@ INSERT INTO professors (name, label_color) VALUES ($1, $2) RETURNING id, name, l
 `
 
 type CreateProfessorParams struct {
-	Name       string `json:"name"`
-	LabelColor string `json:"labelColor"`
+	Name       string
+	LabelColor string
 }
 
 func (q *Queries) CreateProfessor(ctx context.Context, arg CreateProfessorParams) (Professor, error) {
@@ -78,8 +78,8 @@ WHERE id NOT IN (SELECT professor_id
 `
 
 type ListAvailableProfessorsByTimeRangeParams struct {
-	MeetStart time.Time `json:"meetStart"`
-	MeetEnd   time.Time `json:"meetEnd"`
+	MeetStart time.Time
+	MeetEnd   time.Time
 }
 
 func (q *Queries) ListAvailableProfessorsByTimeRange(ctx context.Context, arg ListAvailableProfessorsByTimeRangeParams) ([]Professor, error) {
@@ -122,19 +122,19 @@ SELECT count(*) OVER () AS total_items, sub_query.id, sub_query.name, sub_query.
 `
 
 type ListProfessorsParams struct {
-	Limit   int32  `json:"limit"`
-	Offset  int32  `json:"offset"`
-	Reverse bool   `json:"reverse"`
-	OrderBy string `json:"orderBy"`
+	Limit   int32
+	Offset  int32
+	Reverse bool
+	OrderBy string
 }
 
 type ListProfessorsRow struct {
-	TotalItems int64     `json:"totalItems"`
-	ID         int32     `json:"id"`
-	Name       string    `json:"name"`
-	LabelColor string    `json:"labelColor"`
-	CreatedAt  time.Time `json:"createdAt"`
-	UpdatedAt  time.Time `json:"updatedAt"`
+	TotalItems int64
+	ID         int32
+	Name       string
+	LabelColor string
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 }
 
 func (q *Queries) ListProfessors(ctx context.Context, arg ListProfessorsParams) ([]ListProfessorsRow, error) {
@@ -181,9 +181,9 @@ WHERE id = $3 RETURNING id, name, label_color, created_at, updated_at
 `
 
 type UpdateProfessorByIDParams struct {
-	Name       sql.NullString `json:"name"`
-	LabelColor sql.NullString `json:"labelColor"`
-	ID         int32          `json:"id"`
+	Name       sql.NullString
+	LabelColor sql.NullString
+	ID         int32
 }
 
 func (q *Queries) UpdateProfessorByID(ctx context.Context, arg UpdateProfessorByIDParams) (Professor, error) {

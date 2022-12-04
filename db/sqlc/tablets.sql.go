@@ -16,8 +16,8 @@ INSERT INTO tablets (name, label_color) VALUES ($1, $2) RETURNING id, name, labe
 `
 
 type CreateTabletParams struct {
-	Name       string `json:"name"`
-	LabelColor string `json:"labelColor"`
+	Name       string
+	LabelColor string
 }
 
 func (q *Queries) CreateTablet(ctx context.Context, arg CreateTabletParams) (Tablet, error) {
@@ -77,8 +77,8 @@ SELECT id, name, label_color, created_at, updated_at FROM tablets WHERE id NOT I
 `
 
 type ListAvailableTabletsByTimeRangeParams struct {
-	MeetStart time.Time `json:"meetStart"`
-	MeetEnd   time.Time `json:"meetEnd"`
+	MeetStart time.Time
+	MeetEnd   time.Time
 }
 
 func (q *Queries) ListAvailableTabletsByTimeRange(ctx context.Context, arg ListAvailableTabletsByTimeRangeParams) ([]Tablet, error) {
@@ -121,19 +121,19 @@ SELECT count(*) OVER () AS total_items, sub_query.id, sub_query.name, sub_query.
 `
 
 type ListTabletsParams struct {
-	Limit   int32  `json:"limit"`
-	Offset  int32  `json:"offset"`
-	Reverse bool   `json:"reverse"`
-	OrderBy string `json:"orderBy"`
+	Limit   int32
+	Offset  int32
+	Reverse bool
+	OrderBy string
 }
 
 type ListTabletsRow struct {
-	TotalItems int64     `json:"totalItems"`
-	ID         int32     `json:"id"`
-	Name       string    `json:"name"`
-	LabelColor string    `json:"labelColor"`
-	CreatedAt  time.Time `json:"createdAt"`
-	UpdatedAt  time.Time `json:"updatedAt"`
+	TotalItems int64
+	ID         int32
+	Name       string
+	LabelColor string
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 }
 
 func (q *Queries) ListTablets(ctx context.Context, arg ListTabletsParams) ([]ListTabletsRow, error) {
@@ -180,9 +180,9 @@ WHERE id = $3 RETURNING id, name, label_color, created_at, updated_at
 `
 
 type UpdateTabletByIDParams struct {
-	Name       sql.NullString `json:"name"`
-	LabelColor sql.NullString `json:"labelColor"`
-	ID         int32          `json:"id"`
+	Name       sql.NullString
+	LabelColor sql.NullString
+	ID         int32
 }
 
 func (q *Queries) UpdateTabletByID(ctx context.Context, arg UpdateTabletByIDParams) (Tablet, error) {

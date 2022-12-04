@@ -9,38 +9,38 @@ import (
 )
 
 type Aula struct {
-	ID          int32     `json:"id"`
-	TabletID    int32     `json:"tabletID"`
-	ProfessorID int32     `json:"professorID"`
-	RoomID      int32     `json:"roomID"`
-	StudentName string    `json:"studentName"`
-	Observation string    `json:"observation"`
-	MeetStart   time.Time `json:"meetStart"`
-	MeetEnd     time.Time `json:"meetEnd"`
-	CreatedAt   time.Time `json:"createdAt"`
-	UpdatedAt   time.Time `json:"updatedAt"`
+	ID          int32
+	TabletID    int32
+	ProfessorID int32
+	RoomID      int32
+	StudentName string
+	Observation string
+	MeetStart   time.Time
+	MeetEnd     time.Time
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
 
 type Professor struct {
-	ID         int32     `json:"id"`
-	Name       string    `json:"name"`
-	LabelColor string    `json:"labelColor"`
-	CreatedAt  time.Time `json:"createdAt"`
-	UpdatedAt  time.Time `json:"updatedAt"`
+	ID         int32
+	Name       string
+	LabelColor string
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 }
 
 type Room struct {
-	ID         int32     `json:"id"`
-	Name       string    `json:"name"`
-	LabelColor string    `json:"labelColor"`
-	CreatedAt  time.Time `json:"createdAt"`
-	UpdatedAt  time.Time `json:"updatedAt"`
+	ID         int32
+	Name       string
+	LabelColor string
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 }
 
 type Tablet struct {
-	ID         int32     `json:"id"`
-	Name       string    `json:"name"`
-	LabelColor string    `json:"labelColor"`
-	CreatedAt  time.Time `json:"createdAt"`
-	UpdatedAt  time.Time `json:"updatedAt"`
+	ID         int32
+	Name       string
+	LabelColor string
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 }

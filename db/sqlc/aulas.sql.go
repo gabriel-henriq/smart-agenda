@@ -17,13 +17,13 @@ VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, tablet_id, professor_id, room_
 `
 
 type CreateAulaParams struct {
-	TabletID    int32     `json:"tabletID"`
-	ProfessorID int32     `json:"professorID"`
-	RoomID      int32     `json:"roomID"`
-	StudentName string    `json:"studentName"`
-	MeetStart   time.Time `json:"meetStart"`
-	MeetEnd     time.Time `json:"meetEnd"`
-	Observation string    `json:"observation"`
+	TabletID    int32
+	ProfessorID int32
+	RoomID      int32
+	StudentName string
+	MeetStart   time.Time
+	MeetEnd     time.Time
+	Observation string
 }
 
 func (q *Queries) CreateAula(ctx context.Context, arg CreateAulaParams) (Aula, error) {
@@ -153,20 +153,20 @@ WHERE
 `
 
 type ListAulasByTimeRangeParams struct {
-	MeetStart time.Time `json:"meetStart"`
-	MeetEnd   time.Time `json:"meetEnd"`
+	MeetStart time.Time
+	MeetEnd   time.Time
 }
 
 type ListAulasByTimeRangeRow struct {
-	ID            int32     `json:"id"`
-	StudentName   string    `json:"studentName"`
-	MeetStart     time.Time `json:"meetStart"`
-	MeetEnd       time.Time `json:"meetEnd"`
-	ProfessorName string    `json:"professorName"`
-	TabletName    string    `json:"tabletName"`
-	RoomName      string    `json:"roomName"`
-	CreatedAt     time.Time `json:"createdAt"`
-	UpdatedAt     time.Time `json:"updatedAt"`
+	ID            int32
+	StudentName   string
+	MeetStart     time.Time
+	MeetEnd       time.Time
+	ProfessorName string
+	TabletName    string
+	RoomName      string
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
 }
 
 func (q *Queries) ListAulasByTimeRange(ctx context.Context, arg ListAulasByTimeRangeParams) ([]ListAulasByTimeRangeRow, error) {
@@ -215,14 +215,14 @@ WHERE id = $8 RETURNING id, tablet_id, professor_id, room_id, student_name, obse
 `
 
 type UpdateAulaByIDParams struct {
-	RoomID      sql.NullInt32  `json:"roomID"`
-	TabletID    sql.NullInt32  `json:"tabletID"`
-	ProfessorID sql.NullInt32  `json:"professorID"`
-	StudentName sql.NullString `json:"studentName"`
-	MeetStart   sql.NullTime   `json:"meetStart"`
-	MeetEnd     sql.NullTime   `json:"meetEnd"`
-	Observation sql.NullString `json:"observation"`
-	ID          int32          `json:"id"`
+	RoomID      sql.NullInt32
+	TabletID    sql.NullInt32
+	ProfessorID sql.NullInt32
+	StudentName sql.NullString
+	MeetStart   sql.NullTime
+	MeetEnd     sql.NullTime
+	Observation sql.NullString
+	ID          int32
 }
 
 func (q *Queries) UpdateAulaByID(ctx context.Context, arg UpdateAulaByIDParams) (Aula, error) {

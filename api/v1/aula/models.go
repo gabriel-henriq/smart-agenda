@@ -15,6 +15,19 @@ type createRequest struct {
 	Observation string    `json:"observation"`
 }
 
+type deleteRequest struct {
+	ID int32 `uri:"id" uri:"id" binding:"required,min=1"`
+}
+
+type GetRequest struct {
+	ID int32 `uri:"id" binding:"required,min=1"`
+}
+
+type listRequest struct {
+	MeetStart time.Time `form:"meetStart" binding:"ltefield=MeetEnd"`
+	MeetEnd   time.Time `form:"meetEnd"`
+}
+
 type updateRequest struct {
 	ID          int32     `json:"id" binding:"required,numeric"`
 	TabletID    int32     `json:"tabletId" binding:"numeric"`
@@ -49,19 +62,6 @@ type listResponse struct {
 	RoomName      string    `json:"observation"`
 	CreatedAt     time.Time `json:"createdAt"`
 	UpdatedAt     time.Time `json:"updatedAt"`
-}
-
-type deleteRequest struct {
-	ID int32 `uri:"id" uri:"id" binding:"required,min=1"`
-}
-
-type GetRequest struct {
-	ID int32 `uri:"id" binding:"required,min=1"`
-}
-
-type listRequest struct {
-	MeetStart time.Time `form:"meetStart" binding:"ltefield=MeetEnd"`
-	MeetEnd   time.Time `form:"meetEnd"`
 }
 
 type ListResponse struct {

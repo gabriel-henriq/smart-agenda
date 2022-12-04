@@ -11,6 +11,14 @@ type createRequest struct {
 	LabelColor string `json:"labelColor" binding:"required"`
 }
 
+type deleteRequest struct {
+	ID int32 `uri:"id" binding:"required,min=1"`
+}
+
+type getRequest struct {
+	ID int32 `uri:"id" binding:"required,min=1"`
+}
+
 type updateRequest struct {
 	ID         int32  `json:"id" binding:"required"`
 	Name       string `json:"name"`
@@ -24,15 +32,7 @@ type response struct {
 	UpdatedAt string `json:"updatedAt"`
 }
 
-type deleteRequest struct {
-	ID int32 `uri:"id" binding:"required,min=1"`
-}
-
-type getRequest struct {
-	ID int32 `uri:"id" binding:"required,min=1"`
-}
-
-type list struct {
+type listResponse struct {
 	Tablets               []response `json:"tablets"`
 	v1.PaginationResponse `json:"pagination"`
 }
@@ -46,7 +46,7 @@ func toJSON(sqlTablet sqlc.Tablet) response {
 	}
 }
 
-func toJSONList(SQLTablets []sqlc.ListTabletsRow, pageID, pageSize int32) list {
+func toJSONList(SQLTablets []sqlc.ListTabletsRow, pageID, pageSize int32) listResponse {
 	var tablets []response
 
 	for _, tablet := range SQLTablets {
@@ -60,7 +60,7 @@ func toJSONList(SQLTablets []sqlc.ListTabletsRow, pageID, pageSize int32) list {
 
 	totalPages := int32(math.Ceil(float64(SQLTablets[0].TotalItems) / float64(pageSize)))
 
-	return list{
+	return listResponse{
 		Tablets: tablets,
 		PaginationResponse: v1.PaginationResponse{
 			Limit:      pageID,

@@ -28,7 +28,7 @@ func (t Tablet) list(ctx *gin.Context) {
 		return
 	}
 	if len(rooms) == 0 {
-		ctx.JSON(http.StatusOK, list{
+		ctx.JSON(http.StatusOK, listResponse{
 			Tablets: []response{},
 			PaginationResponse: v1.PaginationResponse{
 				Limit:  req.PageID,

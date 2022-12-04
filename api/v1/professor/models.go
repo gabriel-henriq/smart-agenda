@@ -11,6 +11,14 @@ type createRequest struct {
 	LabelColor string `json:"labelColor" binding:"required"`
 }
 
+type DeleteRequest struct {
+	ID int32 `uri:"id" binding:"required,min=1"`
+}
+
+type getRequest struct {
+	ID int32 `uri:"id" binding:"required,min=1"`
+}
+
 type updateRequest struct {
 	ID         int32  `json:"id" binding:"required"`
 	Name       string `json:"name"`
@@ -38,14 +46,6 @@ func ToJSON(sqlProfessor sqlc.Professor) response {
 		CreatedAt:  sqlProfessor.CreatedAt.String(),
 		UpdatedAt:  sqlProfessor.UpdatedAt.String(),
 	}
-}
-
-type DeleteRequest struct {
-	ID int32 `uri:"id" binding:"required,min=1"`
-}
-
-type getRequest struct {
-	ID int32 `uri:"id" binding:"required,min=1"`
 }
 
 func toJSONList(SQLProfessors []sqlc.ListProfessorsRow, pageID, pageSize int32) listResponse {

@@ -37,27 +37,19 @@
 					"response": []
 				},
 				{
-					"name": "update",
+					"name": "Delete",
 					"request": {
-						"method": "PATCH",
+						"method": "DELETE",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"id\": 1,\n    \"name\": \"Ivan Noleto\",\n    \"labelColor\": \"azul\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "{{base_url}}/v1/professor",
+							"raw": "{{base_url}}/v1/professor/3",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"v1",
-								"professor"
+								"professor",
+								"3"
 							]
 						}
 					},
@@ -69,14 +61,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/v1/professor/2",
+							"raw": "{{base_url}}/v1/professor/1",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"v1",
 								"professor",
-								"2"
+								"1"
 							]
 						}
 					},
@@ -120,19 +112,202 @@
 					"response": []
 				},
 				{
+					"name": "update",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 1,\n    \"name\": \"Ivan Noleto\",\n    \"labelColor\": \"azul\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/professor",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"professor"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"aaaa\",\n    \"email\": \"ivananaaoleto@hotmail.com\",\n    \"password\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/user",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseJson = pm.response.json();",
+									"var bodyToken = responseJson.access_token;",
+									"pm.collectionVariables.set(\"token\", bodyToken);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"ivannoleto@hotmail.com\",\n    \"password\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/user/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"user",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Delete",
 					"request": {
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/v1/professor/2",
+							"raw": "{{base_url}}/v1/professor/11",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"v1",
 								"professor",
-								"2"
+								"11"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/user/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"user",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/user/?pageSize=10&pageId=1&orderBy=name&reverse=false",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"user",
+								""
+							],
+							"query": [
+								{
+									"key": "pageSize",
+									"value": "10"
+								},
+								{
+									"key": "pageId",
+									"value": "1"
+								},
+								{
+									"key": "orderBy",
+									"value": "name"
+								},
+								{
+									"key": "reverse",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 1,\n    \"name\": \"Ivan Noleto\",\n    \"labelColor\": \"azul\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/professor",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"professor"
 							]
 						}
 					},
@@ -197,7 +372,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"id\": 1,\n    \"name\": \"Sala 1\",\n    \"labelColor\": \"azul\"\n}",
+							"raw": "{\n    \"id\": 2,\n    \"name\": \"Sala 1\",\n    \"labelColor\": \"aafeafa\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -223,7 +398,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/v1/room/?pageSize=100&pageId=1&orderBy=name&reverse=false",
+							"raw": "{{base_url}}/v1/room/?pageSize=10&pageId=1&orderBy=id&reverse=true",
 							"host": [
 								"{{base_url}}"
 							],
@@ -235,7 +410,7 @@
 							"query": [
 								{
 									"key": "pageSize",
-									"value": "100"
+									"value": "10"
 								},
 								{
 									"key": "pageId",
@@ -243,11 +418,11 @@
 								},
 								{
 									"key": "orderBy",
-									"value": "name"
+									"value": "id"
 								},
 								{
 									"key": "reverse",
-									"value": "false"
+									"value": "true"
 								}
 							]
 						}
@@ -357,7 +532,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/v1/tablet/?pageId=1&pageSize=10&orderBy=name&reverse=false",
+							"raw": "{{base_url}}/v1/tablet/?pageId=1&pageSize=10&orderBy=id&reverse=true",
 							"host": [
 								"{{base_url}}"
 							],
@@ -377,11 +552,11 @@
 								},
 								{
 									"key": "orderBy",
-									"value": "name"
+									"value": "id"
 								},
 								{
 									"key": "reverse",
-									"value": "false"
+									"value": "true"
 								}
 							]
 						}
@@ -440,9 +615,9 @@
 					"response": []
 				},
 				{
-					"name": "Get",
+					"name": "Delete",
 					"request": {
-						"method": "GET",
+						"method": "DELETE",
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/v1/aula/1",
@@ -459,27 +634,19 @@
 					"response": []
 				},
 				{
-					"name": "update",
+					"name": "Get",
 					"request": {
-						"method": "PATCH",
+						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"id\": 1,\n    \"TabletId\": 1,\n    \"professorId\": 1,\n    \"roomId\": 1,\n    \"studentName\": \"Ivan\",\n    \"meetStart\": \"2022-11-28T01:28:09.995389Z\",\n    \"meetEnd\": \"2022-12-28T01:28:09.995389Z\",\n    \"Observation\": \"vai acabar m dia\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "{{base_url}}/v1/aula",
+							"raw": "{{base_url}}/v1/aula/1",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"v1",
-								"aula"
+								"aula",
+								"1"
 							]
 						}
 					},
@@ -516,19 +683,27 @@
 					"response": []
 				},
 				{
-					"name": "Delete",
+					"name": "update",
 					"request": {
-						"method": "DELETE",
+						"method": "PATCH",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 1,\n    \"TabletId\": 1,\n    \"professorId\": 1,\n    \"roomId\": 1,\n    \"studentName\": \"Ivan\",\n    \"meetStart\": \"2022-11-28T01:28:09.995389Z\",\n    \"meetEnd\": \"2022-12-28T01:28:09.995389Z\",\n    \"Observation\": \"vai acabar m dia\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{base_url}}/v1/aula/1",
+							"raw": "{{base_url}}/v1/aula",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"v1",
-								"aula",
-								"1"
+								"aula"
 							]
 						}
 					},
@@ -537,6 +712,16 @@
 			]
 		}
 	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
 	"event": [
 		{
 			"listen": "prerequest",
@@ -561,6 +746,11 @@
 		{
 			"key": "base_url",
 			"value": ""
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
 		}
 	]
 }

@@ -2,7 +2,6 @@ package tablet
 
 import (
 	"database/sql"
-	"github.com/gabriel-henriq/smart-agenda/api/v1"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -11,18 +10,18 @@ import (
 func (t Tablet) getByID(ctx *gin.Context) {
 	var req getRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, v1.ErrorResponse(err))
+		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 
 	room, err := t.db.GetTabletByID(ctx, req.ID)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			ctx.JSON(http.StatusNotFound, v1.ErrorResponse(err))
+			ctx.JSON(http.StatusNotFound, err.Error())
 			return
 		}
 
-		ctx.JSON(http.StatusInternalServerError, v1.ErrorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, err.Error())
 		return
 	}
 

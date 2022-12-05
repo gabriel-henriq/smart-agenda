@@ -3,7 +3,6 @@ package middleware
 import (
 	"errors"
 	"fmt"
-	"github.com/gabriel-henriq/smart-agenda/api/v1"
 	"github.com/gabriel-henriq/smart-agenda/token"
 	"net/http"
 	"strings"
@@ -23,28 +22,28 @@ func AuthMiddleware(tokenMaker token.Maker) gin.HandlerFunc {
 
 		if len(authorizationHeader) == 0 {
 			err := errors.New("authorization header is not provided")
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, v1.ErrorResponse(err))
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, err.Error())
 			return
 		}
 
 		fields := strings.Fields(authorizationHeader)
 		if len(fields) < 2 {
 			err := errors.New("invalid authorization header format")
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, v1.ErrorResponse(err))
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, err.Error())
 			return
 		}
 
 		authorizationType := strings.ToLower(fields[0])
 		if authorizationType != authorizationTypeBearer {
 			err := fmt.Errorf("unsupported authorization type %s", authorizationType)
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, v1.ErrorResponse(err))
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, err.Error())
 			return
 		}
 
 		accessToken := fields[1]
 		payload, err := tokenMaker.VerifyToken(accessToken)
 		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, v1.ErrorResponse(err))
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, err.Error())
 			return
 		}
 

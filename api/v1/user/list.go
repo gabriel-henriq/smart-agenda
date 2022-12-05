@@ -10,7 +10,7 @@ import (
 func (u User) list(ctx *gin.Context) {
 	var req v1.PaginationRequest
 	if err := ctx.ShouldBindQuery(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, v1.ErrorResponse(err))
+		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -23,7 +23,7 @@ func (u User) list(ctx *gin.Context) {
 
 	users, err := u.db.ListUsers(ctx, args)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, v1.ErrorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, err.Error())
 		return
 	}
 	if len(users) == 0 {

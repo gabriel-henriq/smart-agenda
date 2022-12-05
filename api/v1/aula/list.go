@@ -1,7 +1,6 @@
 package aula
 
 import (
-	"github.com/gabriel-henriq/smart-agenda/api/v1"
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -10,7 +9,7 @@ import (
 func (a Aula) list(ctx *gin.Context) {
 	var req listRequest
 	if err := ctx.ShouldBindQuery(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, v1.ErrorResponse(err))
+		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -21,7 +20,7 @@ func (a Aula) list(ctx *gin.Context) {
 
 	aulas, err := a.db.ListAulasByTimeRange(ctx, args)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, v1.ErrorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, err.Error())
 		return
 	}
 	if len(aulas) == 0 {

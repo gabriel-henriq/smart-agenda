@@ -2,7 +2,6 @@ package user
 
 import (
 	"database/sql"
-	"github.com/gabriel-henriq/smart-agenda/api/v1"
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
 	"github.com/gabriel-henriq/smart-agenda/util"
 	"github.com/gin-gonic/gin"
@@ -12,23 +11,23 @@ import (
 func (u User) loginUser(ctx *gin.Context) {
 	var req loginRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, v1.ErrorResponse(err))
+		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 
 	user, err := u.db.GetUserByEmail(ctx, req.Email)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			ctx.JSON(http.StatusNotFound, v1.ErrorResponse(err))
+			ctx.JSON(http.StatusNotFound, err.Error())
 			return
 		}
-		ctx.JSON(http.StatusInternalServerError, v1.ErrorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	err = util.CheckPassword(req.Password, user.Password)
 	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, v1.ErrorResponse(err))
+		ctx.JSON(http.StatusUnauthorized, err.Error())
 		return
 	}
 
@@ -37,7 +36,7 @@ func (u User) loginUser(ctx *gin.Context) {
 		u.config.AccessTokenDuration,
 	)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, v1.ErrorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -46,7 +45,7 @@ func (u User) loginUser(ctx *gin.Context) {
 		u.config.RefreshTokenDuration,
 	)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, v1.ErrorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -60,7 +59,7 @@ func (u User) loginUser(ctx *gin.Context) {
 		ExpiresAt:    refreshPayload.ExpiredAt,
 	})
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, v1.ErrorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, err.Error())
 		return
 	}
 

@@ -11,7 +11,7 @@ import (
 func (t Tablet) list(ctx *gin.Context) {
 	var req v1.PaginationRequest
 	if err := ctx.ShouldBindQuery(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, v1.ErrorResponse(err))
+		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -24,7 +24,7 @@ func (t Tablet) list(ctx *gin.Context) {
 
 	rooms, err := t.db.ListTablets(ctx, args)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, v1.ErrorResponse(err))
+		ctx.JSON(http.StatusInternalServerError, err.Error())
 		return
 	}
 	if len(rooms) == 0 {

@@ -11,6 +11,7 @@ import (
 	"github.com/gabriel-henriq/smart-agenda/token"
 	"github.com/gabriel-henriq/smart-agenda/util"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 type Server struct {
@@ -42,6 +43,10 @@ func (server *Server) setupRouter() {
 }
 
 func (server *Server) createRoutesV1(router *gin.Engine) {
+	router.GET("/healthz", func(c *gin.Context) {
+		c.Status(http.StatusNoContent)
+	})
+
 	v1 := router.Group("/v1")
 
 	professorRoutes := professor.NewProfessor(server.store, server.config)

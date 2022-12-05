@@ -3,13 +3,14 @@ package paseto
 import (
 	"database/sql"
 	"fmt"
+	"github.com/gabriel-henriq/smart-agenda/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
 )
 
 func (t Token) renewAccessToken(ctx *gin.Context) {
-	var req renewAccessTokenRequest
+	var req models.RenewAccessTokenRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
@@ -64,7 +65,7 @@ func (t Token) renewAccessToken(ctx *gin.Context) {
 		return
 	}
 
-	rsp := renewAccessTokenResponse{
+	rsp := models.RenewAccessTokenResponse{
 		AccessToken:          accessToken,
 		AccessTokenExpiresAt: accessPayload.ExpiredAt,
 	}

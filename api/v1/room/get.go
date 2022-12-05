@@ -2,13 +2,14 @@ package room
 
 import (
 	"database/sql"
+	"github.com/gabriel-henriq/smart-agenda/models"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 func (r Room) getByID(ctx *gin.Context) {
-	var req getRequest
+	var req models.GetRoomRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
@@ -25,7 +26,7 @@ func (r Room) getByID(ctx *gin.Context) {
 		return
 	}
 
-	rsp := toJSON(room)
+	rsp := models.RoomToJSON(room)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

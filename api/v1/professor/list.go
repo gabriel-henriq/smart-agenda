@@ -1,7 +1,7 @@
 package professor
 
 import (
-	"github.com/gabriel-henriq/smart-agenda/api/v1"
+	"github.com/gabriel-henriq/smart-agenda/models"
 	"net/http"
 
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
@@ -9,7 +9,7 @@ import (
 )
 
 func (p Professor) list(ctx *gin.Context) {
-	var req v1.PaginationRequest
+	var req models.PaginationRequest
 
 	if err := ctx.ShouldBindQuery(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
@@ -29,9 +29,9 @@ func (p Professor) list(ctx *gin.Context) {
 		return
 	}
 	if len(profs) == 0 {
-		ctx.JSON(http.StatusOK, listResponse{
-			Professors: []response{},
-			PaginationResponse: v1.PaginationResponse{
+		ctx.JSON(http.StatusOK, models.ListProfessorsResponse{
+			Professors: []models.ResponseProfessor{},
+			PaginationResponse: models.PaginationResponse{
 				Limit:  req.PageID,
 				Offset: req.PageSize,
 			},
@@ -39,7 +39,7 @@ func (p Professor) list(ctx *gin.Context) {
 		return
 	}
 
-	rsp := toJSONList(profs, req.PageID, req.PageSize)
+	rsp := models.ProferrosToJSONList(profs, req.PageID, req.PageSize)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

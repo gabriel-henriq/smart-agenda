@@ -1,40 +1,39 @@
-package user
+package models
 
 import (
-	v1 "github.com/gabriel-henriq/smart-agenda/api/v1"
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
 	"github.com/google/uuid"
 	"math"
 	"time"
 )
 
-type createRequest struct {
+type CreateUserRequest struct {
 	Name     string `json:"name" binding:"alpha"`
 	Email    string `json:"email" binding:"required,email"`
 	Password string `json:"password" binding:"required"`
 }
 
-type deleteRequest struct {
+type DeleteUserRequest struct {
 	ID int32 `uri:"id" uri:"id" binding:"required,min=1"`
 }
 
-type getRequest struct {
+type GetUserRequest struct {
 	ID int32 `uri:"id" binding:"required,min=1"`
 }
 
-type loginRequest struct {
+type LoginUserRequest struct {
 	Email    string `json:"email" binding:"required,email"`
 	Password string `json:"password" binding:"required,min=6"`
 }
 
-type updateRequest struct {
+type UpdateUserRequest struct {
 	ID       int32  `json:"id" binding:"required,numeric"`
 	Name     string `json:"ame" binding:"alpha"`
 	Email    string `json:"email" binding:"email"`
 	Password string `json:"password"`
 }
 
-type response struct {
+type UserResponse struct {
 	ID        int32  `json:"id"`
 	Name      string `json:"name"`
 	Email     string `json:"email"`
@@ -42,22 +41,22 @@ type response struct {
 	UpdatedAt int64  `json:"updated_at"`
 }
 
-type listResponse struct {
-	Users []response `json:"users"`
-	v1.PaginationResponse
+type ListUserResponse struct {
+	Users []UserResponse `json:"users"`
+	PaginationResponse
 }
 
-type loginUserResponse struct {
-	SessionID             uuid.UUID `json:"session_id"`
-	AccessToken           string    `json:"access_token"`
-	AccessTokenExpiresAt  time.Time `json:"access_token_expires_at"`
-	RefreshToken          string    `json:"refresh_token"`
-	RefreshTokenExpiresAt time.Time `json:"refresh_token_expires_at"`
-	User                  response  `json:"user"`
+type LoginUserResponse struct {
+	SessionID             uuid.UUID    `json:"session_id"`
+	AccessToken           string       `json:"access_token"`
+	AccessTokenExpiresAt  time.Time    `json:"access_token_expires_at"`
+	RefreshToken          string       `json:"refresh_token"`
+	RefreshTokenExpiresAt time.Time    `json:"refresh_token_expires_at"`
+	User                  UserResponse `json:"user"`
 }
 
-func toJSON(SQLUser sqlc.User) response {
-	return response{
+func UserToJSON(SQLUser sqlc.User) UserResponse {
+	return UserResponse{
 		ID:        SQLUser.ID,
 		Name:      SQLUser.Name,
 		Email:     SQLUser.Email,
@@ -66,11 +65,11 @@ func toJSON(SQLUser sqlc.User) response {
 	}
 }
 
-func toJSONList(SQLUsers []sqlc.ListUsersRow, pageID, pageSize int32) listResponse {
-	var users []response
+func UsersToJSONList(SQLUsers []sqlc.ListUsersRow, pageID, pageSize int32) ListUserResponse {
+	var users []UserResponse
 
 	for _, user := range SQLUsers {
-		users = append(users, response{
+		users = append(users, UserResponse{
 			ID:        user.ID,
 			Name:      user.Name,
 			Email:     user.Email,
@@ -81,9 +80,9 @@ func toJSONList(SQLUsers []sqlc.ListUsersRow, pageID, pageSize int32) listRespon
 
 	totalPages := int32(math.Ceil(float64(SQLUsers[0].TotalItems) / float64(pageSize)))
 
-	return listResponse{
+	return ListUserResponse{
 		Users: users,
-		PaginationResponse: v1.PaginationResponse{
+		PaginationResponse: PaginationResponse{
 			Limit:      pageID,
 			Offset:     pageSize,
 			TotalItems: SQLUsers[0].TotalItems,

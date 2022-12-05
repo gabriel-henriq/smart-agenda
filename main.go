@@ -2,8 +2,8 @@ package main
 
 import (
 	"database/sql"
-	"github.com/gabriel-henriq/smart-agenda/api"
 	"github.com/gabriel-henriq/smart-agenda/db"
+	"github.com/gabriel-henriq/smart-agenda/server"
 	"github.com/gabriel-henriq/smart-agenda/util"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database"
@@ -31,7 +31,7 @@ func runDBMigration(migrationURL string, dbSource string, driver database.Driver
 }
 
 func runGinServer(config util.Config, store db.Store) {
-	server := api.NewServer(config, store)
+	api := server.NewServer(config, store)
 
-	_ = server.Start(config.HTTPServerAddress)
+	_ = api.Start(config.HTTPServerAddress)
 }

@@ -2,12 +2,13 @@ package aula
 
 import (
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
+	"github.com/gabriel-henriq/smart-agenda/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 func (a Aula) list(ctx *gin.Context) {
-	var req listRequest
+	var req models.ListAulasRequest
 	if err := ctx.ShouldBindQuery(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
@@ -24,13 +25,13 @@ func (a Aula) list(ctx *gin.Context) {
 		return
 	}
 	if len(aulas) == 0 {
-		ctx.JSON(http.StatusOK, listResponse{
-			Aulas: []response{},
+		ctx.JSON(http.StatusOK, models.ListAulaResponse{
+			Aulas: []models.ResponseAula{},
 		})
 		return
 	}
 
-	rsp := toJSONList(aulas)
+	rsp := models.AulasToJSONList(aulas)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

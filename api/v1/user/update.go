@@ -2,6 +2,7 @@ package user
 
 import (
 	"database/sql"
+	"github.com/gabriel-henriq/smart-agenda/models"
 	"net/http"
 
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
@@ -10,7 +11,7 @@ import (
 )
 
 func (u User) update(ctx *gin.Context) {
-	var req updateRequest
+	var req models.UpdateUserRequest
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
@@ -37,7 +38,7 @@ func (u User) update(ctx *gin.Context) {
 		return
 	}
 
-	rsp := toJSON(user)
+	rsp := models.UserToJSON(user)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

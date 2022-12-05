@@ -2,6 +2,7 @@ package room
 
 import (
 	"database/sql"
+	"github.com/gabriel-henriq/smart-agenda/models"
 	"net/http"
 
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
@@ -10,7 +11,7 @@ import (
 )
 
 func (r Room) update(ctx *gin.Context) {
-	var req updateRequest
+	var req models.UpdateRoomRequest
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
@@ -36,7 +37,7 @@ func (r Room) update(ctx *gin.Context) {
 		return
 	}
 
-	rsp := toJSON(room)
+	rsp := models.RoomToJSON(room)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

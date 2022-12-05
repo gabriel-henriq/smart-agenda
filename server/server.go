@@ -1,4 +1,4 @@
-package api
+package server
 
 import (
 	"github.com/gabriel-henriq/smart-agenda/api/v1/aula"

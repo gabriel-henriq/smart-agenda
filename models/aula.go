@@ -1,11 +1,11 @@
-package aula
+package models
 
 import (
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
 	"time"
 )
 
-type createRequest struct {
+type CreateAulaRequest struct {
 	TabletID    int32     `json:"tabletId" binding:"numeric"`
 	ProfessorID int32     `json:"professorId" binding:"required,numeric"`
 	RoomID      int32     `json:"roomId" binding:"required,numeric"`
@@ -15,20 +15,20 @@ type createRequest struct {
 	Observation string    `json:"observation"`
 }
 
-type deleteRequest struct {
+type DeleteAulaRequest struct {
 	ID int32 `uri:"id" uri:"id" binding:"required,min=1"`
 }
 
-type getRequest struct {
+type GetAulaRequest struct {
 	ID int32 `uri:"id" binding:"required,min=1"`
 }
 
-type listRequest struct {
+type ListAulasRequest struct {
 	MeetStart time.Time `form:"meetStart" binding:"ltefield=MeetEnd"`
 	MeetEnd   time.Time `form:"meetEnd"`
 }
 
-type updateRequest struct {
+type UpdateAulaRequest struct {
 	ID          int32     `json:"id" binding:"required,numeric"`
 	TabletID    int32     `json:"tabletId" binding:"numeric"`
 	ProfessorID int32     `json:"professorId" binding:"numeric"`
@@ -39,7 +39,7 @@ type updateRequest struct {
 	Observation string    `json:"observation"`
 }
 
-type response struct {
+type ResponseAula struct {
 	ID          int32     `json:"id"`
 	TabletID    int32     `json:"TabletId"`
 	ProfessorID int32     `json:"ProfessorId"`
@@ -52,12 +52,12 @@ type response struct {
 	UpdatedAt   int64     `json:"updatedAt"`
 }
 
-type listResponse struct {
-	Aulas []response `json:"aulas"`
+type ListAulaResponse struct {
+	Aulas []ResponseAula `json:"aulas"`
 }
 
-func toJSON(sqlAula sqlc.Aula) response {
-	return response{
+func AulaToJSON(sqlAula sqlc.Aula) ResponseAula {
+	return ResponseAula{
 		ID:          sqlAula.ID,
 		TabletID:    sqlAula.TabletID,
 		ProfessorID: sqlAula.ProfessorID,
@@ -71,11 +71,11 @@ func toJSON(sqlAula sqlc.Aula) response {
 	}
 }
 
-func toJSONList(SQLAulas []sqlc.ListAulasByTimeRangeRow) listResponse {
-	var aulas []response
+func AulasToJSONList(SQLAulas []sqlc.ListAulasByTimeRangeRow) ListAulaResponse {
+	var aulas []ResponseAula
 
 	for _, aula := range SQLAulas {
-		aulas = append(aulas, response{
+		aulas = append(aulas, ResponseAula{
 			ID:          aula.ID,
 			StudentName: aula.StudentName,
 			MeetStart:   aula.MeetStart,
@@ -89,5 +89,5 @@ func toJSONList(SQLAulas []sqlc.ListAulasByTimeRangeRow) listResponse {
 		})
 	}
 
-	return listResponse{Aulas: aulas}
+	return ListAulaResponse{Aulas: aulas}
 }

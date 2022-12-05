@@ -1,31 +1,30 @@
-package room
+package models
 
 import (
-	"github.com/gabriel-henriq/smart-agenda/api/v1"
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
 	"math"
 )
 
-type createRequest struct {
+type CreateRoomRequest struct {
 	Name       string `json:"name" binding:"required"`
 	LabelColor string `json:"labelColor" binding:"required"`
 }
 
-type deleteRequest struct {
+type DeleteRoomRequest struct {
 	ID int32 `uri:"id" binding:"required,min=1"`
 }
 
-type getRequest struct {
+type GetRoomRequest struct {
 	ID int32 `uri:"id" binding:"required,min=1"`
 }
 
-type updateRequest struct {
+type UpdateRoomRequest struct {
 	ID         int32  `json:"id" binding:"required"`
 	Name       string `json:"name"`
 	LabelColor string `json:"labelColor"`
 }
 
-type response struct {
+type ResponseRoom struct {
 	ID         int32  `json:"id"`
 	Name       string `json:"name"`
 	LabelColor string `json:"labelColor"`
@@ -33,13 +32,13 @@ type response struct {
 	UpdatedAt  int64  `json:"updatedAt"`
 }
 
-type listResponse struct {
-	Rooms                 []response `json:"rooms"`
-	v1.PaginationResponse `json:"pagination"`
+type ListRoomResponse struct {
+	Rooms              []ResponseRoom `json:"rooms"`
+	PaginationResponse `json:"pagination"`
 }
 
-func toJSON(sqlRoom sqlc.Room) response {
-	return response{
+func RoomToJSON(sqlRoom sqlc.Room) ResponseRoom {
+	return ResponseRoom{
 		ID:         sqlRoom.ID,
 		Name:       sqlRoom.Name,
 		LabelColor: sqlRoom.LabelColor,
@@ -48,11 +47,11 @@ func toJSON(sqlRoom sqlc.Room) response {
 	}
 }
 
-func toJSONList(SQLRooms []sqlc.ListRoomsRow, pageID, pageSize int32) listResponse {
-	var rooms []response
+func RoomsToJSONList(SQLRooms []sqlc.ListRoomsRow, pageID, pageSize int32) ListRoomResponse {
+	var rooms []ResponseRoom
 
 	for _, room := range SQLRooms {
-		rooms = append(rooms, response{
+		rooms = append(rooms, ResponseRoom{
 			ID:         room.ID,
 			Name:       room.Name,
 			LabelColor: room.LabelColor,
@@ -63,9 +62,9 @@ func toJSONList(SQLRooms []sqlc.ListRoomsRow, pageID, pageSize int32) listRespon
 
 	totalPages := int32(math.Ceil(float64(SQLRooms[0].TotalItems) / float64(pageSize)))
 
-	return listResponse{
+	return ListRoomResponse{
 		Rooms: rooms,
-		PaginationResponse: v1.PaginationResponse{
+		PaginationResponse: PaginationResponse{
 			Limit:      pageID,
 			Offset:     pageSize,
 			TotalItems: SQLRooms[0].TotalItems,

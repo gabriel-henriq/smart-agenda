@@ -1,14 +1,14 @@
 package user
 
 import (
-	"github.com/gabriel-henriq/smart-agenda/api/v1"
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
+	"github.com/gabriel-henriq/smart-agenda/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 func (u User) list(ctx *gin.Context) {
-	var req v1.PaginationRequest
+	var req models.PaginationRequest
 	if err := ctx.ShouldBindQuery(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
@@ -27,9 +27,9 @@ func (u User) list(ctx *gin.Context) {
 		return
 	}
 	if len(users) == 0 {
-		ctx.JSON(http.StatusOK, listResponse{
-			Users: []response{},
-			PaginationResponse: v1.PaginationResponse{
+		ctx.JSON(http.StatusOK, models.ListUserResponse{
+			Users: []models.UserResponse{},
+			PaginationResponse: models.PaginationResponse{
 				Limit:  req.PageID,
 				Offset: req.PageSize,
 			},
@@ -37,7 +37,7 @@ func (u User) list(ctx *gin.Context) {
 		return
 	}
 
-	rsp := toJSONList(users, req.PageID, req.PageSize)
+	rsp := models.UsersToJSONList(users, req.PageID, req.PageSize)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

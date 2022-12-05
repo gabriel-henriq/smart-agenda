@@ -3,13 +3,14 @@ package user
 import (
 	"database/sql"
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
+	"github.com/gabriel-henriq/smart-agenda/models"
 	"github.com/gabriel-henriq/smart-agenda/util"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 func (u User) loginUser(ctx *gin.Context) {
-	var req loginRequest
+	var req models.LoginUserRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
@@ -63,13 +64,13 @@ func (u User) loginUser(ctx *gin.Context) {
 		return
 	}
 
-	rsp := loginUserResponse{
+	rsp := models.LoginUserResponse{
 		SessionID:             session.ID,
 		AccessToken:           accessToken,
 		AccessTokenExpiresAt:  accessPayload.ExpiredAt,
 		RefreshToken:          refreshToken,
 		RefreshTokenExpiresAt: refreshPayload.ExpiredAt,
-		User:                  toJSON(user),
+		User:                  models.UserToJSON(user),
 	}
 	ctx.JSON(http.StatusOK, rsp)
 }

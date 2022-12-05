@@ -1,7 +1,7 @@
 package room
 
 import (
-	"github.com/gabriel-henriq/smart-agenda/api/v1"
+	"github.com/gabriel-henriq/smart-agenda/models"
 	"net/http"
 
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
@@ -9,7 +9,7 @@ import (
 )
 
 func (r Room) list(ctx *gin.Context) {
-	var req v1.PaginationRequest
+	var req models.PaginationRequest
 	if err := ctx.ShouldBindQuery(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
@@ -28,9 +28,9 @@ func (r Room) list(ctx *gin.Context) {
 		return
 	}
 	if len(rooms) == 0 {
-		ctx.JSON(http.StatusOK, listResponse{
-			Rooms: []response{},
-			PaginationResponse: v1.PaginationResponse{
+		ctx.JSON(http.StatusOK, models.ListRoomResponse{
+			Rooms: []models.ResponseRoom{},
+			PaginationResponse: models.PaginationResponse{
 				Limit:  req.PageID,
 				Offset: req.PageSize,
 			},
@@ -38,7 +38,7 @@ func (r Room) list(ctx *gin.Context) {
 		return
 	}
 
-	rsp := toJSONList(rooms, req.PageID, req.PageSize)
+	rsp := models.RoomsToJSONList(rooms, req.PageID, req.PageSize)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

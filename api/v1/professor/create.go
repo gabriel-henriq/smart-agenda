@@ -1,6 +1,7 @@
 package professor
 
 import (
+	"github.com/gabriel-henriq/smart-agenda/models"
 	"net/http"
 
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
@@ -9,7 +10,7 @@ import (
 )
 
 func (p Professor) create(ctx *gin.Context) {
-	var req createRequest
+	var req models.CreateProfessorRequest
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
@@ -34,7 +35,7 @@ func (p Professor) create(ctx *gin.Context) {
 		return
 	}
 
-	rsp := toJSON(prof)
+	rsp := models.ProfessorToJSON(prof)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

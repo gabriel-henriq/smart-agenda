@@ -1,4 +1,4 @@
-package v1
+package models
 
 type PaginationResponse struct {
 	Limit      int32 `json:"limit"`

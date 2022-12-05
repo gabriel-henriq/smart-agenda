@@ -2,6 +2,7 @@ package user
 
 import (
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
+	"github.com/gabriel-henriq/smart-agenda/models"
 	"github.com/gabriel-henriq/smart-agenda/util"
 	"github.com/gin-gonic/gin"
 	"github.com/lib/pq"
@@ -9,7 +10,7 @@ import (
 )
 
 func (u User) create(ctx *gin.Context) {
-	var req createRequest
+	var req models.CreateUserRequest
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
@@ -41,7 +42,7 @@ func (u User) create(ctx *gin.Context) {
 		return
 	}
 
-	rsp := toJSON(user)
+	rsp := models.UserToJSON(user)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

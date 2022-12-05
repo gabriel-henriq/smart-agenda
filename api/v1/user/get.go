@@ -2,13 +2,14 @@ package user
 
 import (
 	"database/sql"
+	"github.com/gabriel-henriq/smart-agenda/models"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 func (u User) getByID(ctx *gin.Context) {
-	var req getRequest
+	var req models.GetUserRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
@@ -25,7 +26,7 @@ func (u User) getByID(ctx *gin.Context) {
 		return
 	}
 
-	rsp := toJSON(user)
+	rsp := models.UserToJSON(user)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

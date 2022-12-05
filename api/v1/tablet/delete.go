@@ -1,13 +1,14 @@
 package tablet
 
 import (
+	"github.com/gabriel-henriq/smart-agenda/models"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 func (t Tablet) delete(ctx *gin.Context) {
-	var req deleteRequest
+	var req models.DeleteTabletRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return

@@ -2,13 +2,14 @@ package tablet
 
 import (
 	"database/sql"
+	"github.com/gabriel-henriq/smart-agenda/models"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 func (t Tablet) getByID(ctx *gin.Context) {
-	var req getRequest
+	var req models.GetTabletRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
@@ -25,7 +26,7 @@ func (t Tablet) getByID(ctx *gin.Context) {
 		return
 	}
 
-	rsp := toJSON(room)
+	rsp := models.TabletToJSON(room)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

@@ -1,12 +1,12 @@
-package paseto
+package models
 
 import "time"
 
-type renewAccessTokenRequest struct {
+type RenewAccessTokenRequest struct {
 	RefreshToken string `json:"refresh_token" binding:"required"`
 }
 
-type renewAccessTokenResponse struct {
+type RenewAccessTokenResponse struct {
 	AccessToken          string    `json:"access_token"`
 	AccessTokenExpiresAt time.Time `json:"access_token_expires_at"`
 }

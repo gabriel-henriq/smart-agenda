@@ -2,20 +2,32 @@ package api
 
 import (
 	"github.com/gabriel-henriq/smart-agenda/api/v1/aula"
+	"github.com/gabriel-henriq/smart-agenda/api/v1/paseto"
 	"github.com/gabriel-henriq/smart-agenda/api/v1/professor"
 	"github.com/gabriel-henriq/smart-agenda/api/v1/room"
 	"github.com/gabriel-henriq/smart-agenda/api/v1/tablet"
+	"github.com/gabriel-henriq/smart-agenda/api/v1/user"
 	"github.com/gabriel-henriq/smart-agenda/db"
+	"github.com/gabriel-henriq/smart-agenda/token"
+	"github.com/gabriel-henriq/smart-agenda/util"
 	"github.com/gin-gonic/gin"
 )
 
 type Server struct {
-	store  db.Store
-	router *gin.Engine
+	store      db.Store
+	router     *gin.Engine
+	tokenMaker token.Maker
+	config     util.Config
 }
 
-func NewServer(store db.Store) *Server {
-	server := &Server{store: store}
+func NewServer(config util.Config, store db.Store) *Server {
+	tokenMaker, _ := token.NewPasetoMaker(config.TokenSymmetricKey)
+
+	server := &Server{
+		config:     config,
+		store:      store,
+		tokenMaker: tokenMaker,
+	}
 
 	server.setupRouter()
 	return server
@@ -32,15 +44,20 @@ func (server *Server) setupRouter() {
 func (server *Server) createRoutesV1(router *gin.Engine) {
 	v1 := router.Group("/v1")
 
-	professorRoutes := professor.NewProfessor(server.store)
-	roomRoutes := room.NewRoom(server.store)
-	tabletRoutes := tablet.NewTablet(server.store)
-	aulaRoutes := aula.NewAula(server.store)
+	professorRoutes := professor.NewProfessor(server.store, server.config)
+	roomRoutes := room.NewRoom(server.store, server.config)
+	tabletRoutes := tablet.NewTablet(server.store, server.config)
+	aulaRoutes := aula.NewAula(server.store, server.config)
+	userRoutes := user.NewUser(server.store, server.config)
+	tokenRoutes := paseto.NewToken(server.store, server.config)
 
 	professorRoutes.SetupProfessorRoute(v1)
 	roomRoutes.SetupRoomRoute(v1)
 	tabletRoutes.SetupTabletRoute(v1)
 	aulaRoutes.SetupAulaRoute(v1)
+	userRoutes.SetupUserRoute(v1)
+	tokenRoutes.SetupTokenRoute(v1)
+
 }
 
 func (server *Server) Start(address string) error {

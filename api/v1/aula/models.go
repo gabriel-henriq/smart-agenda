@@ -53,7 +53,7 @@ type response struct {
 }
 
 type listResponse struct {
-	Aulas []response `json:"Aulas"`
+	Aulas []response `json:"aulas"`
 }
 
 func toJSON(sqlAula sqlc.Aula) response {

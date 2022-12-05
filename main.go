@@ -31,7 +31,7 @@ func runDBMigration(migrationURL string, dbSource string, driver database.Driver
 }
 
 func runGinServer(config util.Config, store db.Store) {
-	server := api.NewServer(store)
+	server := api.NewServer(config, store)
 
 	_ = server.Start(config.HTTPServerAddress)
 }

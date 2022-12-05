@@ -1,10 +1,10 @@
 include .env
 
 migrate-up:
-	migrate -database ${POSTGRESQL_URL} -path db/migrations up
+	migrate -database ${DB_SOURCE} -path db/migrations up
 
 migrate-down:
-	migrate -database ${POSTGRESQL_URL} -path db/migrations down all
+	migrate -database ${DB_SOURCE} -path db/migrations down
 
 migrate-create:
 	migrate create -dir db/migrations -ext sql -seq $(n)

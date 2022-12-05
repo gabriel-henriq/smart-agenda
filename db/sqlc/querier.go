@@ -6,21 +6,29 @@ package sqlc
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
 type Querier interface {
 	CreateAula(ctx context.Context, arg CreateAulaParams) (Aula, error)
 	CreateProfessor(ctx context.Context, arg CreateProfessorParams) (Professor, error)
 	CreateRoom(ctx context.Context, arg CreateRoomParams) (Room, error)
+	CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error)
 	CreateTablet(ctx context.Context, arg CreateTabletParams) (Tablet, error)
+	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	DeleteAulaByID(ctx context.Context, id int32) (Aula, error)
 	DeleteProfessorByID(ctx context.Context, id int32) (Professor, error)
 	DeleteRoomByID(ctx context.Context, id int32) (Room, error)
 	DeleteTabletByID(ctx context.Context, id int32) (Tablet, error)
+	DeleteUserByID(ctx context.Context, id int32) (User, error)
 	GetAulaByID(ctx context.Context, id int32) (Aula, error)
 	GetProfessorByID(ctx context.Context, id int32) (Professor, error)
 	GetRoomByID(ctx context.Context, id int32) (Room, error)
+	GetSessionByID(ctx context.Context, id uuid.UUID) (Session, error)
 	GetTabletByID(ctx context.Context, id int32) (Tablet, error)
+	GetUserByEmail(ctx context.Context, email string) (User, error)
+	GetUserByID(ctx context.Context, id int32) (User, error)
 	ListAulas(ctx context.Context) ([]Aula, error)
 	ListAulasByTimeRange(ctx context.Context, arg ListAulasByTimeRangeParams) ([]ListAulasByTimeRangeRow, error)
 	ListAvailableProfessorsByTimeRange(ctx context.Context, arg ListAvailableProfessorsByTimeRangeParams) ([]Professor, error)
@@ -29,10 +37,12 @@ type Querier interface {
 	ListProfessors(ctx context.Context, arg ListProfessorsParams) ([]ListProfessorsRow, error)
 	ListRooms(ctx context.Context, arg ListRoomsParams) ([]ListRoomsRow, error)
 	ListTablets(ctx context.Context, arg ListTabletsParams) ([]ListTabletsRow, error)
+	ListUsers(ctx context.Context, arg ListUsersParams) ([]ListUsersRow, error)
 	UpdateAulaByID(ctx context.Context, arg UpdateAulaByIDParams) (Aula, error)
 	UpdateProfessorByID(ctx context.Context, arg UpdateProfessorByIDParams) (Professor, error)
 	UpdateRoomByID(ctx context.Context, arg UpdateRoomByIDParams) (Room, error)
 	UpdateTabletByID(ctx context.Context, arg UpdateTabletByIDParams) (Tablet, error)
+	UpdateUserByID(ctx context.Context, arg UpdateUserByIDParams) (User, error)
 }
 
 var _ Querier = (*Queries)(nil)

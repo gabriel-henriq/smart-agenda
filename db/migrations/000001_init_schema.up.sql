@@ -7,6 +7,16 @@ CREATE TABLE IF NOT EXISTS tablets
     updated_at   TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS users
+(
+    id           SERIAL PRIMARY KEY NOT NULL,
+    name         TEXT NOT NULL,
+    email        TEXT NOT NULL UNIQUE,
+    password     TEXT NOT NULL,
+    created_at   TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at   TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
 CREATE TABLE IF NOT EXISTS professors
 (
     id           SERIAL PRIMARY KEY NOT NULL,
@@ -40,4 +50,16 @@ CREATE TABLE IF NOT EXISTS aulas
     FOREIGN KEY (tablet_id) REFERENCES tablets (id) ON DELETE CASCADE,
     FOREIGN KEY (professor_id) REFERENCES professors (id) ON DELETE CASCADE,
     FOREIGN KEY (room_id) REFERENCES rooms (id) ON DELETE CASCADE
+);
+
+CREATE TABLE "sessions" (
+                            "id" uuid PRIMARY KEY,
+                            "email" varchar NOT NULL,
+                            "refresh_token" varchar NOT NULL,
+                            "user_agent" varchar NOT NULL,
+                            "client_ip" varchar NOT NULL,
+                            "is_blocked" boolean NOT NULL DEFAULT false,
+                            "expires_at" timestamptz NOT NULL,
+                            "created_at" timestamptz NOT NULL DEFAULT (now()),
+                            FOREIGN KEY (email) REFERENCES "users" (email) ON DELETE CASCADE
 );

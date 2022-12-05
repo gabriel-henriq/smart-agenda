@@ -1,7 +1,10 @@
 package tablet
 
 import (
+	"github.com/gabriel-henriq/smart-agenda/api/v1/middleware"
 	"github.com/gabriel-henriq/smart-agenda/db"
+	"github.com/gabriel-henriq/smart-agenda/token"
+	"github.com/gabriel-henriq/smart-agenda/util"
 	"github.com/gin-gonic/gin"
 )
 
@@ -10,19 +13,26 @@ type ITablet interface {
 }
 
 type Tablet struct {
-	db db.Store
+	db         db.Store
+	tokenMaker token.Maker
+	config     util.Config
 }
 
-func NewTablet(db db.Store) ITablet {
+func NewTablet(db db.Store, config util.Config) ITablet {
+	tokenMaker, _ := token.NewPasetoMaker(config.TokenSymmetricKey)
+
 	return Tablet{
-		db: db,
+		db:         db,
+		config:     config,
+		tokenMaker: tokenMaker,
 	}
 }
 
 func (t Tablet) SetupTabletRoute(routerGroup *gin.RouterGroup) {
-	routerGroup.POST("/tablet", t.create)
-	routerGroup.GET("/tablet", t.list)
-	routerGroup.PATCH("/tablet", t.update)
-	routerGroup.GET("/tablet/:id", t.getByID)
-	routerGroup.DELETE("/tablet/:id", t.delete)
+	authRoutes := routerGroup.Group("/").Use(middleware.AuthMiddleware(t.tokenMaker))
+	authRoutes.POST("/tablet", t.create)
+	authRoutes.GET("/tablet", t.list)
+	authRoutes.PATCH("/tablet", t.update)
+	authRoutes.GET("/tablet/:id", t.getByID)
+	authRoutes.DELETE("/tablet/:id", t.delete)
 }

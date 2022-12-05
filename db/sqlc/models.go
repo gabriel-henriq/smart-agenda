@@ -6,6 +6,8 @@ package sqlc
 
 import (
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type Aula struct {
@@ -37,10 +39,30 @@ type Room struct {
 	UpdatedAt  time.Time
 }
 
+type Session struct {
+	ID           uuid.UUID
+	Email        string
+	RefreshToken string
+	UserAgent    string
+	ClientIp     string
+	IsBlocked    bool
+	ExpiresAt    time.Time
+	CreatedAt    time.Time
+}
+
 type Tablet struct {
 	ID         int32
 	Name       string
 	LabelColor string
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
+}
+
+type User struct {
+	ID        int32
+	Name      string
+	Email     string
+	Password  string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }

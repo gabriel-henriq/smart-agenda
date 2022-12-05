@@ -2,13 +2,17 @@ package util
 
 import (
 	"github.com/spf13/viper"
+	"time"
 )
 
 type Config struct {
-	DBDriver          string `mapstructure:"DB_DRIVER"`
-	DBSource          string `mapstructure:"DB_SOURCE"`
-	HTTPServerAddress string `mapstructure:"HTTP_SERVER_ADDRESS"`
-	MigrationURL      string `mapstructure:"MIGRATION_URL"`
+	DBDriver             string        `mapstructure:"DB_DRIVER"`
+	DBSource             string        `mapstructure:"DB_SOURCE"`
+	HTTPServerAddress    string        `mapstructure:"HTTP_SERVER_ADDRESS"`
+	MigrationURL         string        `mapstructure:"MIGRATION_URL"`
+	TokenSymmetricKey    string        `mapstructure:"TOKEN_SYMMETRIC_KEY"`
+	AccessTokenDuration  time.Duration `mapstructure:"ACCESS_TOKEN_DURATION"`
+	RefreshTokenDuration time.Duration `mapstructure:"REFRESH_TOKEN_DURATION"`
 }
 
 func LoadConfig(path string) (config Config, err error) {

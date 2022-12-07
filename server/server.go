@@ -1,6 +1,10 @@
 package server
 
 import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+
 	"github.com/gabriel-henriq/smart-agenda/api/v1/aula"
 	"github.com/gabriel-henriq/smart-agenda/api/v1/paseto"
 	"github.com/gabriel-henriq/smart-agenda/api/v1/professor"
@@ -10,8 +14,6 @@ import (
 	"github.com/gabriel-henriq/smart-agenda/db"
 	"github.com/gabriel-henriq/smart-agenda/token"
 	"github.com/gabriel-henriq/smart-agenda/util"
-	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 type Server struct {
@@ -54,7 +56,7 @@ func (server *Server) createRoutesV1(router *gin.Engine) {
 	tabletRoutes := tablet.NewTablet(server.store, server.config)
 	aulaRoutes := aula.NewAula(server.store, server.config)
 	userRoutes := user.NewUser(server.store, server.config)
-	tokenRoutes := paseto.NewToken(server.store, server.config)
+	tokenRoutes := paseto.NewToken(server.store)
 
 	professorRoutes.SetupProfessorRoute(v1)
 	roomRoutes.SetupRoomRoute(v1)

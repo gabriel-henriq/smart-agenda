@@ -1,11 +1,12 @@
 package room
 
 import (
+	"github.com/gin-gonic/gin"
+
 	"github.com/gabriel-henriq/smart-agenda/api/v1/middleware"
 	"github.com/gabriel-henriq/smart-agenda/db"
 	"github.com/gabriel-henriq/smart-agenda/token"
 	"github.com/gabriel-henriq/smart-agenda/util"
-	"github.com/gin-gonic/gin"
 )
 
 type IRoom interface {

@@ -1,10 +1,12 @@
 package user
 
 import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
 	"github.com/gabriel-henriq/smart-agenda/models"
-	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 func (u User) list(ctx *gin.Context) {

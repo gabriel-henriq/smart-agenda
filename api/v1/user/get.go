@@ -2,8 +2,9 @@ package user
 
 import (
 	"database/sql"
-	"github.com/gabriel-henriq/smart-agenda/models"
 	"net/http"
+
+	"github.com/gabriel-henriq/smart-agenda/models"
 
 	"github.com/gin-gonic/gin"
 )

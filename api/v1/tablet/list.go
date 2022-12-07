@@ -1,11 +1,13 @@
 package tablet
 
 import (
-	"github.com/gabriel-henriq/smart-agenda/models"
 	"net/http"
 
-	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
+	"github.com/gabriel-henriq/smart-agenda/models"
+
 	"github.com/gin-gonic/gin"
+
+	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
 )
 
 func (t Tablet) list(ctx *gin.Context) {

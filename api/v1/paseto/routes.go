@@ -1,10 +1,11 @@
 package paseto
 
 import (
+	"github.com/gin-gonic/gin"
+
 	"github.com/gabriel-henriq/smart-agenda/db"
 	"github.com/gabriel-henriq/smart-agenda/token"
 	"github.com/gabriel-henriq/smart-agenda/util"
-	"github.com/gin-gonic/gin"
 )
 
 type IToken interface {
@@ -17,7 +18,7 @@ type Token struct {
 	config     util.Config
 }
 
-func NewToken(db db.Store, config util.Config) IToken {
+func NewToken(db db.Store) IToken {
 	return Token{
 		db: db,
 	}

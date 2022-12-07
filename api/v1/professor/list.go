@@ -1,11 +1,13 @@
 package professor
 
 import (
-	"github.com/gabriel-henriq/smart-agenda/models"
 	"net/http"
 
-	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
+	"github.com/gabriel-henriq/smart-agenda/models"
+
 	"github.com/gin-gonic/gin"
+
+	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
 )
 
 func (p Professor) list(ctx *gin.Context) {

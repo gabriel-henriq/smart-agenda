@@ -1,11 +1,13 @@
 package aula
 
 import (
-	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
-	"github.com/gabriel-henriq/smart-agenda/models"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/lib/pq"
-	"net/http"
+
+	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
+	"github.com/gabriel-henriq/smart-agenda/models"
 )
 
 func (a Aula) create(ctx *gin.Context) {

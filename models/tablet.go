@@ -1,8 +1,9 @@
 package models
 
 import (
-	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
 	"math"
+
+	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
 )
 
 type CreateTabletRequest struct {

@@ -1,12 +1,14 @@
 package room
 
 import (
-	"github.com/gabriel-henriq/smart-agenda/models"
 	"net/http"
 
-	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
+	"github.com/gabriel-henriq/smart-agenda/models"
+
 	"github.com/gin-gonic/gin"
 	"github.com/lib/pq"
+
+	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
 )
 
 func (r Room) create(ctx *gin.Context) {

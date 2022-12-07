@@ -3,10 +3,12 @@ package paseto
 import (
 	"database/sql"
 	"fmt"
-	"github.com/gabriel-henriq/smart-agenda/models"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
+
+	"github.com/gabriel-henriq/smart-agenda/models"
 )
 
 func (t Token) renewAccessToken(ctx *gin.Context) {

@@ -2,11 +2,13 @@ package user
 
 import (
 	"database/sql"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
 	"github.com/gabriel-henriq/smart-agenda/models"
 	"github.com/gabriel-henriq/smart-agenda/util"
-	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 func (u User) loginUser(ctx *gin.Context) {

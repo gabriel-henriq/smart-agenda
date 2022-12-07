@@ -1,10 +1,12 @@
 package models
 
 import (
-	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
-	"github.com/google/uuid"
 	"math"
 	"time"
+
+	"github.com/google/uuid"
+
+	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
 )
 
 type CreateUserRequest struct {

@@ -3,9 +3,10 @@ package middleware
 import (
 	"errors"
 	"fmt"
-	"github.com/gabriel-henriq/smart-agenda/token"
 	"net/http"
 	"strings"
+
+	"github.com/gabriel-henriq/smart-agenda/token"
 
 	"github.com/gin-gonic/gin"
 )

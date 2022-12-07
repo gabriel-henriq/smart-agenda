@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
 )
 

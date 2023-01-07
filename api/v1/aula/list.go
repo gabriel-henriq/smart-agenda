@@ -27,13 +27,11 @@ func (a Aula) list(ctx *gin.Context) {
 		return
 	}
 	if len(aulas) == 0 {
-		ctx.JSON(http.StatusOK, models.ListAulaResponse{
-			Aulas: []models.ResponseAula{},
-		})
+		ctx.JSON(http.StatusOK, models.ResponseData("200", "", true, models.ListAulasResponse{Aulas: []models.AulaResponse{}}))
 		return
 	}
 
 	rsp := models.AulasToJSONList(aulas)
 
-	ctx.JSON(http.StatusOK, rsp)
+	ctx.JSON(http.StatusOK, models.ResponseData("200", "Aulas listadas com sucesso", true, rsp))
 }

@@ -1,8 +1,6 @@
 package models
 
 import (
-	"math"
-
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
 )
 
@@ -25,7 +23,7 @@ type UpdateProfessorRequest struct {
 	LabelColor string `json:"labelColor"`
 }
 
-type ResponseProfessor struct {
+type ProfessorResponse struct {
 	ID         int32  `json:"id"`
 	Name       string `json:"name"`
 	LabelColor string `json:"labelColor"`
@@ -34,12 +32,12 @@ type ResponseProfessor struct {
 }
 
 type ListProfessorsResponse struct {
-	Professors         []ResponseProfessor `json:"professors"`
+	Professors         []ProfessorResponse `json:"professors"`
 	PaginationResponse `json:"pagination"`
 }
 
-func ProfessorToJSON(sqlProfessor sqlc.Professor) ResponseProfessor {
-	return ResponseProfessor{
+func ProfessorToJSON(sqlProfessor sqlc.Professor) ProfessorResponse {
+	return ProfessorResponse{
 		ID:         sqlProfessor.ID,
 		Name:       sqlProfessor.Name,
 		LabelColor: sqlProfessor.LabelColor,
@@ -48,11 +46,11 @@ func ProfessorToJSON(sqlProfessor sqlc.Professor) ResponseProfessor {
 	}
 }
 
-func ProferrosToJSONList(SQLProfessors []sqlc.ListProfessorsRow, pageID, pageSize int32) ListProfessorsResponse {
-	var profs []ResponseProfessor
+func ProferrosToJSONList(SQLProfessors []sqlc.ListProfessorsRow) ListProfessorsResponse {
+	var profs []ProfessorResponse
 
 	for _, professor := range SQLProfessors {
-		profs = append(profs, ResponseProfessor{
+		profs = append(profs, ProfessorResponse{
 			ID:         professor.ID,
 			Name:       professor.Name,
 			LabelColor: professor.LabelColor,
@@ -61,15 +59,5 @@ func ProferrosToJSONList(SQLProfessors []sqlc.ListProfessorsRow, pageID, pageSiz
 		})
 	}
 
-	totalPages := int32(math.Ceil(float64(SQLProfessors[0].TotalItems) / float64(pageSize)))
-
-	return ListProfessorsResponse{
-		Professors: profs,
-		PaginationResponse: PaginationResponse{
-			PageSize:    pageID,
-			CurrentPage: pageSize,
-			TotalItems:  SQLProfessors[0].TotalItems,
-			TotalPages:  totalPages,
-		},
-	}
+	return ListProfessorsResponse{Professors: profs}
 }

@@ -29,5 +29,5 @@ func (a Aula) getByID(ctx *gin.Context) {
 
 	rsp := models.AulaToJSON(aula)
 
-	ctx.JSON(http.StatusOK, rsp)
+	ctx.JSON(http.StatusOK, models.ResponseData("200", "Aula listada com sucesso", true, rsp))
 }

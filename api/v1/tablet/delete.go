@@ -16,9 +16,9 @@ func (t Tablet) delete(ctx *gin.Context) {
 	}
 	_, err := t.db.DeleteTabletByID(ctx, req.ID)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, err.Error())
+		ctx.JSON(http.StatusInternalServerError, models.ResponseData("500", err.Error(), false, nil))
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"status": "success"})
+	ctx.JSON(http.StatusOK, models.ResponseData("200", "", true, nil))
 }

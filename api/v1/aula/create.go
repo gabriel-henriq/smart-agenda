@@ -43,5 +43,5 @@ func (a Aula) create(ctx *gin.Context) {
 
 	rsp := models.AulaToJSON(aula)
 
-	ctx.JSON(http.StatusOK, rsp)
+	ctx.JSON(http.StatusOK, models.ResponseData("200", "Aula criada com sucesso", true, rsp))
 }

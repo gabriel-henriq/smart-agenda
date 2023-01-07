@@ -41,5 +41,5 @@ func (p Professor) update(ctx *gin.Context) {
 
 	rsp := models.ProfessorToJSON(prof)
 
-	ctx.JSON(http.StatusOK, rsp)
+	ctx.JSON(http.StatusOK, models.ResponseData("200", "", true, rsp))
 }

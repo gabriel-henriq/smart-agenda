@@ -1,8 +1,6 @@
 package models
 
 import (
-	"math"
-
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
 )
 
@@ -25,7 +23,7 @@ type UpdateTabletRequest struct {
 	LabelColor string `json:"labelColor"`
 }
 
-type ResponseTablet struct {
+type TabletResponse struct {
 	ID        int32  `json:"ID"`
 	Name      string `json:"name"`
 	CreatedAt int64  `json:"createdAt"`
@@ -33,12 +31,12 @@ type ResponseTablet struct {
 }
 
 type ListTabletsResponse struct {
-	Tablets            []ResponseTablet `json:"tablets"`
+	Tablets            []TabletResponse `json:"tablets"`
 	PaginationResponse `json:"pagination"`
 }
 
-func TabletToJSON(sqlTablet sqlc.Tablet) ResponseTablet {
-	return ResponseTablet{
+func TabletToJSON(sqlTablet sqlc.Tablet) TabletResponse {
+	return TabletResponse{
 		ID:        sqlTablet.ID,
 		Name:      sqlTablet.Name,
 		CreatedAt: sqlTablet.CreatedAt.Unix(),
@@ -46,11 +44,11 @@ func TabletToJSON(sqlTablet sqlc.Tablet) ResponseTablet {
 	}
 }
 
-func TabletsToJSONList(SQLTablets []sqlc.ListTabletsRow, pageID, pageSize int32) ListTabletsResponse {
-	var tablets []ResponseTablet
+func TabletsToJSONList(SQLTablets []sqlc.ListTabletsRow) ListTabletsResponse {
+	var tablets []TabletResponse
 
 	for _, tablet := range SQLTablets {
-		tablets = append(tablets, ResponseTablet{
+		tablets = append(tablets, TabletResponse{
 			ID:        tablet.ID,
 			Name:      tablet.Name,
 			CreatedAt: tablet.CreatedAt.Unix(),
@@ -58,15 +56,5 @@ func TabletsToJSONList(SQLTablets []sqlc.ListTabletsRow, pageID, pageSize int32)
 		})
 	}
 
-	totalPages := int32(math.Ceil(float64(SQLTablets[0].TotalItems) / float64(pageSize)))
-
-	return ListTabletsResponse{
-		Tablets: tablets,
-		PaginationResponse: PaginationResponse{
-			PageSize:    pageID,
-			CurrentPage: pageSize,
-			TotalItems:  SQLTablets[0].TotalItems,
-			TotalPages:  totalPages,
-		},
-	}
+	return ListTabletsResponse{Tablets: tablets}
 }

@@ -29,5 +29,5 @@ func (p Professor) get(ctx *gin.Context) {
 
 	rsp := models.ProfessorToJSON(prof)
 
-	ctx.JSON(http.StatusOK, rsp)
+	ctx.JSON(http.StatusOK, models.ResponseData("200", "Professor listado com sucesso", true, rsp))
 }

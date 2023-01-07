@@ -30,17 +30,12 @@ func (r Room) list(ctx *gin.Context) {
 		return
 	}
 	if len(rooms) == 0 {
-		ctx.JSON(http.StatusOK, models.ListRoomResponse{
-			Rooms: []models.ResponseRoom{},
-			PaginationResponse: models.PaginationResponse{
-				PageSize:    req.PageSize,
-				CurrentPage: req.CurrentPage,
-			},
-		})
+		rsp := models.Paginate(models.ListRoomResponse{Rooms: []models.RoomResponse{}}, &req, 0)
+		ctx.JSON(http.StatusOK, models.ResponseData("200", "", true, rsp))
 		return
 	}
 
-	rsp := models.RoomsToJSONList(rooms, req.CurrentPage, req.PageSize)
+	rsp := models.RoomsToJSONList(rooms)
 
-	ctx.JSON(http.StatusOK, rsp)
+	ctx.JSON(http.StatusOK, models.ResponseData("200", "Salas listadas com sucesso", true, rsp))
 }

@@ -39,5 +39,5 @@ func (p Professor) create(ctx *gin.Context) {
 
 	rsp := models.ProfessorToJSON(prof)
 
-	ctx.JSON(http.StatusOK, rsp)
+	ctx.JSON(http.StatusOK, models.ResponseData("200", "Professor criado com sucesso", true, rsp))
 }

@@ -42,5 +42,5 @@ func (u User) update(ctx *gin.Context) {
 
 	rsp := models.UserToJSON(user)
 
-	ctx.JSON(http.StatusOK, rsp)
+	ctx.JSON(http.StatusOK, models.ResponseData("200", "", true, rsp))
 }

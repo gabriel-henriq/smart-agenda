@@ -74,5 +74,5 @@ func (u User) loginUser(ctx *gin.Context) {
 		RefreshTokenExpiresAt: refreshPayload.ExpiredAt,
 		User:                  models.UserToJSON(user),
 	}
-	ctx.JSON(http.StatusOK, rsp)
+	ctx.JSON(http.StatusOK, models.ResponseData("200", "", true, rsp))
 }

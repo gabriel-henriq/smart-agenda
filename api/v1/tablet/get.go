@@ -29,5 +29,5 @@ func (t Tablet) getByID(ctx *gin.Context) {
 
 	rsp := models.TabletToJSON(room)
 
-	ctx.JSON(http.StatusOK, rsp)
+	ctx.JSON(http.StatusOK, models.ResponseData("200", "", true, rsp))
 }

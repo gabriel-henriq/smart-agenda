@@ -41,5 +41,5 @@ func (r Room) update(ctx *gin.Context) {
 
 	rsp := models.RoomToJSON(room)
 
-	ctx.JSON(http.StatusOK, rsp)
+	ctx.JSON(http.StatusOK, models.ResponseData("200", "", true, rsp))
 }

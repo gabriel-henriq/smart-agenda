@@ -1,12 +1,5 @@
 package models
 
-type ListResponse struct {
-	Code    string        `json:"code"`
-	Message string        `json:"message"`
-	Success bool          `json:"success"`
-	Data    []interface{} `json:"data"`
-}
-
 type Response struct {
 	Code    string      `json:"code"`
 	Message string      `json:"message"`

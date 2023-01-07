@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "12bd4b3a-d531-46ed-9b26-0a8cba15a985",
+		"_postman_id": "f30d0d53-c82c-443b-9dfe-16157eed5a84",
 		"name": "smart-agenda",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "12570087"
@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"aaaa\",\n    \"labelColor\": \"azul\"\n}",
+							"raw": "{\n    \"name\": \"unhybgbhnhujnhubhyb\",\n    \"labelColor\": \"azul\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -80,7 +80,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/v1/professor/?pageSize=10&pageId=1&orderBy=name&reverse=false",
+							"raw": "{{base_url}}/v1/professor/?pageSize=100&pageId=2&orderBy=id&reverse=false",
 							"host": [
 								"{{base_url}}"
 							],
@@ -92,15 +92,15 @@
 							"query": [
 								{
 									"key": "pageSize",
-									"value": "10"
+									"value": "100"
 								},
 								{
 									"key": "pageId",
-									"value": "1"
+									"value": "2"
 								},
 								{
 									"key": "orderBy",
-									"value": "name"
+									"value": "id"
 								},
 								{
 									"key": "reverse",
@@ -150,7 +150,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"aaaa\",\n    \"email\": \"ivannoleto@hotmail.com\",\n    \"password\": \"123456\"\n}",
+							"raw": "{\n    \"name\": \"aaaa\",\n    \"email\": \"ivannnoleto@hotmail.com\",\n    \"password\": \"123456\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -217,14 +217,14 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/v1/professor/11",
+							"raw": "{{base_url}}/v1/user/1",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"v1",
-								"professor",
-								"11"
+								"user",
+								"1"
 							]
 						}
 					},
@@ -255,7 +255,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/v1/user/?pageSize=10&pageId=1&orderBy=name&reverse=false",
+							"raw": "{{base_url}}/v1/user/?pageSize=3&currentPage=1&orderBy=name&reverse=false",
 							"host": [
 								"{{base_url}}"
 							],
@@ -267,10 +267,10 @@
 							"query": [
 								{
 									"key": "pageSize",
-									"value": "10"
+									"value": "3"
 								},
 								{
-									"key": "pageId",
+									"key": "currentPage",
 									"value": "1"
 								},
 								{
@@ -301,13 +301,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/v1/professor",
+							"raw": "{{base_url}}/v1/user",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"v1",
-								"professor"
+								"user"
 							]
 						}
 					},
@@ -620,14 +620,14 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/v1/aula/1",
+							"raw": "{{base_url}}/v1/aula/100",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"v1",
 								"aula",
-								"1"
+								"100"
 							]
 						}
 					},
@@ -670,8 +670,7 @@
 							"query": [
 								{
 									"key": "meetStart",
-									"value": "2004-01-02T15:04:05Z",
-									"description": "t"
+									"value": "2004-01-02T15:04:05Z"
 								},
 								{
 									"key": "meetEnd",
@@ -744,11 +743,12 @@
 	],
 	"variable": [
 		{
-			"key": "base_url",
-			"value": "localhost:5000"
+			"key": "token",
+			"value": "",
+			"type": "string"
 		},
 		{
-			"key": "token",
+			"key": "base_url",
 			"value": "",
 			"type": "string"
 		}

@@ -31,17 +31,12 @@ func (p Professor) list(ctx *gin.Context) {
 		return
 	}
 	if len(profs) == 0 {
-		ctx.JSON(http.StatusOK, models.ListProfessorsResponse{
-			Professors: []models.ResponseProfessor{},
-			PaginationResponse: models.PaginationResponse{
-				PageSize:    req.PageSize,
-				CurrentPage: req.CurrentPage,
-			},
-		})
+		rsp := models.Paginate(models.ListProfessorsResponse{Professors: []models.ProfessorResponse{}}, &req, 0)
+		ctx.JSON(http.StatusOK, models.ResponseData("200", "", true, rsp))
 		return
 	}
 
-	rsp := models.ProferrosToJSONList(profs, req.CurrentPage, req.PageSize)
+	rsp := models.ProferrosToJSONList(profs)
 
-	ctx.JSON(http.StatusOK, rsp)
+	ctx.JSON(http.StatusOK, models.ResponseData("200", "Professores listados com sucesso", true, rsp))
 }

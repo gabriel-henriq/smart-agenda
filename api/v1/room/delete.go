@@ -16,9 +16,9 @@ func (r Room) delete(ctx *gin.Context) {
 	}
 	_, err := r.db.DeleteRoomByID(ctx, req.ID)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, err.Error())
+		ctx.JSON(http.StatusInternalServerError, models.ResponseData("500", err.Error(), false, nil))
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"status": "success"})
+	ctx.JSON(http.StatusOK, models.ResponseData("200", "", true, nil))
 }

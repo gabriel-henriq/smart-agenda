@@ -46,5 +46,5 @@ func (a Aula) update(ctx *gin.Context) {
 
 	rsp := models.AulaToJSON(aula)
 
-	ctx.JSON(http.StatusOK, rsp)
+	ctx.JSON(http.StatusOK, models.ResponseData("200", "Aula atualizada com sucesso", true, rsp))
 }

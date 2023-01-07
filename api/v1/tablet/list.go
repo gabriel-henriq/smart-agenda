@@ -30,17 +30,12 @@ func (t Tablet) list(ctx *gin.Context) {
 		return
 	}
 	if len(rooms) == 0 {
-		ctx.JSON(http.StatusOK, models.ListTabletsResponse{
-			Tablets: []models.ResponseTablet{},
-			PaginationResponse: models.PaginationResponse{
-				PageSize:    req.PageSize,
-				CurrentPage: req.CurrentPage,
-			},
-		})
+		rsp := models.Paginate(models.ListTabletsResponse{Tablets: []models.TabletResponse{}}, &req, 0)
+		ctx.JSON(http.StatusOK, models.ResponseData("200", "", true, rsp))
 		return
 	}
 
-	rsp := models.TabletsToJSONList(rooms, req.CurrentPage, req.PageSize)
+	rsp := models.TabletsToJSONList(rooms)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

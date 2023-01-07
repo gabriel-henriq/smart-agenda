@@ -1,8 +1,6 @@
 package models
 
 import (
-	"math"
-
 	"github.com/gabriel-henriq/smart-agenda/db/sqlc"
 )
 
@@ -25,7 +23,7 @@ type UpdateRoomRequest struct {
 	LabelColor string `json:"labelColor"`
 }
 
-type ResponseRoom struct {
+type RoomResponse struct {
 	ID         int32  `json:"id"`
 	Name       string `json:"name"`
 	LabelColor string `json:"labelColor"`
@@ -34,12 +32,12 @@ type ResponseRoom struct {
 }
 
 type ListRoomResponse struct {
-	Rooms              []ResponseRoom `json:"rooms"`
+	Rooms              []RoomResponse `json:"rooms"`
 	PaginationResponse `json:"pagination"`
 }
 
-func RoomToJSON(sqlRoom sqlc.Room) ResponseRoom {
-	return ResponseRoom{
+func RoomToJSON(sqlRoom sqlc.Room) RoomResponse {
+	return RoomResponse{
 		ID:         sqlRoom.ID,
 		Name:       sqlRoom.Name,
 		LabelColor: sqlRoom.LabelColor,
@@ -48,11 +46,11 @@ func RoomToJSON(sqlRoom sqlc.Room) ResponseRoom {
 	}
 }
 
-func RoomsToJSONList(SQLRooms []sqlc.ListRoomsRow, pageID, pageSize int32) ListRoomResponse {
-	var rooms []ResponseRoom
+func RoomsToJSONList(SQLRooms []sqlc.ListRoomsRow) ListRoomResponse {
+	var rooms []RoomResponse
 
 	for _, room := range SQLRooms {
-		rooms = append(rooms, ResponseRoom{
+		rooms = append(rooms, RoomResponse{
 			ID:         room.ID,
 			Name:       room.Name,
 			LabelColor: room.LabelColor,
@@ -61,15 +59,5 @@ func RoomsToJSONList(SQLRooms []sqlc.ListRoomsRow, pageID, pageSize int32) ListR
 		})
 	}
 
-	totalPages := int32(math.Ceil(float64(SQLRooms[0].TotalItems) / float64(pageSize)))
-
-	return ListRoomResponse{
-		Rooms: rooms,
-		PaginationResponse: PaginationResponse{
-			PageSize:    pageID,
-			CurrentPage: pageSize,
-			TotalItems:  SQLRooms[0].TotalItems,
-			TotalPages:  totalPages,
-		},
-	}
+	return ListRoomResponse{Rooms: rooms}
 }

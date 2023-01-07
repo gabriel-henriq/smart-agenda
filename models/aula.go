@@ -40,7 +40,7 @@ type UpdateAulaRequest struct {
 	Observation string    `json:"observation"`
 }
 
-type ResponseAula struct {
+type AulaResponse struct {
 	ID          int32     `json:"id"`
 	TabletID    int32     `json:"TabletId"`
 	ProfessorID int32     `json:"ProfessorId"`
@@ -53,12 +53,12 @@ type ResponseAula struct {
 	UpdatedAt   int64     `json:"updatedAt"`
 }
 
-type ListAulaResponse struct {
-	Aulas []ResponseAula `json:"aulas"`
+type ListAulasResponse struct {
+	Aulas []AulaResponse `json:"aulas"`
 }
 
-func AulaToJSON(sqlAula sqlc.Aula) ResponseAula {
-	return ResponseAula{
+func AulaToJSON(sqlAula sqlc.Aula) AulaResponse {
+	return AulaResponse{
 		ID:          sqlAula.ID,
 		TabletID:    sqlAula.TabletID,
 		ProfessorID: sqlAula.ProfessorID,
@@ -72,11 +72,11 @@ func AulaToJSON(sqlAula sqlc.Aula) ResponseAula {
 	}
 }
 
-func AulasToJSONList(SQLAulas []sqlc.ListAulasByTimeRangeRow) ListAulaResponse {
-	var aulas []ResponseAula
+func AulasToJSONList(SQLAulas []sqlc.ListAulasByTimeRangeRow) ListAulasResponse {
+	var aulas []AulaResponse
 
 	for _, aula := range SQLAulas {
-		aulas = append(aulas, ResponseAula{
+		aulas = append(aulas, AulaResponse{
 			ID:          aula.ID,
 			StudentName: aula.StudentName,
 			MeetStart:   aula.MeetStart,
@@ -90,5 +90,5 @@ func AulasToJSONList(SQLAulas []sqlc.ListAulasByTimeRangeRow) ListAulaResponse {
 		})
 	}
 
-	return ListAulaResponse{Aulas: aulas}
+	return ListAulasResponse{Aulas: aulas}
 }

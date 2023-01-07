@@ -39,5 +39,5 @@ func (t Tablet) create(ctx *gin.Context) {
 
 	rsp := models.TabletToJSON(tablet)
 
-	ctx.JSON(http.StatusOK, rsp)
+	ctx.JSON(http.StatusOK, models.ResponseData("200", "", true, rsp))
 }

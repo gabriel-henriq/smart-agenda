@@ -19,7 +19,7 @@ func (t Tablet) list(ctx *gin.Context) {
 
 	args := sqlc.ListTabletsParams{
 		Limit:   req.PageSize,
-		Offset:  (req.PageID - 1) * req.PageSize,
+		Offset:  (req.CurrentPage - 1) * req.PageSize,
 		OrderBy: req.OrderBy,
 		Reverse: req.Reverse,
 	}
@@ -33,14 +33,14 @@ func (t Tablet) list(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, models.ListTabletsResponse{
 			Tablets: []models.ResponseTablet{},
 			PaginationResponse: models.PaginationResponse{
-				Limit:  req.PageID,
-				Offset: req.PageSize,
+				PageSize:    req.PageSize,
+				CurrentPage: req.CurrentPage,
 			},
 		})
 		return
 	}
 
-	rsp := models.TabletsToJSONList(rooms, req.PageID, req.PageSize)
+	rsp := models.TabletsToJSONList(rooms, req.CurrentPage, req.PageSize)
 
 	ctx.JSON(http.StatusOK, rsp)
 }

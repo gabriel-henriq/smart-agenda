@@ -66,10 +66,10 @@ func RoomsToJSONList(SQLRooms []sqlc.ListRoomsRow, pageID, pageSize int32) ListR
 	return ListRoomResponse{
 		Rooms: rooms,
 		PaginationResponse: PaginationResponse{
-			Limit:      pageID,
-			Offset:     pageSize,
-			TotalItems: SQLRooms[0].TotalItems,
-			TotalPages: totalPages,
+			PageSize:    pageID,
+			CurrentPage: pageSize,
+			TotalItems:  SQLRooms[0].TotalItems,
+			TotalPages:  totalPages,
 		},
 	}
 }

@@ -1,7 +1,6 @@
 package models
 
 import (
-	"math"
 	"time"
 
 	"github.com/google/uuid"
@@ -25,7 +24,7 @@ type GetUserRequest struct {
 
 type LoginUserRequest struct {
 	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required,min=6"`
+	Password string `json:"password" binding:"required"`
 }
 
 type UpdateUserRequest struct {
@@ -45,7 +44,6 @@ type UserResponse struct {
 
 type ListUserResponse struct {
 	Users []UserResponse `json:"users"`
-	PaginationResponse
 }
 
 type LoginUserResponse struct {
@@ -67,7 +65,7 @@ func UserToJSON(SQLUser sqlc.User) UserResponse {
 	}
 }
 
-func UsersToJSONList(SQLUsers []sqlc.ListUsersRow, pageID, pageSize int32) ListUserResponse {
+func UsersToJSONList(SQLUsers []sqlc.ListUsersRow) ListUserResponse {
 	var users []UserResponse
 
 	for _, user := range SQLUsers {
@@ -80,15 +78,5 @@ func UsersToJSONList(SQLUsers []sqlc.ListUsersRow, pageID, pageSize int32) ListU
 		})
 	}
 
-	totalPages := int32(math.Ceil(float64(SQLUsers[0].TotalItems) / float64(pageSize)))
-
-	return ListUserResponse{
-		Users: users,
-		PaginationResponse: PaginationResponse{
-			Limit:      pageID,
-			Offset:     pageSize,
-			TotalItems: SQLUsers[0].TotalItems,
-			TotalPages: totalPages,
-		},
-	}
+	return ListUserResponse{Users: users}
 }

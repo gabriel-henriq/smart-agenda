@@ -66,10 +66,10 @@ func ProferrosToJSONList(SQLProfessors []sqlc.ListProfessorsRow, pageID, pageSiz
 	return ListProfessorsResponse{
 		Professors: profs,
 		PaginationResponse: PaginationResponse{
-			Limit:      pageID,
-			Offset:     pageSize,
-			TotalItems: SQLProfessors[0].TotalItems,
-			TotalPages: totalPages,
+			PageSize:    pageID,
+			CurrentPage: pageSize,
+			TotalItems:  SQLProfessors[0].TotalItems,
+			TotalPages:  totalPages,
 		},
 	}
 }

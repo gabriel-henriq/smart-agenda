@@ -63,10 +63,10 @@ func TabletsToJSONList(SQLTablets []sqlc.ListTabletsRow, pageID, pageSize int32)
 	return ListTabletsResponse{
 		Tablets: tablets,
 		PaginationResponse: PaginationResponse{
-			Limit:      pageID,
-			Offset:     pageSize,
-			TotalItems: SQLTablets[0].TotalItems,
-			TotalPages: totalPages,
+			PageSize:    pageID,
+			CurrentPage: pageSize,
+			TotalItems:  SQLTablets[0].TotalItems,
+			TotalPages:  totalPages,
 		},
 	}
 }

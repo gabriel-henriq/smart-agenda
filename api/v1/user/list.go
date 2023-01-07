@@ -18,7 +18,7 @@ func (u User) list(ctx *gin.Context) {
 
 	args := sqlc.ListUsersParams{
 		Limit:   req.PageSize,
-		Offset:  (req.PageID - 1) * req.PageSize,
+		Offset:  (req.CurrentPage - 1) * req.PageSize,
 		OrderBy: req.OrderBy,
 		Reverse: req.Reverse,
 	}
@@ -28,18 +28,15 @@ func (u User) list(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, err.Error())
 		return
 	}
+
 	if len(users) == 0 {
-		ctx.JSON(http.StatusOK, models.ListUserResponse{
-			Users: []models.UserResponse{},
-			PaginationResponse: models.PaginationResponse{
-				Limit:  req.PageID,
-				Offset: req.PageSize,
-			},
-		})
+		rsp := models.Paginate(models.ListUserResponse{Users: []models.UserResponse{}}, &req, 0)
+		ctx.JSON(http.StatusOK, models.ResponseData("200", "", true, rsp))
 		return
 	}
 
-	rsp := models.UsersToJSONList(users, req.PageID, req.PageSize)
+	parsedUsers := models.UsersToJSONList(users)
+	rsp := models.Paginate(parsedUsers.Users, &req, users[0].TotalItems)
 
-	ctx.JSON(http.StatusOK, rsp)
+	ctx.JSON(http.StatusOK, models.ResponseData("200", "", true, rsp))
 }
